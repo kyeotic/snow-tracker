@@ -1,0 +1,25 @@
+{
+  "name": "diet-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "lambda-zipper build -f airtable diet *.js -r -o ../build/server.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kyeotic/airtable": "^0.1.0",
+    "apollo-server-lambda": "^2.9.14",
+    "dateformat": "^3.0.3",
+    "deepmerge": "^4.2.2",
+    "define-lazy-prop": "^2.0.0",
+    "graphql": "^14.5.8",
+    "graphql-iso-date": "^3.6.1",
+    "graphql-type-json": "^0.3.1"
+  },
+  "devDependencies": {
+    "dotenv": "^7.0.0",
+    "lambda-zipper": "^0.4.1"
+  }
+}
