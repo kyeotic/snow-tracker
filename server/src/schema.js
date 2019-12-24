@@ -5,9 +5,9 @@ const { GraphQLJSON, GraphQLJSONObject } = require('graphql-type-json')
 const { GraphQLDateTime } = require('graphql-iso-date')
 
 const {
-  typeDefs: DietLog,
-  resolvers: dietLogResolvers
-} = require('./diet/schema')
+  typeDefs: SnowTypes,
+  resolvers: snowResolvers
+} = require('./snow/schema')
 
 const Query = `
 scalar JSON
@@ -20,13 +20,13 @@ type Query {
 `
 
 module.exports = {
-  typeDefs: [Query, DietLog],
+  typeDefs: [Query, SnowTypes],
   resolvers: merge.all([
     {
       JSON: GraphQLJSON,
       JSONObject: GraphQLJSONObject,
       DateTime: GraphQLDateTime
     },
-    dietLogResolvers
+    snowResolvers
   ])
 }

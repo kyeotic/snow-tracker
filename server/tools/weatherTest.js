@@ -7,7 +7,7 @@ const context = wrapContext()
 
 async function main() {
   let { weather } = context
-  let base = await weather.getBase()
+  let base = await weather.getForecast()
   console.log(base)
 }
 

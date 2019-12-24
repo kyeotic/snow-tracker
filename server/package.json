@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "lambda-zipper build -f src -r -o ../build/server.zip",
+    "build": "lambda-zipper build -f src -o ../build/server.zip",
     "tool:parse": "node tools/parseTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/parseTest.js\"",
     "tool:weather": "node tools/weatherTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/weatherTest.js\""
   },

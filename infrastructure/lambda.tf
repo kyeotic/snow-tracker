@@ -10,10 +10,11 @@ resource "aws_lambda_function" "api" {
   source_code_hash = filebase64sha256(var.api_lambda_file)
   tags             = local.tags
 
-  # environment {
-  #   variables = {
-  #   }
-  # }
+  environment {
+    variables = {
+      DOMAIN = local.api_domain
+    }
+  }
 }
 
 resource "aws_iam_role" "lambda_execution" {

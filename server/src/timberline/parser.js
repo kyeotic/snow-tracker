@@ -27,7 +27,7 @@ class TimberlineParser {
       .find('dl dt')
       .map((i, el) => {
         return {
-          level: this[_dom](el)
+          since: this[_dom](el)
             .next()
             .text()
             .trim(),

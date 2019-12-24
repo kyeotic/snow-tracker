@@ -1,54 +1,56 @@
 'use strict'
 const { GraphQLError } = require('graphql')
 
-exports.typeDefs = `
-  extend type Query {
-    summary: {
-      snowfalls: [Snowfall!]!
-      liftStauses: [LiftStatus!]!
-      conditions
+exports.resolvers = {
+  Query: {
+    async snowfalls(parent, {}, context) {
+      const { timberline } = context.app
+      console.log('gql: snowfalls')
+      return timberline.getSnowfall()
+    },
+    async liftStatuses(parent, {}, context) {
+      const { timberline } = context.app
+      console.log('gql: liftStatuses')
+      return timberline.getLiftStatuses()
+    },
+    async forecast(parent, {}, context) {
+      const { weather } = context.app
+      console.log('gql: forecast')
+      return weather.getForecast()
     }
   }
+}
 
-  type conditions {
-    
+exports.typeDefs = `
+  extend type Query {
+    snowfalls: [Snowfall!]!
+    liftStatuses: [LiftStatus!]!
+    forecast: [ForecastPeriod!]!
+  }
+
+  type ForecastPeriod {
+    number: Int!
+    name: String!
+    startTime: DateTime!
+    endTime: DateTime!
+    temperature: Float!
+    temperatureUnit: String!
+    temperatureTrend: String
+    windSpeed: String!
+    windDirection: String!
+    icon: String!
+    shortForecast: String!
+    detailedForecast: String!
   }
 
   type LiftStatus {
-    name: String
-    status: String
-    hours: String
+    name: String!
+    status: String!
+    hours: String!
   }
 
   type Snowfall {
-    since: String
-    depth: Float
+    since: String!
+    depth: Float!
   }
 `
-
-exports.resolvers = {
-  Query: {
-    async dietLogs(parent, { id }, context) {
-      let { dietStore } = context.app
-      console.log('gql: getDietLogs')
-      return dietStore.getAll()
-    }
-  }
-  // DietLogSUBPROP: {
-  //   async subprop(dietlog, args, { token, app }) {
-  //     let {
-  //       stores: { dietlogs: store },
-  //       dietlogsValidation
-  //     } = app
-  //     let namespacedietlog = await store.getNamespacedietlog(
-  //       dietlog.resource.namespace
-  //     )
-  //     let canRead = await dietlogsValidation.canReaddietlog(
-  //       token,
-  //       namespacedietlog,
-  //       dietlog
-  //     )
-  //     return canRead ? dietlog.subprop : null
-  //   }
-  // }
-}
