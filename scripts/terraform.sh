@@ -13,7 +13,6 @@ function terraform_preinit() {
     -backend-config="region=${TF_VAR_region:-us-west-2}" \
     -backend-config="key=${TERRAFORM_KEY}" \
     -backend-config="encrypt=true"
-  
 }
 
 function terraform_init() {
@@ -27,20 +26,20 @@ function terraform_init() {
   terraform_preinit
 }
 
-function terraform_apply () {
+function terraform_cmd () {
   cp "${_dir}/../.env" "${_dir}/../infrastructure/terraform.tfvars"
-  terraform apply -auto-approve
+  terraform $1
   rm "${_dir}/../infrastructure/terraform.tfvars"
+}
+
+function terraform_apply () {
+  terraform_cmd "apply -auto-approve"
 }
 
 function terraform_destroy () {
-  cp "${_dir}/../.env" "${_dir}/../infrastructure/terraform.tfvars"
-  terraform destroy
-  rm "${_dir}/../infrastructure/terraform.tfvars"
+  terraform_cmd "destory"
 }
 
 function terraform_plan () {
-  cp "${_dir}/../.env" "${_dir}/../infrastructure/terraform.tfvars"
-  terraform plan
-  rm "${_dir}/../infrastructure/terraform.tfvars"
+  terraform_cmd "plan"
 }

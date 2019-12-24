@@ -3,6 +3,7 @@
 const { ApolloServer, ForbiddenError } = require('apollo-server-lambda')
 const { promisify } = require('util')
 
+const logger = require('./util/logger')
 const { wrapContext } = require('./context')
 const { typeDefs, resolvers } = require('./schema')
 
@@ -39,4 +40,4 @@ async function handler(event, context) {
   return response
 }
 
-exports.handler = handler
+exports.handler = logger.handler(handler)

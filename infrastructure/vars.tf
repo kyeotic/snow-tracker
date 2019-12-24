@@ -11,5 +11,3 @@ variable SITE_DOMAIN {}
 variable API_DOMAIN {
   default = ""
 }
-variable AIRTABLE_KEY {}
-variable AIRTABLE_DIET_BASE_ID {}

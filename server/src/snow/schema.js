@@ -3,17 +3,26 @@ const { GraphQLError } = require('graphql')
 
 exports.typeDefs = `
   extend type Query {
-    dietLogs: [DietLog!]!
+    summary: {
+      snowfalls: [Snowfall!]!
+      liftStauses: [LiftStatus!]!
+      conditions
+    }
   }
 
-  type DietLog {
-    id: ID!
-    date: DateTime
-    fat: Float
-    weight: Float
-    protein: Float
-    carbs: Float
-    calories: Float
+  type conditions {
+    
+  }
+
+  type LiftStatus {
+    name: String
+    status: String
+    hours: String
+  }
+
+  type Snowfall {
+    since: String
+    depth: Float
   }
 `
 

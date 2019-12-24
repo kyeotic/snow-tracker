@@ -3,4 +3,4 @@
 set -e
 
 _dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-. "${_dir}/../.env"
+source "${_dir}/../.env"

@@ -6,16 +6,14 @@ resource "aws_lambda_function" "api" {
   timeout          = 30
   memory_size      = 512
   role             = aws_iam_role.lambda_execution.arn
-  runtime          = "nodejs10.x"
+  runtime          = "nodejs12.x"
   source_code_hash = filebase64sha256(var.api_lambda_file)
   tags             = local.tags
 
-  environment {
-    variables = {
-      AIRTABLE_KEY          = var.AIRTABLE_KEY
-      AIRTABLE_DIET_BASE_ID = var.AIRTABLE_DIET_BASE_ID
-    }
-  }
+  # environment {
+  #   variables = {
+  #   }
+  # }
 }
 
 resource "aws_iam_role" "lambda_execution" {
