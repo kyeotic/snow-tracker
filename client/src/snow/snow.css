@@ -1,0 +1,148 @@
+.snow-summary-container {
+  display: grid;
+}
+.snow-summary-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.2rem;
+}
+.snow-summary-container h1 small {
+  font-size: 1rem;
+  white-space: nowrap;
+}
+.snow-summary-container h2 {
+  font-size: 1.6rem;
+  margin-bottom: .4rem;
+}
+.snow-summary-timberline, .snow-summary-noaa {
+  color: white;
+  display: grid;
+  grid-template-columns: minmax(200px, 800px);
+  justify-content: center;
+  padding: 1rem;
+
+}
+
+/* Timberline */
+.snow-summary-timberline {
+  background-color: #da934e;
+}
+
+.snow-summary-timberline h1 {
+  align-self: center;
+}
+
+.timberline-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr) )
+}
+
+/* Snowfall */
+.snowfall {
+  margin-bottom: 1rem;
+}
+
+.snowfall-since {
+  color: #ffffff8c;
+}
+
+.snowfall-depth {
+  min-width: 2.2rem;
+  display: inline-block;
+  text-align: right;
+}
+
+/* Lifts */
+
+.lift-statuses li {
+  margin-bottom: .5rem;
+}
+
+.lift-substatus {
+  display: block;
+}
+
+.lift-status {
+  display: inline-block;
+  color: #ffffff8c;
+}
+
+.lift-name {
+  margin-right: .5rem;
+  display: block;
+  color: #6b4723;
+}
+
+.lift-name.open {
+  margin-right: .5rem;
+  display: block;
+  color: #00ff00;
+}
+
+.lift-hours {
+  display: inline-block;
+  color: #ffffff8c;
+}
+
+.lift-status {
+  margin-right: .5rem;
+}
+
+/* NOAA */
+.snow-summary-noaa {
+  padding: 1rem;
+  background-color: #0C5685;
+  color: white;
+}
+
+.forecasts li {
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas: 
+    "day-name forecast"
+    "day-temp forecast"
+    "day-wind forecast"
+    "icon forecast"
+}
+
+.forecast-name {
+  grid-area: day-name;
+}
+.forecast-temp {
+  grid-area: day-temp;
+  color: #ffffff8c;
+}
+
+.forecast-temp {
+  content: " Low";
+  color: #ffffff8c;
+  /* color: blue; */
+}
+.forecast-temp.day {
+  content: " High";
+  /* color: red; */
+}
+.forecast-temp:after {
+  content: " (Low)";
+}
+.forecast-temp.day:after {
+  content: " (High)";
+}
+
+.forecast-wind {
+  grid-area: day-wind;
+  color: #ffffff8c;
+}
+
+.forecast-icon {
+  grid-area: icon;
+}
+
+.forecast-detail {
+  grid-area: forecast;
+  padding-left: .5rem;
+  color: #ffffffc9;
+  align-self: center;
+}

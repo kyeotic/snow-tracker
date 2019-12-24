@@ -1,8 +1,8 @@
 import React from 'react'
-import DietPage from './diet/DietPage'
+import SnowPage from './snow/SnowPage'
 
 function App() {
-  return <DietPage />
+  return <SnowPage />
 }
 
 export default App

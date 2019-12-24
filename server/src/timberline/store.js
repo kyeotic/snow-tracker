@@ -25,6 +25,11 @@ class TimberlineStore {
     return await this[_parser].getSnowfall()
   }
 
+  async getLastUpdatedTime() {
+    await this.getSource()
+    return await this[_parser].getLastUpdatedTime()
+  }
+
   async getSource() {
     // If set, return it
     // If its a promise from a pending run it will be awaited

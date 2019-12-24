@@ -3,15 +3,15 @@ const { GraphQLError } = require('graphql')
 
 exports.resolvers = {
   Query: {
-    async snowfalls(parent, {}, context) {
+    async timberline(parent, {}, context) {
       const { timberline } = context.app
       console.log('gql: snowfalls')
-      return timberline.getSnowfall()
-    },
-    async liftStatuses(parent, {}, context) {
-      const { timberline } = context.app
-      console.log('gql: liftStatuses')
-      return timberline.getLiftStatuses()
+      let [snowfalls, liftStatuses, lastUpdated] = await Promise.all([
+        timberline.getSnowfall(),
+        timberline.getLiftStatuses(),
+        timberline.getLastUpdatedTime()
+      ])
+      return { snowfalls, liftStatuses, lastUpdated }
     },
     async forecast(parent, {}, context) {
       const { weather } = context.app
@@ -23,8 +23,7 @@ exports.resolvers = {
 
 exports.typeDefs = `
   extend type Query {
-    snowfalls: [Snowfall!]!
-    liftStatuses: [LiftStatus!]!
+    timberline: Timberline
     forecast: [ForecastPeriod!]!
   }
 
@@ -33,6 +32,7 @@ exports.typeDefs = `
     name: String!
     startTime: DateTime!
     endTime: DateTime!
+    isDaytime: Boolean
     temperature: Float!
     temperatureUnit: String!
     temperatureTrend: String
@@ -41,6 +41,12 @@ exports.typeDefs = `
     icon: String!
     shortForecast: String!
     detailedForecast: String!
+  }
+
+  type Timberline {
+    lastUpdated: String
+    snowfalls: [Snowfall!]!
+    liftStatuses: [LiftStatus!]!
   }
 
   type LiftStatus {

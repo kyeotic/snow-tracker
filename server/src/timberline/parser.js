@@ -43,6 +43,16 @@ class TimberlineParser {
     this[_logger].debug('conditions', levels)
     return levels
   }
+
+  async getLastUpdatedTime() {
+    let date = this[_dom]('.conditions-panel date')
+    let time = date
+      .siblings('small')
+      .text()
+      .trim()
+    date = date.text().trim()
+    return `${time} ${date}`
+  }
 }
 
 module.exports = {
