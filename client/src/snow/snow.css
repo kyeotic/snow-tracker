@@ -32,13 +32,68 @@
   align-self: center;
 }
 
+
 .timberline-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr) )
+  /* grid-template-columns: repeat(auto-fit, minmax(262px, 1fr)); */
+  grid-template-columns: auto;
+  justify-items: start;
+  grid-template-areas: 
+    "conditions lifts"
+    "snowfall lifts"
+}
+
+@media screen and (max-width: 450px) {
+  .timberline-container {
+    grid-template-areas: 
+      "conditions"
+      "snowfall"
+      "lifts"
+  }
+}
+
+
+/* Conditions */
+
+.conditions {
+  grid-area: conditions;
+  margin-bottom: .5rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  justify-content: start;
+  align-content: start;
+  grid-template-areas: 
+    "temp      icon"
+    "condition icon"
+}
+
+.condition-temp {
+  font-size: 5rem;
+  grid-area: temp;
+}
+
+.condition-temp:after {
+  content: "\00b0";
+  font-size: 3rem;
+  top: -1.5rem;
+  position: relative;
+}
+
+.condition-status {
+  grid-area: condition;
+  color: #ffffff8c;
+}
+
+.conditions i {
+  font-size: 4.5rem;
+  align-self: center;
+  grid-area: icon;
 }
 
 /* Snowfall */
 .snowfall {
+  grid-area: snowfall;
   margin-bottom: 1rem;
 }
 
@@ -53,6 +108,10 @@
 }
 
 /* Lifts */
+
+.lifts {
+  grid-area: lifts;
+}
 
 .lift-statuses li {
   margin-bottom: .5rem;
@@ -104,7 +163,7 @@
     "day-name forecast"
     "day-temp forecast"
     "day-wind forecast"
-    "icon forecast"
+    "icon forecast";
 }
 
 .forecast-name {

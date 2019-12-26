@@ -4,14 +4,14 @@ import config from '../config.js'
 
 const host = urlJoin(config.apiHost, config.gqlEndpoint)
 
-export function useRequest(options) {
+export function useRequest({ query, operationName = null } = {}) {
   const [response, setResponse] = useState(null)
 
   useEffect(() => {
-    request(options)
+    request({ query, operationName })
       .then(setResponse)
       .catch(setResponse)
-  }, [options])
+  }, [query, operationName])
 
   if (response === null) return [null, true]
   if (response && response.message) return [null, false, response]

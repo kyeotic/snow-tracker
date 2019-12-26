@@ -4,6 +4,7 @@ import { PageSpinner } from '../components/index.js'
 import { Link } from '../components/index.js'
 import config from '../config.js'
 import Snowfalls from './Snowfall.js'
+import Condition from './Condition'
 import Lifts from './Lifts.js'
 import Forecasts from './Forecasts.js'
 
@@ -20,6 +21,7 @@ export default function SnowSummary({ summary, isLoading }) {
               <small>({summary.timberline.lastUpdated})</small>
             </h1>
             <div className="timberline-container">
+              <Condition {...summary.timberline.condition} />
               <Snowfalls snowfalls={summary.timberline.snowfalls} />
               <Lifts lifts={summary.timberline.liftStatuses} />
             </div>
