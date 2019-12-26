@@ -1,4 +1,4 @@
-import { request } from '../http/client'
+import { useRequest } from '../http/client'
 
 const summaryQuery = `
 query {
@@ -237,8 +237,7 @@ const testData = {
   ]
 }
 
-export async function getSummary() {
-  let response = await request({ query: summaryQuery })
-  return response.data
-  // return testData
+export function useSummary() {
+  return useRequest({ query: summaryQuery })
+  // return [testData, false]
 }

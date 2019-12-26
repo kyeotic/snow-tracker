@@ -1,7 +1,22 @@
+import { useState, useEffect } from 'react'
 import urlJoin from 'url-join'
 import config from '../config.js'
 
 const host = urlJoin(config.apiHost, config.gqlEndpoint)
+
+export function useRequest(options) {
+  const [response, setResponse] = useState(null)
+
+  useEffect(() => {
+    request(options)
+      .then(setResponse)
+      .catch(setResponse)
+  }, [options])
+
+  if (response === null) return [null, true]
+  if (response && response.message) return [null, false, response]
+  return [response.data, false]
+}
 
 export async function request({ query, operationName = null } = {}) {
   let response = await fetch(host, {
