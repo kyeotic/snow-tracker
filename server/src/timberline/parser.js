@@ -16,7 +16,7 @@ class TimberlineParser {
     let rows = this[_dom]('#lift_status table:first-of-type tbody')
       .find('tr')
       .get()
-      .map(conditionRow(this[_dom]))
+      .map(liftStatusRow(this[_dom]))
     this[_logger].debug('lift statuses', rows)
     return rows
   }
@@ -44,7 +44,7 @@ class TimberlineParser {
     return levels
   }
 
-  async getLastUpdatedTime() {
+  getLastUpdatedTime() {
     let date = this[_dom]('.conditions-panel date')
     let time = date
       .siblings('small')
@@ -53,13 +53,36 @@ class TimberlineParser {
     date = date.text().trim()
     return `${time} ${date}`
   }
+
+  getCondition() {
+    let tempNode = this[_dom]('.temp')
+    let [temperature, condition] = tempNode
+      .text()
+      .trim()
+      .split('\n')
+      .map(s => s.trim())
+    temperature = parseFloat(temperature)
+    console.log('temp', temperature, condition)
+    let iconNode = tempNode.siblings('i')
+    let icons = iconNode
+      .attr('class')
+      .split(/\s/)
+      .filter(s => !!s)
+      .map(s => s.trim())
+    console.log('icons', icons)
+    return {
+      temperature,
+      condition,
+      iconClass: icons.join(' ')
+    }
+  }
 }
 
 module.exports = {
   TimberlineParser
 }
 
-function conditionRow($) {
+function liftStatusRow($) {
   return row => {
     let r = $(row).find('td')
     // console.log(r.html())

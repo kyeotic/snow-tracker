@@ -6,12 +6,18 @@ exports.resolvers = {
     async timberline(parent, {}, context) {
       const { timberline } = context.app
       console.log('gql: snowfalls')
-      let [snowfalls, liftStatuses, lastUpdated] = await Promise.all([
+      let [
+        condition,
+        snowfalls,
+        liftStatuses,
+        lastUpdated
+      ] = await Promise.all([
+        timberline.getCondition(),
         timberline.getSnowfall(),
         timberline.getLiftStatuses(),
         timberline.getLastUpdatedTime()
       ])
-      return { snowfalls, liftStatuses, lastUpdated }
+      return { condition, snowfalls, liftStatuses, lastUpdated }
     },
     async forecast(parent, {}, context) {
       const { weather } = context.app
@@ -47,6 +53,13 @@ exports.typeDefs = `
     lastUpdated: String
     snowfalls: [Snowfall!]!
     liftStatuses: [LiftStatus!]!
+    condition: Condition
+  }
+
+  type Condition {
+    temperature: Float!
+    condition: String
+    iconClass: String
   }
 
   type LiftStatus {

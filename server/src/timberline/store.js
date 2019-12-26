@@ -15,19 +15,24 @@ class TimberlineStore {
     this[_logger] = wrapper(logger)
   }
 
+  async getCondition() {
+    await this.getSource()
+    return this[_parser].getCondition()
+  }
+
   async getLiftStatuses() {
     await this.getSource()
-    return await this[_parser].getLiftStatuses()
+    return this[_parser].getLiftStatuses()
   }
 
   async getSnowfall() {
     await this.getSource()
-    return await this[_parser].getSnowfall()
+    return this[_parser].getSnowfall()
   }
 
   async getLastUpdatedTime() {
     await this.getSource()
-    return await this[_parser].getLastUpdatedTime()
+    return this[_parser].getLastUpdatedTime()
   }
 
   async getSource() {

@@ -7,7 +7,7 @@ const context = wrapContext()
 
 async function main() {
   let { timberline } = context
-  let conditions = await timberline.getLastUpdatedTime()
+  let conditions = await timberline.getCondition()
   // let conditions = await timberline.getLiftStatuses()
   console.log('result', conditions)
 }
