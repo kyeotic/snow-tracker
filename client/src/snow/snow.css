@@ -1,3 +1,11 @@
+:root {
+  --text-color-main:        white;
+  --text-color-subtle:      #ffffff8c;
+  --text-color-body:        #ffffffc9;
+  --timberline-background:  #da934e;
+  --noaa-background:        #0C5685;
+}
+
 .snow-summary-container {
   display: grid;
 }
@@ -25,18 +33,19 @@
 
 /* Timberline */
 .snow-summary-timberline {
-  background-color: #da934e;
+  background-color: var(--timberline-background);
 }
 
 .snow-summary-timberline h1 {
   align-self: center;
 }
 
-
 .timberline-container {
   display: grid;
-  /* grid-template-columns: repeat(auto-fit, minmax(262px, 1fr)); */
-  grid-template-columns: auto;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  grid-row-gap: .5rem;
+  grid-auto-flow: column;
   justify-items: start;
   grid-template-areas: 
     "conditions lifts"
@@ -45,7 +54,8 @@
 
 @media screen and (max-width: 450px) {
   .timberline-container {
-    grid-template-areas: 
+  grid-template-columns: 100%;
+  grid-template-areas: 
       "conditions"
       "snowfall"
       "lifts"
@@ -57,7 +67,6 @@
 
 .conditions {
   grid-area: conditions;
-  margin-bottom: .5rem;
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto;
@@ -82,7 +91,7 @@
 
 .condition-status {
   grid-area: condition;
-  color: #ffffff8c;
+  color: var(--text-color-subtle);
 }
 
 .conditions i {
@@ -98,7 +107,7 @@
 }
 
 .snowfall-since {
-  color: #ffffff8c;
+  color: var(--text-color-subtle);
 }
 
 .snowfall-depth {
@@ -112,7 +121,6 @@
 .lifts {
   grid-area: lifts;
 }
-
 .lift-statuses li {
   margin-bottom: .5rem;
 }
@@ -123,7 +131,7 @@
 
 .lift-status {
   display: inline-block;
-  color: #ffffff8c;
+  color: var(--text-color-subtle);
 }
 
 .lift-name {
@@ -140,7 +148,7 @@
 
 .lift-hours {
   display: inline-block;
-  color: #ffffff8c;
+  color: var(--text-color-subtle);
 }
 
 .lift-status {
@@ -150,7 +158,7 @@
 /* NOAA */
 .snow-summary-noaa {
   padding: 1rem;
-  background-color: #0C5685;
+  background-color: var(--noaa-background);
   color: white;
 }
 
@@ -171,12 +179,12 @@
 }
 .forecast-temp {
   grid-area: day-temp;
-  color: #ffffff8c;
+  color: var(--text-color-subtle);
 }
 
 .forecast-temp {
   content: " Low";
-  color: #ffffff8c;
+  color: var(--text-color-subtle);
   /* color: blue; */
 }
 .forecast-temp.day {
@@ -192,7 +200,7 @@
 
 .forecast-wind {
   grid-area: day-wind;
-  color: #ffffff8c;
+  color: var(--text-color-subtle);
 }
 
 .forecast-icon {
@@ -202,6 +210,6 @@
 .forecast-detail {
   grid-area: forecast;
   padding-left: .5rem;
-  color: #ffffffc9;
+  color: var(--text-color-body);
   align-self: end;
 }
