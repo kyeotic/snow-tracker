@@ -1,4 +1,5 @@
 import { useRequest } from '../http/client'
+import config from '../config'
 
 const summaryQuery = `
 query {
@@ -53,7 +54,11 @@ const testData = {
       { name: 'PUCCI', status: 'open', hours: '9:00am - 9:00pm' },
       { name: 'JEFF FLOOD', status: 'open', hours: '9:00am - 4:00pm' },
       { name: 'STORMIN’ NORMAN', status: 'open', hours: '9:00am - 3:30pm' },
-      { name: 'MOLLY’S', status: 'Waiting for Snow', hours: '9:00am - 3:30pm' },
+      {
+        name: 'MOLLY’S',
+        status: 'Waiting for Snow',
+        hours: '9:00am - 3:30pm'
+      },
       {
         name: 'MAGIC MILE (limited, expert terrain only)',
         status: 'open',
@@ -250,6 +255,6 @@ const testData = {
 }
 
 export function useSummary() {
-  // return useRequest({ query: summaryQuery })
-  return [testData, false]
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return config.isProd ? useRequest({ query: summaryQuery }) : [testData, false]
 }

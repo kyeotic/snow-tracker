@@ -1,4 +1,5 @@
 export default {
+  isProd: window.location.host.includes('kye.dev'),
   apiHost: 'https://api-snow.kye.dev',
   gqlEndpoint: '/v1/graphql',
   timberlineConditionsUrl: 'http://www.timberlinelodge.com/conditions',
