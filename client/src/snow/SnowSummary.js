@@ -17,8 +17,14 @@ export default function SnowSummary({ summary, isLoading }) {
         ) : (
           <>
             <h1>
-              <Link href={config.timberlineConditionsUrl}>Timberline</Link>{' '}
-              <small>({summary.timberline.lastUpdated})</small>
+              Timberline{' '}
+              <small>
+                (
+                <Link href={config.timberlineConditionsUrl}>
+                  {summary.timberline.lastUpdated}
+                </Link>
+                )
+              </small>
             </h1>
             <div className="timberline-container">
               <Condition {...summary.timberline.condition} />
@@ -34,7 +40,10 @@ export default function SnowSummary({ summary, isLoading }) {
         ) : (
           <>
             <h1>
-              <Link href={config.noaaUrl}>NOAA</Link>
+              NOAA
+              <small>
+                (<Link href={config.noaaUrl}>go to site</Link>)
+              </small>
             </h1>
             <Forecasts forecasts={summary.forecast} />
           </>

@@ -10,13 +10,17 @@
   display: grid;
 }
 .snow-summary-container h1 {
-  font-size: 2rem;
+  font-size: 3rem;
   margin-bottom: 1rem;
-  line-height: 1.2rem;
+  line-height: .6em;
+  font-weight: bold;
+  text-align: center;
 }
 .snow-summary-container h1 small {
-  font-size: 1rem;
+  font-size: .8rem;
+  font-weight: normal;
   white-space: nowrap;
+  display: block;
 }
 .snow-summary-container h2 {
   font-size: 1.6rem;
@@ -42,14 +46,17 @@
 
 .timberline-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto;
   grid-template-rows: auto 1fr;
   grid-row-gap: .5rem;
+  grid-column-gap: 4rem;
   grid-auto-flow: column;
+  justify-content: center;
   justify-items: start;
-  grid-template-areas: 
+  align-items: center;
+  grid-template-areas:
     "conditions lifts"
-    "snowfall lifts"
+    "snowfall lifts";
 }
 
 @media screen and (max-width: 450px) {
@@ -62,7 +69,6 @@
   }
 }
 
-
 /* Conditions */
 
 .conditions {
@@ -72,9 +78,14 @@
   grid-template-rows: auto auto;
   justify-content: start;
   align-content: start;
-  grid-template-areas: 
+  grid-template-areas:
+    "title title"
     "temp      icon"
     "condition icon"
+}
+
+.conditions h2 {
+  grid-area: title;
 }
 
 .condition-temp {
@@ -163,22 +174,29 @@
 }
 
 .forecasts li {
-  margin-bottom: 1rem;
   display: grid;
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 5rem 1fr;
+  grid-column-gap: .5rem;
+  padding-bottom: 1rem;
+  margin-bottom: .5rem;
+  border-bottom: 1px solid var(--text-color-subtle);
   grid-template-rows: auto auto;
-  grid-template-areas: 
-    "day-name forecast"
-    "day-temp forecast"
-    "day-wind forecast"
-    "icon forecast";
+  grid-template-areas:
+      "summary forecast"
+}
+
+.forecast-summary {
+  grid-area: summary;
 }
 
 .forecast-name {
-  grid-area: day-name;
+  /* grid-area: day-name; */
+  display: block;
 }
 .forecast-temp {
-  grid-area: day-temp;
+  font-size: .8rem;
+  display: block;
+  /* grid-area: day-temp; */
   color: var(--text-color-subtle);
 }
 
@@ -199,12 +217,15 @@
 }
 
 .forecast-wind {
-  grid-area: day-wind;
+  display: block;
+  font-size: .8rem;
+  /* grid-area: day-wind; */
   color: var(--text-color-subtle);
 }
 
 .forecast-icon {
-  grid-area: icon;
+  display: block;
+  /* grid-area: icon; */
 }
 
 .forecast-detail {

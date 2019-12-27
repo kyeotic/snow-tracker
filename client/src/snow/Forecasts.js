@@ -13,17 +13,19 @@ export default function Forecasts({ forecasts }) {
 function Forecast({ forecast }) {
   return (
     <li>
-      <span className="forecast-name">{forecast.name}</span>
-      <span className={`forecast-temp ${forecast.isDaytime ? 'day' : ''}`}>
-        {forecast.temperature}
-        {forecast.temperatureUnit}
-      </span>
-      <span className="forecast-wind">{forecast.windSpeed}</span>
-      <img
-        className="forecast-icon"
-        src={forecast.icon}
-        alt={forecast.shortForecast}
-      />
+      <div className="forecast-summary">
+        <span className="forecast-name">{forecast.name}</span>
+        <span className={`forecast-temp ${forecast.isDaytime ? 'day' : ''}`}>
+          {forecast.temperature}
+          {forecast.temperatureUnit}
+        </span>
+        <span className="forecast-wind">{forecast.windSpeed}</span>
+        <img
+          className="forecast-icon"
+          src={forecast.icon}
+          alt={forecast.shortForecast}
+        />
+      </div>
       <span className="forecast-detail">{forecast.detailedForecast}</span>
     </li>
   )
