@@ -23,11 +23,11 @@ function Lift({ lift: { name, status, hours } }) {
   }
   return (
     <li>
-      <span className={`lift-name${isOpen ? ' open' : ''}`}>{name}</span>
+      <span className={`tight lift-name${isOpen ? ' open' : ''}`}>{name}</span>
       {subStatus && isOpen && (
-        <span className="lift-substatus">{subStatus}</span>
+        <span className="tight lift-substatus">{subStatus}</span>
       )}
-      <span className="lift-status">{status}</span>
+      <span className="tight lift-status">{status}</span>
       {isOpen && <span className="lift-hours">{hours}</span>}
     </li>
   )

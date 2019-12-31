@@ -1,7 +1,4 @@
 :root {
-  --text-color-main:        white;
-  --text-color-subtle:      #ffffff8c;
-  --text-color-body:        #ffffffc9;
   --timberline-background:  #da934e;
   --noaa-background:        #0C5685;
 }
@@ -10,29 +7,28 @@
   display: grid;
 }
 .snow-summary-container h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  line-height: .6em;
+  /* font-size: 3em; */
+  /* line-height: .6em; */
+  margin-bottom: var(--margin-md);
   font-weight: bold;
   text-align: center;
 }
 .snow-summary-container h1 small {
-  font-size: .8rem;
+  /* font-size: .8rem; */
   font-weight: normal;
   white-space: nowrap;
   display: block;
 }
 .snow-summary-container h2 {
-  font-size: 1.6rem;
-  margin-bottom: .4rem;
+  /* font-size: 1.6rem; */
+  /* margin-bottom: var(--margin-sm); */
 }
 .snow-summary-timberline, .snow-summary-noaa {
   color: white;
   display: grid;
-  grid-template-columns: minmax(200px, 800px);
+  grid-template-columns: minmax(200px, 720px);
   justify-content: center;
-  padding: 1rem;
-
+  padding: 0 var(--margin-md);
 }
 
 /* Timberline */
@@ -48,10 +44,10 @@
   display: grid;
   grid-template-columns: auto auto;
   grid-template-rows: auto 1fr;
-  grid-row-gap: 1rem;
-  grid-column-gap: 4rem;
+  grid-row-gap: var(--margin-md);
+  grid-column-gap: var(--margin-xl);
   grid-auto-flow: column;
-  justify-content: center;
+  justify-content: space-between;
   justify-items: start;
   align-items: start;
   grid-template-areas:
@@ -81,7 +77,7 @@
   grid-template-areas:
     "title title"
     "temp      icon"
-    "condition icon"
+    "condition condition"
 }
 
 .conditions h2 {
@@ -89,14 +85,15 @@
 }
 
 .condition-temp {
-  font-size: 5rem;
+  font-size: 4.125rem;
+  line-height: 4.125rem;
   grid-area: temp;
 }
 
 .condition-temp:after {
   content: "\00b0";
   font-size: 3rem;
-  top: -1.5rem;
+  top: -.75rem;
   position: relative;
 }
 
@@ -106,7 +103,7 @@
 }
 
 .conditions i {
-  font-size: 4.5rem;
+  font-size: 3.75rem;
   align-self: center;
   grid-area: icon;
 }
@@ -198,7 +195,7 @@
   display: block;
 }
 .forecast-temp {
-  font-size: .8rem;
+  /* font-size: .8rem; */
   display: block;
   /* grid-area: day-temp; */
   color: var(--text-color-subtle);
@@ -222,7 +219,7 @@
 
 .forecast-wind {
   display: block;
-  font-size: .8rem;
+  /* font-size: .8rem; */
   /* grid-area: day-wind; */
   color: var(--text-color-subtle);
 }
