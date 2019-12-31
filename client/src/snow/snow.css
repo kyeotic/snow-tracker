@@ -29,7 +29,7 @@
 .snow-summary-timberline, .snow-summary-noaa {
   color: white;
   display: grid;
-  grid-template-columns: minmax(200px, 800px);
+  grid-template-columns: minmax(200px, 720px);
   justify-content: center;
   padding: 1rem;
 
@@ -51,7 +51,7 @@
   grid-row-gap: 1rem;
   grid-column-gap: 4rem;
   grid-auto-flow: column;
-  justify-content: center;
+  justify-content: space-between;
   justify-items: start;
   align-items: start;
   grid-template-areas:
@@ -234,7 +234,7 @@
 
 .forecast-detail {
   grid-area: forecast;
-  line-height: 1.3em;
+  line-height: 1.4em;
   padding-left: .5rem;
   color: var(--text-color-body);
   align-self: end;
