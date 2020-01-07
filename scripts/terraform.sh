@@ -29,7 +29,7 @@ function terraform_init() {
 function terraform_cmd () {
   cp "${_dir}/../.env" "${_dir}/../infrastructure/terraform.tfvars"
   terraform $1
-  # rm "${_dir}/../infrastructure/terraform.tfvars"
+  rm "${_dir}/../infrastructure/terraform.tfvars"
 }
 
 function terraform_apply () {
