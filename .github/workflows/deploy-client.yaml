@@ -32,4 +32,4 @@ jobs:
           envkey_APP_NAMESPACE: 'snow'
           envkey_SITE_DOMAIN: 'snow.kye.dev'
       - name: Deploy
-        run: CI=true && make client
+        run: export CI=true && make client
