@@ -25,13 +25,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
       - name: Make envfile
-        uses: kyeotic/create-envfile@v1
         with:
-          envkey_PROJECT_NAME: 'snow'
-          envkey_TERRAFORM_STATE_BUCKET: 'tyrsius-terraform-state'
-          envkey_TERRAFORM_KEY: 'snow'
-          envkey_APP_NAMESPACE: 'snow'
-          envkey_SITE_DOMAIN: 'snow.kye.dev'
+          env_config: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: $env_config > .env
       - name: Install Terraform
         env:
           TERRAFORM_VERSION: '0.12.18'
