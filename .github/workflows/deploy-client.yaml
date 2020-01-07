@@ -24,7 +24,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1
+        uses: kyeotic/create-envfile@v1
         with:
           envkey_PROJECT_NAME: 'snow'
           envkey_TERRAFORM_STATE_BUCKET: 'tyrsius-terraform-state'
