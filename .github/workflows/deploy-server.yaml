@@ -27,10 +27,10 @@ jobs:
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v1
         with:
-          PROJECT_NAME: 'snow'
-          TERRAFORM_STATE_BUCKET: 'tyrsius-terraform-state'
-          TERRAFORM_KEY: 'snow'
-          APP_NAMESPACE: 'snow'
-          SITE_DOMAIN: 'snow.kye.dev'
+          envkey_PROJECT_NAME: 'snow'
+          envkey_TERRAFORM_STATE_BUCKET: 'tyrsius-terraform-state'
+          envkey_TERRAFORM_KEY: 'snow'
+          envkey_APP_NAMESPACE: 'snow'
+          envkey_SITE_DOMAIN: 'snow.kye.dev'
       - name: Deploy
         run: make server
