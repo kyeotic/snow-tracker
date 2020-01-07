@@ -25,7 +25,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
       - name: Make envfile
-        run: echo "${{ secrets.AWS_SECRET_ACCESS_KEY }}" > .env
+        run: echo "${{ secrets.env_config }}" > .env && cat .env
       - name: Install Terraform
         env:
           TERRAFORM_VERSION: '0.12.18'
