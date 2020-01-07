@@ -32,5 +32,13 @@ jobs:
           envkey_TERRAFORM_KEY: 'snow'
           envkey_APP_NAMESPACE: 'snow'
           envkey_SITE_DOMAIN: 'snow.kye.dev'
+      - name: Install Terraform
+        env:
+          TERRAFORM_VERSION: '0.12.18'
+        run: |
+          tf_version=$TERRAFORM_VERSION
+          wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
+          unzip terraform_"$tf_version"_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
       - name: Deploy
         run: export CI=true && make server
