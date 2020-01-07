@@ -4,6 +4,9 @@ _dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${_dir}/common.sh"
 
 pushd "${_dir}/../client"
+if [ "$CI" = true ] ; then
+    npm ci
+fi
 npm run build
 
 aws s3 sync build s3://${SITE_DOMAIN} && \

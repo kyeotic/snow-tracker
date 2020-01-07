@@ -5,6 +5,9 @@ _dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${_dir}/terraform.sh"
 
 pushd "${_dir}/../server"
+if [ "$CI" = true ] ; then
+    npm ci
+fi
 npm run build
 popd
 
