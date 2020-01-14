@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint \"{src,test}/**/*.js\"",
     "build": "lambda-zipper build -f src -o ../build/server.zip",
-    "tool:parse": "node tools/parseTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/parseTest.js\"",
+    "local": "node tools/localServer.js",
+    "tool:parse": "node tools/skiBowlParseTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/skiBowlParseTest.js\"",
     "tool:weather": "node tools/weatherTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/weatherTest.js\""
   },
   "author": "",
@@ -24,8 +26,13 @@
     "url-join": "^4.0.1"
   },
   "devDependencies": {
+    "@kyeotic/eslint-config": "^1.0.2",
+    "body-parser": "^1.19.0",
     "chokidar-cli": "^2.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^7.0.0",
+    "eslint": "^5.16.0",
+    "express": "^4.17.1",
     "lambda-zipper": "^0.4.1"
   }
 }

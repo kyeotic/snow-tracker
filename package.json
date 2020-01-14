@@ -1,0 +1,28 @@
+{
+  "name": "snow-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "style": "prettier --config package.json  --write \"{client,server}/{src,test}/**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyeotic/snow-tracker.git"
+  },
+  "author": "Tim Kye",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kyeotic/snow-tracker/issues"
+  },
+  "homepage": "https://github.com/kyeotic/snow-tracker#readme",
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 80
+  }
+}

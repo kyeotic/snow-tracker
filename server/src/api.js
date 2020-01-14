@@ -1,6 +1,6 @@
 'use strict'
 
-const { ApolloServer, ForbiddenError } = require('apollo-server-lambda')
+const { ApolloServer } = require('apollo-server-lambda')
 const { promisify } = require('util')
 
 const logger = require('./util/logger')
@@ -30,13 +30,13 @@ const apolloHandler = promisify(
 )
 
 async function handler(event, context) {
-  console.log(
+  logger.info(
     'Received event:',
     JSON.stringify(event, null, 2),
     JSON.stringify(context, null, 2)
   )
   let response = await apolloHandler(event, context)
-  console.debug('Response Ready', JSON.stringify(response))
+  logger.debug('Response Ready', JSON.stringify(response))
   return response
 }
 

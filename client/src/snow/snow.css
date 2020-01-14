@@ -2,7 +2,8 @@
   --text-color-main:        white;
   --text-color-subtle:      #ffffff8c;
   --text-color-body:        #ffffffc9;
-  --timberline-background:  #da934e;
+  --conditions-background:  #da934e;
+  --conditions-highlight:   #0000003d;
   --noaa-background:        #0C5685;
 }
 
@@ -15,6 +16,7 @@
   line-height: .6em;
   font-weight: bold;
   text-align: center;
+  padding-top: .4em;
 }
 .snow-summary-container h1 small {
   font-size: .8rem;
@@ -26,7 +28,7 @@
   font-size: 1.6rem;
   margin-bottom: .4rem;
 }
-.snow-summary-timberline, .snow-summary-noaa {
+.snow-summary-conditions, .snow-summary-noaa {
   color: white;
   display: grid;
   grid-template-columns: minmax(200px, 720px);
@@ -35,16 +37,26 @@
 
 }
 
-/* Timberline */
-.snow-summary-timberline {
-  background-color: var(--timberline-background);
+/* Conditions */
+.snow-summary-conditions {
+  background-color: var(--conditions-background);
 }
 
-.snow-summary-timberline h1 {
+.snow-summary-conditions h1 {
   align-self: center;
 }
 
-.timberline-container {
+.snow-summary-conditions h1.active {
+  background-color: var(--conditions-highlight);;
+}
+
+.conditions-headers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+}
+
+.conditions-container {
   display: grid;
   grid-template-columns: auto auto;
   grid-template-rows: auto 1fr;
@@ -60,7 +72,7 @@
 }
 
 @media screen and (max-width: 450px) {
-  .timberline-container {
+  .conditions-container {
   grid-template-columns: 100%;
   grid-template-areas: 
       "conditions"
@@ -135,6 +147,7 @@
 
 .lifts {
   grid-area: lifts;
+  min-width: 10rem;
 }
 .lift-statuses li {
   margin-bottom: .5rem;

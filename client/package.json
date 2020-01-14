@@ -17,7 +17,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint \"{src,test}/**/*.js\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -33,5 +34,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@kyeotic/eslint-config": "^1.0.2",
+    "eslint": "^5.16.0",
+    "eslint-plugin-jest": "^23.6.0",
+    "eslint-plugin-react": "^7.17.0"
   }
 }

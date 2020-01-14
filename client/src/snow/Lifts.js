@@ -15,7 +15,7 @@ export default function Lifts({ lifts }) {
 
 function Lift({ lift: { name, status, hours } }) {
   const hasSubstatus = name.includes('(')
-  const isOpen = status && status.includes('open')
+  const isOpen = status && status.toLowerCase().includes('open')
   let subStatus
   if (hasSubstatus) {
     subStatus = name.substring(name.indexOf('('))

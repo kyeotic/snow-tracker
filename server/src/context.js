@@ -8,23 +8,34 @@ module.exports = {
   wrapContext
 }
 
+// eslint-disable-next-line no-unused-vars
 function wrapContext(lambdaContext = {}, event) {
   let context = { ...lambdaContext }
   context.logger = logger
 
-  lazy(context, 'timberline', () => {
-    let { TimberlineStore } = require('./timberline/store')
-    return new TimberlineStore({
-      logger,
-      config: config.timberline
-    })
-  })
-
   lazy(context, 'weather', () => {
-    let { WeatherStore } = require('./weather/store')
+    const { WeatherStore } = require('./weather/store')
     return new WeatherStore({
       logger,
       config: config.weather
+    })
+  })
+
+  lazy(context, 'timberline', () => {
+    const { TimberlineStore } = require('./timberline/store')
+    return new TimberlineStore({
+      logger,
+      config: config.timberline,
+      weather: context.weather
+    })
+  })
+
+  lazy(context, 'skiBowl', () => {
+    const { SkiBowlStore } = require('./skiBowl/store')
+    return new SkiBowlStore({
+      logger,
+      config: config.skiBowl,
+      weather: context.weather
     })
   })
 

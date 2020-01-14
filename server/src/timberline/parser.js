@@ -62,14 +62,14 @@ class TimberlineParser {
       .split('\n')
       .map(s => s.trim())
     temperature = parseFloat(temperature)
-    console.log('temp', temperature, condition)
+    this[_logger].info('temp', temperature, condition)
     let iconNode = tempNode.siblings('i')
     let icons = iconNode
       .attr('class')
       .split(/\s/)
       .filter(s => !!s)
       .map(s => s.trim())
-    console.log('icons', icons)
+    this[_logger].info('icons', icons)
     return {
       temperature,
       condition,

@@ -1,35 +1,49 @@
 'use strict'
-const { GraphQLError } = require('graphql')
+// const { GraphQLError } = require('graphql')
 
 exports.resolvers = {
   Query: {
-    async timberline(parent, {}, context) {
-      const { timberline } = context.app
-      console.log('gql: snowfalls')
-      let [
-        condition,
-        snowfalls,
-        liftStatuses,
-        lastUpdated
-      ] = await Promise.all([
-        timberline.getCondition(),
-        timberline.getSnowfall(),
-        timberline.getLiftStatuses(),
-        timberline.getLastUpdatedTime()
-      ])
-      return { condition, snowfalls, liftStatuses, lastUpdated }
+    async timberline(parent, _, context) {
+      const { timberline, logger } = context.app
+      logger.info('gql: Timberline')
+      return getSnowStatus(timberline)
     },
-    async forecast(parent, {}, context) {
-      const { weather } = context.app
-      console.log('gql: forecast')
-      return weather.getForecast()
+    async skiBowl(parent, _, context) {
+      const { skiBowl, logger } = context.app
+      logger.info('gql: Ski Bowl')
+      return getSnowStatus(skiBowl)
     }
   }
 }
 
+async function getSnowStatus(store) {
+  let [
+    condition,
+    snowfalls,
+    liftStatuses,
+    lastUpdated,
+    forecast
+  ] = await Promise.all([
+    store.getCondition(),
+    store.getSnowfall(),
+    store.getLiftStatuses(),
+    store.getLastUpdatedTime(),
+    store.getForecast()
+  ])
+  return { condition, snowfalls, liftStatuses, lastUpdated, forecast }
+}
+
 exports.typeDefs = `
   extend type Query {
-    timberline: Timberline
+    timberline: SnowStatus
+    skiBowl: SnowStatus
+  }
+
+  type SnowStatus {
+    lastUpdated: String
+    snowfalls: [Snowfall!]!
+    liftStatuses: [LiftStatus!]!
+    condition: Condition
     forecast: [ForecastPeriod!]!
   }
 
@@ -47,13 +61,6 @@ exports.typeDefs = `
     icon: String!
     shortForecast: String!
     detailedForecast: String!
-  }
-
-  type Timberline {
-    lastUpdated: String
-    snowfalls: [Snowfall!]!
-    liftStatuses: [LiftStatus!]!
-    condition: Condition
   }
 
   type Condition {

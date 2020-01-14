@@ -2,6 +2,7 @@
 
 const request = require('request-micro')
 const urlJoin = require('url-join')
+const { assert } = require('../util/assert')
 const { wrapper } = require('lambda-logger-node')
 
 const _logger = Symbol('_logger')
@@ -13,14 +14,53 @@ class WeatherStore {
     this[_config] = config
   }
 
-  async getBase() {
-    let base = await fetch(this, { url: '/' })
-    return base
+  async getForecast(point) {
+    assert(point, 'required: "point"')
+    const base = await fetch(this, {
+      url: this.api('points', point, '/forecast')
+    })
+    return base.properties.periods
   }
 
-  async getForecast() {
-    let base = await fetch(this, { url: '/forecast' })
-    return base.properties.periods
+  async getCurrentConditions(point) {
+    assert(point, 'required: "point"')
+    const base = await fetch(this, {
+      url: this.api('points', point, '/forecast/hourly')
+    })
+    let current = base.properties.periods[0]
+    let icon = 'clear'
+    let match = current.icon.match(/land\/(.+?)\/(.+?)[?,]/)
+    if (match) {
+      icon = match.slice(1, 3).join('-')
+    }
+    return {
+      condition: current.shortForecast,
+      temperature: Math.floor(
+        current.temperatureUnit === 'F'
+          ? current.temperature
+          : celsiusToFahrenheit(current.temperature)
+      ),
+      iconClass: `weather-icon wi wi-${icon}`
+    }
+  }
+
+  async getStationConditions(stationId) {
+    assert(stationId, 'required: "stationId"')
+    const base = await fetch(this, {
+      url: this.api('stations', stationId, 'observations/latest')
+    })
+    const condition = base.properties.textDescription
+    return {
+      condition,
+      temperature: Math.floor(
+        celsiusToFahrenheit(base.properties.temperature.value)
+      ),
+      iconClass: `weather-icon wi wi-${condition.toLowerCase()}`
+    }
+  }
+
+  api(...parts) {
+    return urlJoin(this[_config].baseUrl, ...parts)
   }
 }
 
@@ -29,10 +69,8 @@ module.exports = {
 }
 
 async function fetch(store, params) {
-  let url = urlJoin(store[_config].baseUrl, params.url)
-  let response = await request({
+  const response = await request({
     ...params,
-    url,
     headers: {
       Accept: 'application/json',
       'User-Agent': store[_config].userAgent,
@@ -50,4 +88,8 @@ async function fetch(store, params) {
     )
   }
   return JSON.parse(response.data.toString())
+}
+
+function celsiusToFahrenheit(celsius) {
+  return celsius * 1.8 + 32
 }
