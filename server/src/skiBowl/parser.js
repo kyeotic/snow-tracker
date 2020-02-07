@@ -70,6 +70,7 @@ class SkiBowlParser {
       })
     // this[_logger].debug('conditions', levels)
     // { depth, since }
+    if (Number.isNaN(baseDepth)) baseDepth = 0
     return [
       ...newSnow,
       {
@@ -88,7 +89,7 @@ class SkiBowlParser {
       })
       .siblings()
     // console.log('date', date.text())
-    return date.text()
+    return date.text() || 'Unavailable'
   }
 }
 

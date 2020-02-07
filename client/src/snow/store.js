@@ -522,6 +522,6 @@ const testData = {
 
 export function useSummary() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  return config.isProd ? useRequest({ query: summaryQuery }) : [testData, false]
-  // return useRequest({ query: summaryQuery })
+  // return config.isProd ? useRequest({ query: summaryQuery }) : [testData, false]
+  return useRequest({ query: summaryQuery })
 }
