@@ -38,7 +38,12 @@ class ConditionsStore {
   }
 
   async getForecast() {
-    return this[_weather].getForecast(this[_config].weather.point)
+    try {
+      return await this[_weather].getForecast(this[_config].weather.point)
+    } catch (e) {
+      this[_logger].error('error getting forecast', e.message, e.stack)
+      return null
+    }
   }
 
   async getStationConditions() {
@@ -47,7 +52,14 @@ class ConditionsStore {
   }
 
   async getCurrentConditions() {
-    return this[_weather].getCurrentConditions(this[_config].weather.point)
+    try {
+      return await this[_weather].getCurrentConditions(
+        this[_config].weather.point
+      )
+    } catch (e) {
+      this[_logger].error('error getting conditions', e.message, e.stack)
+      return null
+    }
   }
 
   async getSource() {

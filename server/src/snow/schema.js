@@ -44,7 +44,7 @@ exports.typeDefs = `
     snowfalls: [Snowfall!]!
     liftStatuses: [LiftStatus!]!
     condition: Condition
-    forecast: [ForecastPeriod!]!
+    forecast: [ForecastPeriod!]
   }
 
   type ForecastPeriod {

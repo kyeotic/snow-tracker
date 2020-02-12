@@ -12,6 +12,7 @@ module.exports = {
 function wrapContext(lambdaContext = {}, event) {
   let context = { ...lambdaContext }
   context.logger = logger
+  context.config = config
 
   lazy(context, 'weather', () => {
     const { WeatherStore } = require('./weather/store')

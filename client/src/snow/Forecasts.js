@@ -1,6 +1,13 @@
 import React from 'react'
 
 export default function Forecasts({ forecasts }) {
+  if (!forecasts) {
+    return (
+      <ul className="forecasts">
+        <span>Error retrieving forecasts</span>
+      </ul>
+    )
+  }
   return (
     <ul className="forecasts">
       {forecasts.map(f => (

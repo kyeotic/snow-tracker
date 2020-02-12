@@ -8,7 +8,7 @@ const context = wrapContext()
 
 async function main() {
   let { weather } = context
-  let base = await weather.getForecast()
+  let base = await weather.getForecast(context.config.timberline.weather.point)
   console.log(base)
 }
 
