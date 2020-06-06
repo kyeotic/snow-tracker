@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-lambda": "^2.9.14",
+    "apollo-server-lambda": "^2.14.2",
     "cheerio": "^1.0.0-rc.3",
     "dateformat": "^3.0.3",
     "deepmerge": "^4.2.2",
