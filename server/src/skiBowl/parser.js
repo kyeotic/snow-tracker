@@ -13,7 +13,7 @@ class SkiBowlParser {
   }
 
   getLiftStatuses() {
-    let rows = this[_dom]('#onpageLiftStatus tbody:first-of-type')
+    let rows = this[_dom]('#intro #liststatuses')
       .find('tr')
       .get()
       .map(liftStatusRow(this[_dom]))
@@ -24,9 +24,9 @@ class SkiBowlParser {
   }
 
   getSnowfall() {
-    let conditions = this[_dom]('.currentConditions tbody:first-of-type')
+    let conditions = this[_dom]('#liststatuses')
     let baseDepth = conditions
-      .find('td.label')
+      .find('td')
       .filter((i, panel) => {
         let p = this[_dom](panel)
         return p.html().includes('Snow Depth')
@@ -40,7 +40,7 @@ class SkiBowlParser {
     )
 
     let newSnow = conditions
-      .find('td.label')
+      .find('td')
       .filter((i, panel) => {
         // console.log('panel', Object.keys(panel))
         let p = this[_dom](panel)
@@ -81,8 +81,8 @@ class SkiBowlParser {
   }
 
   getLastUpdatedTime() {
-    let date = this[_dom]('.currentConditions tbody:first-of-type')
-      .find('td.label')
+    let date = this[_dom]('#liststatuses')
+      .find('td')
       .filter((i, panel) => {
         let p = this[_dom](panel)
         return p.html().includes('Last Updated')
@@ -99,9 +99,14 @@ module.exports = {
 
 function liftStatusRow($) {
   return row => {
+    row = $(row)
     let r = $(row).find('td')
-    // console.log(r.html())
+    // console.log('row', .html())
     let hours = r
+      .eq(2)
+      .text()
+      .trim()
+    let status = r
       .eq(1)
       .text()
       .trim()
@@ -112,7 +117,7 @@ function liftStatusRow($) {
         .replace(':', '')
         .trim(),
       hours,
-      status: hours.toLowerCase().includes('m-') ? 'Open' : 'Closed'
+      status //: hours.toLowerCase().includes('m-') ? 'Open' : 'Closed'
     }
   }
 }

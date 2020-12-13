@@ -8,13 +8,15 @@ const _logger = Symbol('_logger')
 const _parser = Symbol('_parser')
 const _parserFactory = Symbol('_parserFactory')
 const _weather = Symbol('_weather')
+const _headers = Symbol('_headers')
 
 class ConditionsStore {
-  constructor({ config, logger, weather, parserFactory }) {
+  constructor({ config, logger, weather, parserFactory, headers }) {
     this[_config] = config
     this[_logger] = wrapper(logger)
     this[_parserFactory] = parserFactory
     this[_weather] = weather
+    this[_headers] = headers
   }
 
   async getCondition() {
@@ -82,7 +84,10 @@ module.exports = {
 }
 
 async function loadSource(store) {
-  let response = await request({ url: store[_config].conditionsUrl })
+  let response = await request({
+    headers: store[_headers],
+    url: store[_config].conditionsUrl
+  })
   if (request.isErrorStatus(response)) {
     store[_logger].error(
       'Conditions Error',

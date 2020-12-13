@@ -12,7 +12,8 @@ module.exports = {
     }
   },
   skiBowl: {
-    conditionsUrl: 'http://www.skibowl.com/winter/mt-hood-weather-conditions',
+    conditionsUrl:
+      'https://skibowl.com/news-events/conditions-and-lift-status.html',
     weather: {
       point: '45.31,-121.77',
       station: 'ODT75'

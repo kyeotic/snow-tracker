@@ -7,6 +7,10 @@ class SkiBowlStore extends ConditionsStore {
   constructor(props) {
     super({
       ...props,
+      headers: {
+        'User-Agent': 'PostmanRuntime/7.21.0',
+        Host: 'skibowl.com'
+      },
       parserFactory: (...props) => new SkiBowlParser(...props)
     })
   }

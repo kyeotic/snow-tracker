@@ -27,6 +27,7 @@ class WeatherStore {
     const base = await fetch(this, {
       url: this.api('points', point, '/forecast/hourly')
     })
+    // console.log('base', base)
     let current = base.properties.periods[0]
     let icon = 'clear'
     let match = current.icon.match(/land\/(.+?)\/(.+?)[?,]/)
