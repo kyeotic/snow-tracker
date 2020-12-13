@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import { Link, PageSpinner } from '../components/index.js'
 import config from '../config.js'
 import Snowfalls from './Snowfall.js'
-import Condition from './Condition'
+import Condition from './Condition.js'
 import Lifts from './Lifts.js'
 import Forecasts from './Forecasts.js'
 
 export default function SnowSummary({ summary, isLoading }) {
   let [selected, setSelected] = useState('timberline')
+  const selectedSummary = summary?.[selected] || {}
   return (
     <div className="snow-summary-container">
       <section className="snow-summary-conditions">
@@ -38,16 +39,16 @@ export default function SnowSummary({ summary, isLoading }) {
                 <small>
                   (
                   <Link href={config.skiBowl.conditionsUrl}>
-                    {summary.skiBowl.lastUpdated}
+                    {summary.skiBowl?.lastUpdated || 'Error Updating'}
                   </Link>
                   )
                 </small>
               </h1>
             </div>
             <div className="conditions-container">
-              <Condition {...summary[selected].condition} />
-              <Snowfalls snowfalls={summary[selected].snowfalls} />
-              <Lifts lifts={summary[selected].liftStatuses} />
+              <Condition {...selectedSummary.condition} />
+              <Snowfalls snowfalls={selectedSummary.snowfalls} />
+              <Lifts lifts={selectedSummary.liftStatuses} />
             </div>
           </>
         )}
@@ -63,7 +64,7 @@ export default function SnowSummary({ summary, isLoading }) {
                 (<Link href={config[selected].noaaUrl}>go to site</Link>)
               </small>
             </h1>
-            <Forecasts forecasts={summary[selected].forecast} />
+            <Forecasts forecasts={selectedSummary.forecast} />
           </>
         )}
       </section>

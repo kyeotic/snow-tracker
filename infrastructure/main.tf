@@ -7,7 +7,13 @@ data "aws_caller_identity" "current" {}
 
 terraform {
   backend "s3" {}
-  required_version = ">= 0.12"
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      aws = ">= 3.0.0"
+    }
+  }
+  required_version = ">= 0.13"
 }
 
 locals {

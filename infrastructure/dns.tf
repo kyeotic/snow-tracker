@@ -8,7 +8,7 @@ provider "aws" {
 }
 
 module "cert" {
-  source = "github.com/azavea/terraform-aws-acm-certificate?ref=2.0.0"
+  source = "github.com/azavea/terraform-aws-acm-certificate?ref=3.0.0"
 
   providers = {
     aws.acm_account     = aws.certs

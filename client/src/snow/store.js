@@ -1,5 +1,6 @@
-import { useRequest } from '../http/client'
-import config from '../config'
+/* eslint-disable no-unused-vars */
+import { useRequest } from '../http/client.js'
+import config from '../config.js'
 
 const summaryQuery = `
 query {
@@ -521,7 +522,6 @@ const testData = {
 }
 
 export function useSummary() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return config.isProd ? useRequest({ query: summaryQuery }) : [testData, false]
-  // return useRequest({ query: summaryQuery })
+  // return config.isProd ? useRequest({ query: summaryQuery }) : [testData, false]
+  return useRequest({ query: summaryQuery })
 }

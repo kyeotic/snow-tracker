@@ -34,6 +34,7 @@ export async function request({ query, operationName = null } = {}) {
     try {
       let body = await response.json()
       error = new Error(JSON.parse(body).message || error)
+      // eslint-disable-next-line no-empty
     } catch (e) {}
     throw new Error(error)
   }

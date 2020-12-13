@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 const isProd = window.location.host.includes('kye.dev')
 
 export default {

@@ -8,7 +8,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-loading-io": "^2.2.0",
-    "react-scripts": "3.0.0",
+    "react-scripts": "^4.0.1",
     "recharts": "^1.5.0",
     "redbox-react": "^1.6.0",
     "url-join": "^4.0.0"
@@ -18,7 +18,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint \"{src,test}/**/*.js\""
+    "lint": "eslint \"{src,test}/**/*.js\" --fix"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -36,9 +36,6 @@
     ]
   },
   "devDependencies": {
-    "@kyeotic/eslint-config": "^1.0.2",
-    "eslint": "^5.16.0",
-    "eslint-plugin-jest": "^23.6.0",
-    "eslint-plugin-react": "^7.17.0"
+    "@kyeotic/eslint-config": "^2.0.1"
   }
 }

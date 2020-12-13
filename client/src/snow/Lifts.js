@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Lifts({ lifts }) {
+export default function Lifts({ lifts = [] }) {
   return (
     <div className="lifts">
       <h2>Lifts</h2>
@@ -13,7 +13,7 @@ export default function Lifts({ lifts }) {
   )
 }
 
-function Lift({ lift: { name, status, hours } }) {
+function Lift({ lift: { name, status, hours } = {} }) {
   const hasSubstatus = name.includes('(')
   const isOpen = status && status.toLowerCase().includes('open')
   let subStatus

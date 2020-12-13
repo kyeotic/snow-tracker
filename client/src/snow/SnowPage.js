@@ -1,9 +1,9 @@
 import React from 'react'
-import { useSummary } from './store'
+import { useSummary } from './store.js'
 import RedBox from 'redbox-react'
 
 import './snow.css'
-import SnowSummary from './SnowSummary'
+import SnowSummary from './SnowSummary.js'
 
 export default function SnowPage() {
   const [summary, isLoading, summaryError] = useSummary()

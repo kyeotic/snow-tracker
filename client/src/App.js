@@ -1,5 +1,5 @@
 import React from 'react'
-import SnowPage from './snow/SnowPage'
+import SnowPage from './snow/SnowPage.js'
 
 function App() {
   return <SnowPage />
