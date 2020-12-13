@@ -9,6 +9,7 @@
 
 .snow-summary-container {
   display: grid;
+  min-height: 100vh;
 }
 .snow-summary-container h1 {
   font-size: 3rem;
