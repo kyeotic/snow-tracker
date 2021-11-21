@@ -8,7 +8,7 @@ import Lifts from './Lifts.js'
 import Forecasts from './Forecasts.js'
 
 export default function SnowSummary({ summary, isLoading }) {
-  let [selected, setSelected] = useState('timberline')
+  let [selected, setSelected] = useState('meadows')
   const selectedSummary = summary?.[selected] || {}
   return (
     <div className="snow-summary-container">
@@ -18,6 +18,19 @@ export default function SnowSummary({ summary, isLoading }) {
         ) : (
           <>
             <div className="conditions-headers">
+              <h1
+                onClick={() => setSelected('meadows')}
+                className={`${selected === 'meadows' ? 'active' : ''}`}
+              >
+                Meadows{' '}
+                <small>
+                  (
+                  <Link href={config.meadows.conditionsUrl}>
+                    {summary.meadows.lastUpdated}
+                  </Link>
+                  )
+                </small>
+              </h1>
               <h1
                 onClick={() => setSelected('timberline')}
                 className={`${selected === 'timberline' ? 'active' : ''}`}

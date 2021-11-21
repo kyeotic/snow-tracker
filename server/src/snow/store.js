@@ -1,14 +1,15 @@
 import request from 'request-micro'
 import { wrapper } from 'lambda-logger-node'
 
-const _config = Symbol('_config')
-const _logger = Symbol('_logger')
-const _parser = Symbol('_parser')
-const _parserFactory = Symbol('_parserFactory')
-const _weather = Symbol('_weather')
-const _headers = Symbol('_headers')
+export const _config = Symbol('_config')
+export const _logger = Symbol('_logger')
+export const _parser = Symbol('_parser')
+export const _weather = Symbol('_weather')
 
-class ConditionsStore {
+export const _parserFactory = Symbol('_parserFactory')
+export const _headers = Symbol('_headers')
+
+export class ConditionsStore {
   constructor({ config, logger, weather, parserFactory, headers }) {
     this[_config] = config
     this[_logger] = wrapper(logger)
@@ -72,17 +73,6 @@ class ConditionsStore {
     this[_parser] = await this[_parser]
   }
 }
-
-const exported = {
-  ConditionsStore,
-  _config,
-  _logger,
-  _parser,
-  _weather
-}
-
-export default exported
-export { ConditionsStore, _config, _logger, _parser, _weather }
 
 async function loadSource(store) {
   let response = await request({

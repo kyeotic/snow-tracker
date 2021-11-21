@@ -4,102 +4,113 @@ import { wrapper } from 'lambda-logger-node'
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
 
-class SkiBowlParser {
+export class MeadowsParser {
   constructor({ html, logger }) {
     this[_logger] = wrapper(logger)
     this[_dom] = cheerio.load(html)
   }
 
   getLiftStatuses() {
-    let rows = this[_dom]('#intro #liststatuses')
+    let rows = this[_dom]('#liftGrid tbody')
       .find('tr')
       .get()
       .map(liftStatusRow(this[_dom]))
-      .filter((r) => r.name.toLowerCase().includes('chair'))
-      .map((r) => ({ ...r, name: r.name.replace(/\s?Chair/i, '') }))
     this[_logger].debug('lift statuses', rows)
     return rows
   }
 
   getSnowfall() {
-    let conditions = this[_dom]('#liststatuses')
-    let baseDepth = conditions
-      .find('td')
-      .filter((i, panel) => {
-        let p = this[_dom](panel)
-        return p.html().includes('Snow Depth')
-      })
-      .first()
-      .siblings()
-      .text()
-    // Base Deptyh is a range, just get the low end
-    baseDepth = parseFloat(
-      baseDepth.substring(0, baseDepth.indexOf('"')).trim()
+    const baseNode = this[_dom]('.snowdepth-base')
+    let baseDepth = parseFloat(
+      baseNode
+        .find('.reading depth')
+        .first()
+        .attr('data-depth')
     )
+    baseDepth = Number.isNaN(baseDepth) ? 0 : baseDepth
 
-    let newSnow = conditions
-      .find('td')
-      .filter((i, panel) => {
-        // console.log('panel', Object.keys(panel))
-        let p = this[_dom](panel)
-        return p.html().includes('New Snow')
-      })
-      .parent()
-      .get()
-      .map((el) => {
-        let row = this[_dom](el)
-        let since = row.find('td').first().text().trim()
-        since = since.match(/\d{2}/)[0]
+    let levels = this[_dom]('.conditions-snowfall')
+      .find('dl')
+      .map((i, el) => {
         return {
-          since: `Last ${since} hrs`,
+          since: this[_dom](el)
+            .find('.metric')
+            .text()
+            .trim(),
           depth: parseFloat(
-            row.find('td').last().text().trim().replace('"', '')
-          ),
+            this[_dom](el)
+              .find('.reading.depth')
+              .first()
+              .attr('data-depth')
+          )
         }
       })
-    // this[_logger].debug('conditions', levels)
-    // { depth, since }
-    if (Number.isNaN(baseDepth)) baseDepth = 0
-    return [
-      ...newSnow,
-      {
-        since: 'Base Depth',
-        depth: baseDepth,
-      },
-    ]
+      .get()
+    this[_logger].debug('conditions', levels)
+    return [{ since: 'Base Depth', depth: baseDepth }, ...levels]
   }
 
   getLastUpdatedTime() {
-    let date = this[_dom]('#liststatuses')
-      .find('td')
-      .filter((i, panel) => {
-        let p = this[_dom](panel)
-        return p.html().includes('Last Updated')
-      })
-      .siblings()
+    let date = this[_dom]('.conditions-info.lift-operations')
+      .find('p')
+      .first()
+      .text()
+      .replace(/^for /, '')
     // console.log('date', date.text())
-    return date.text() || 'Unavailable'
+    return date || 'Unavailable'
+  }
+
+  getCondition() {
+    const conditions = this[_dom](
+      '.conditions-glance-widget.conditions-current'
+    )
+    const temperature = parseFloat(
+      conditions
+        .find('.reading.temperature')
+        .first()
+        .attr('data-temperature')
+    )
+    const condition = conditions
+      .find('.reading.conditions')
+      .first()
+      .text()
+      .trim()
+    const conditionIcon = conditions
+      .find('.reading.conditions')
+      .first()
+      .attr('data-conditions')
+    return {
+      temperature,
+      condition,
+      iconClass: `weather-icon wi wi-day-${conditionIcon}`
+    }
   }
 }
 
-const exported = {
-  SkiBowlParser,
+function liftStatusRow($) {
+  return row => {
+    let r = $(row).find('td')
+    // console.log(r.html())
+    return {
+      name: r
+        .eq(1)
+        .text()
+        .trim(),
+      status: r
+        .eq(0)
+        .text()
+        .trim(),
+      hours: r
+        .eq(2)
+        .text()
+        .trim()
+    }
+  }
 }
 
-export default exported
-export { SkiBowlParser }
-
-function liftStatusRow($) {
-  return (row) => {
-    row = $(row)
-    let r = $(row).find('td')
-    // console.log('row', .html())
-    let hours = r.eq(2).text().trim()
-    let status = r.eq(1).text().trim()
-    return {
-      name: r.eq(0).text().replace(':', '').trim(),
-      hours,
-      status, //: hours.toLowerCase().includes('m-') ? 'Open' : 'Closed'
-    }
+function depthFilter($) {
+  return (i, panel) => {
+    let p = $(panel)
+    return p.html().includes('Base depth')
   }
 }

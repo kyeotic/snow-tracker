@@ -1,6 +1,7 @@
-process.env.TEST = true
-require('dotenv').config()
-const { wrapContext } = require('../src/context')
+import { wrapContext } from '../src/context.js'
+import dotenv from 'dotenv'
+dotenv.config()
+
 const context = wrapContext()
 
 async function main() {

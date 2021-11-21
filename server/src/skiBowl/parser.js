@@ -4,7 +4,7 @@ import { wrapper } from 'lambda-logger-node'
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
 
-class SkiBowlParser {
+export class SkiBowlParser {
   constructor({ html, logger }) {
     this[_logger] = wrapper(logger)
     this[_dom] = cheerio.load(html)
@@ -92,13 +92,6 @@ class SkiBowlParser {
     return date.text() || 'Unavailable'
   }
 }
-
-const exported = {
-  SkiBowlParser
-}
-
-export default exported
-export { SkiBowlParser }
 
 function liftStatusRow($) {
   return row => {

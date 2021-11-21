@@ -7,8 +7,8 @@
     "lint": "eslint \"{src,test}/**/*.js\"",
     "build": "lambda-zipper build -f src -o ../build/server.zip",
     "local": "TEST=true node tools/localServer.js",
-    "tool:parse": "node tools/skiBowlParseTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/skiBowlParseTest.js\"",
-    "tool:weather": "node tools/weatherTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/weatherTest.js\""
+    "tool:parse": "FILE=meadowsParseTest && TEST=true node tools/$FILE.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && TEST=true node tools/$FILE.js\"",
+    "tool:weather": "TEST=true node tools/weatherTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/weatherTest.js\""
   },
   "type": "module",
   "author": "",
@@ -16,7 +16,6 @@
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
     "cheerio": "^1.0.0-rc.3",
-    "cjs2esm": "^2.0.2",
     "dateformat": "^3.0.3",
     "define-lazy-prop": "^2.0.0",
     "graphql": "^16.0.1",
@@ -37,9 +36,9 @@
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "eslint": "^8.3.0",
-    "eslint-plugin-import": "latest",
+    "eslint-plugin-import": "^2.25.3",
     "express": "^4.17.1",
-    "lambda-zipper": "latest"
+    "lambda-zipper": "^1.0.0"
   },
   "packageManager": "yarn@3.1.0"
 }

@@ -2,7 +2,7 @@
 resource "aws_lambda_function" "api" {
   filename         = var.api_lambda_file
   function_name    = local.api_lambda_name
-  handler          = "api.handler"
+  handler          = "lambda.handler"
   timeout          = 30
   memory_size      = 512
   role             = aws_iam_role.lambda_execution.arn

@@ -11,6 +11,11 @@ export const resolvers = {
       const { skiBowl, logger } = context.app
       logger.info('gql: Ski Bowl')
       return getSnowStatus(skiBowl)
+    },
+    async meadows(parent, _, context) {
+      const { meadows, logger } = context.app
+      logger.info('gql: Ski Bowl')
+      return getSnowStatus(meadows)
     }
   }
 }
@@ -43,6 +48,7 @@ export const typeDefs = `
   extend type Query {
     timberline: SnowStatus
     skiBowl: SnowStatus
+    meadows: SnowStatus
   }
 
   type SnowStatus {
