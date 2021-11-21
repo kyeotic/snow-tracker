@@ -34,4 +34,4 @@ jobs:
           unzip terraform_"$tf_version"_linux_amd64.zip
           sudo mv terraform /usr/local/bin/
       - name: Deploy
-        run: export CI=true && make client
+        run: export CI=true && ./scripts/client.sh
