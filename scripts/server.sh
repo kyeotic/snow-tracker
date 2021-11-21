@@ -6,9 +6,9 @@ _dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 pushd "${_dir}/../server"
 if [ "$CI" = true ] ; then
-    npm ci
+    yarn install
 fi
-npm run build
+yarn run build
 popd
 
 pushd "${_dir}/../infrastructure"
