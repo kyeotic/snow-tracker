@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "style": "prettier --config package.json  --write \"{client,server}/{src,test}/**/*.js\""
+    "style": "prettier --config package.json  --write \"{client,server}/{src,test}/**/*.js\"",
+    "deploy": "npm run deploy:server && npm run deploy:client",
+    "deploy:server": "./scripts/server.sh",
+    "deploy:client": "./scripts/client.sh"
   },
   "repository": {
     "type": "git",

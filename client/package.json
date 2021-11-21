@@ -37,5 +37,6 @@
   },
   "devDependencies": {
     "@kyeotic/eslint-config": "^2.0.1"
-  }
+  },
+  "packageManager": "yarn@3.1.0"
 }
