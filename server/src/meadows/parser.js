@@ -1,7 +1,5 @@
-'use strict'
-
-const cheerio = require('cheerio')
-const { wrapper } = require('lambda-logger-node')
+import cheerio from 'cheerio'
+import { wrapper } from 'lambda-logger-node'
 
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
@@ -17,8 +15,8 @@ class SkiBowlParser {
       .find('tr')
       .get()
       .map(liftStatusRow(this[_dom]))
-      .filter(r => r.name.toLowerCase().includes('chair'))
-      .map(r => ({ ...r, name: r.name.replace(/\s?Chair/i, '') }))
+      .filter((r) => r.name.toLowerCase().includes('chair'))
+      .map((r) => ({ ...r, name: r.name.replace(/\s?Chair/i, '') }))
     this[_logger].debug('lift statuses', rows)
     return rows
   }
@@ -48,24 +46,15 @@ class SkiBowlParser {
       })
       .parent()
       .get()
-      .map(el => {
+      .map((el) => {
         let row = this[_dom](el)
-        let since = row
-          .find('td')
-          .first()
-          .text()
-          .trim()
+        let since = row.find('td').first().text().trim()
         since = since.match(/\d{2}/)[0]
         return {
           since: `Last ${since} hrs`,
           depth: parseFloat(
-            row
-              .find('td')
-              .last()
-              .text()
-              .trim()
-              .replace('"', '')
-          )
+            row.find('td').last().text().trim().replace('"', '')
+          ),
         }
       })
     // this[_logger].debug('conditions', levels)
@@ -75,8 +64,8 @@ class SkiBowlParser {
       ...newSnow,
       {
         since: 'Base Depth',
-        depth: baseDepth
-      }
+        depth: baseDepth,
+      },
     ]
   }
 
@@ -93,31 +82,24 @@ class SkiBowlParser {
   }
 }
 
-module.exports = {
-  SkiBowlParser
+const exported = {
+  SkiBowlParser,
 }
 
+export default exported
+export { SkiBowlParser }
+
 function liftStatusRow($) {
-  return row => {
+  return (row) => {
     row = $(row)
     let r = $(row).find('td')
     // console.log('row', .html())
-    let hours = r
-      .eq(2)
-      .text()
-      .trim()
-    let status = r
-      .eq(1)
-      .text()
-      .trim()
+    let hours = r.eq(2).text().trim()
+    let status = r.eq(1).text().trim()
     return {
-      name: r
-        .eq(0)
-        .text()
-        .replace(':', '')
-        .trim(),
+      name: r.eq(0).text().replace(':', '').trim(),
       hours,
-      status //: hours.toLowerCase().includes('m-') ? 'Open' : 'Closed'
+      status, //: hours.toLowerCase().includes('m-') ? 'Open' : 'Closed'
     }
   }
 }

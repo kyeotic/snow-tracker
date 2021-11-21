@@ -1,5 +1,3 @@
-'use strict'
-
 process.env.TEST = true
 require('dotenv').config()
 const { wrapContext } = require('../src/context')

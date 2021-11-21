@@ -1,7 +1,5 @@
-'use strict'
-
-const cheerio = require('cheerio')
-const { wrapper } = require('lambda-logger-node')
+import cheerio from 'cheerio'
+import { wrapper } from 'lambda-logger-node'
 
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
@@ -27,16 +25,8 @@ class TimberlineParser {
       .find('dl dt')
       .map((i, el) => {
         return {
-          since: this[_dom](el)
-            .next()
-            .text()
-            .trim(),
-          depth: parseFloat(
-            this[_dom](el)
-              .text()
-              .trim()
-              .replace('"', '')
-          )
+          since: this[_dom](el).next().text().trim(),
+          depth: parseFloat(this[_dom](el).text().trim().replace('"', '')),
         }
       })
       .get()
@@ -46,10 +36,7 @@ class TimberlineParser {
 
   getLastUpdatedTime() {
     let date = this[_dom]('.conditions-panel date')
-    let time = date
-      .siblings('small')
-      .text()
-      .trim()
+    let time = date.siblings('small').text().trim()
     date = date.text().trim()
     return `${time} ${date}`
   }
@@ -60,47 +47,39 @@ class TimberlineParser {
       .text()
       .trim()
       .split('\n')
-      .map(s => s.trim())
+      .map((s) => s.trim())
     temperature = parseFloat(temperature)
     this[_logger].info('temp', temperature, condition)
     let iconNode = tempNode.siblings('i')
     let icons = iconNode
       .attr('class')
       .split(/\s/)
-      .filter(s => !!s)
-      .map(s => s.trim())
+      .filter((s) => !!s)
+      .map((s) => s.trim())
     this[_logger].info('icons', icons)
     return {
       temperature,
       condition,
-      iconClass: icons.join(' ')
+      iconClass: icons.join(' '),
     }
   }
 }
 
-module.exports = {
-  TimberlineParser
+const exported = {
+  TimberlineParser,
 }
 
+export default exported
+export { TimberlineParser }
+
 function liftStatusRow($) {
-  return row => {
+  return (row) => {
     let r = $(row).find('td')
     // console.log(r.html())
     return {
-      name: r
-        .eq(0)
-        .text()
-        .trim(),
-      status: r
-        .eq(1)
-        .find('span')
-        .eq(0)
-        .text()
-        .trim(),
-      hours: r
-        .eq(2)
-        .text()
-        .trim()
+      name: r.eq(0).text().trim(),
+      status: r.eq(1).find('span').eq(0).text().trim(),
+      hours: r.eq(2).text().trim(),
     }
   }
 }

@@ -1,43 +1,69 @@
-'use strict'
+import { graphql } from 'graphql'
+import { Router } from 'lambda-router'
 
-const { ApolloServer } = require('apollo-server-lambda')
-const { promisify } = require('util')
+import logger from './util/logger.js'
+import { wrapContext } from './context.js'
+import { schema } from './schema.js'
 
-const logger = require('./util/logger')
-const { wrapContext } = require('./context')
-const { typeDefs, resolvers } = require('./schema')
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ event, context }) => {
-    return {
-      event,
-      token: event.token,
-      headers: event.headers,
-      app: wrapContext(context, event)
-    }
-  }
+const includeErrorStack = true
+const router = Router({
+  logger,
+  trimTrailingSlash: true,
+  assumeJson: true,
+  includeErrorStack
 })
 
-const apolloHandler = promisify(
-  server.createHandler({
-    cors: {
-      origin: '*',
-      credentials: true
-    }
-  })
-)
+const graphQlHandler = makeGraphQlHandler(schema)
 
-async function handler(event, context) {
-  logger.info(
-    'Received event:',
-    JSON.stringify(event, null, 2),
-    JSON.stringify(context, null, 2)
-  )
-  let response = await apolloHandler(event, context)
-  logger.debug('Response Ready', JSON.stringify(response))
-  return response
+// Routes
+router.get('/v1/graphql', graphQlHandler)
+router.post('/v1/graphql', graphQlHandler)
+
+// Handlers
+function makeGraphQlHandler(schema) {
+  return async (event, context) => {
+    logger.info('body', event.body)
+    // logger.info('body schema', schema)
+    const queryResult = await graphql({
+      schema,
+      source: event.body.query,
+      rootValue: undefined,
+      contextValue: {
+        event,
+        token: event.token,
+        headers: event.headers,
+        app: context
+      }
+    })
+    // logger.info('queryResult', queryResult)
+    if (queryResult.errors) {
+      queryResult.errors.forEach(err => {
+        logger.error(err.stack)
+        if (includeErrorStack) {
+          Object.defineProperty(err, 'stack', {
+            value: err.stack,
+            writable: true,
+            enumerable: true,
+            configurable: true
+          })
+        }
+      })
+    }
+    return queryResult
+  }
 }
 
-exports.handler = logger.handler(handler)
+async function handler(event, context) {
+  logger.info('Received event:', JSON.stringify(event, null, 2))
+  logger.debug('Event content', JSON.stringify(context, null, 2))
+
+  context = wrapContext(context, event)
+
+  let result = await router.route(event, context)
+
+  return result.response
+}
+
+const apiHandler = logger.handler(handler)
+
+export { apiHandler as handler }

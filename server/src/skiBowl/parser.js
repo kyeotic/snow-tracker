@@ -1,7 +1,5 @@
-'use strict'
-
-const cheerio = require('cheerio')
-const { wrapper } = require('lambda-logger-node')
+import cheerio from 'cheerio'
+import { wrapper } from 'lambda-logger-node'
 
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
@@ -56,16 +54,18 @@ class SkiBowlParser {
           .text()
           .trim()
         since = since.match(/\d{2}/)[0]
+        let depth = parseFloat(
+          row
+            .find('td')
+            .last()
+            .text()
+            .trim()
+            .replace('"', '')
+        )
+        if (Number.isNaN(depth)) depth = 0
         return {
           since: `Last ${since} hrs`,
-          depth: parseFloat(
-            row
-              .find('td')
-              .last()
-              .text()
-              .trim()
-              .replace('"', '')
-          )
+          depth
         }
       })
     // this[_logger].debug('conditions', levels)
@@ -93,9 +93,12 @@ class SkiBowlParser {
   }
 }
 
-module.exports = {
+const exported = {
   SkiBowlParser
 }
+
+export default exported
+export { SkiBowlParser }
 
 function liftStatusRow($) {
   return row => {

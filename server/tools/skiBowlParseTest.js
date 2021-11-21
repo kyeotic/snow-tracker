@@ -1,9 +1,7 @@
 /* eslint-disable no-console */
-'use strict'
-
 process.env.TEST = true
 require('dotenv').config()
-const { wrapContext } = require('../src/context')
+const { wrapContext } = require('../src/context.js')
 const context = wrapContext()
 
 async function main() {

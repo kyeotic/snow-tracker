@@ -1,13 +1,12 @@
-'use strict'
+import { makeExecutableSchema } from '@graphql-tools/schema'
+import { GraphQLJSON, GraphQLJSONObject } from 'graphql-type-json'
+import isoDate from 'graphql-iso-date'
+import {
+  typeDefs as SnowTypes,
+  resolvers as snowResolvers
+} from './snow/schema.js'
 
-const merge = require('deepmerge')
-const { GraphQLJSON, GraphQLJSONObject } = require('graphql-type-json')
-const { GraphQLDateTime } = require('graphql-iso-date')
-
-const {
-  typeDefs: SnowTypes,
-  resolvers: snowResolvers
-} = require('./snow/schema')
+const { GraphQLDateTime } = isoDate
 
 const Query = `
 scalar JSON
@@ -19,14 +18,15 @@ type Query {
 }
 `
 
-module.exports = {
-  typeDefs: [Query, SnowTypes],
-  resolvers: merge.all([
-    {
-      JSON: GraphQLJSON,
-      JSONObject: GraphQLJSONObject,
-      DateTime: GraphQLDateTime
-    },
-    snowResolvers
-  ])
+export const typeDefs = [Query, SnowTypes]
+export const resolvers = {
+  JSON: GraphQLJSON,
+  JSONObject: GraphQLJSONObject,
+  DateTime: GraphQLDateTime,
+  ...snowResolvers
 }
+
+export const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers
+})

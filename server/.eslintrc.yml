@@ -1,0 +1,10 @@
+extends:
+  - '@kyeotic/eslint-config/node'
+# parser: '@babel/eslint-parser'
+parserOptions:
+  sourceType: 'module'
+# plugins:
+  # - '@babel/plugin-syntax-top-level-await'
+rules:
+  "import/prefer-default-export": 0
+  "import/extensions": ['error', "ignorePackages"]

@@ -1,17 +1,18 @@
-'use strict'
-
-const { ConditionsStore } = require('../snow/store')
-const { TimberlineParser } = require('./parser')
+import { ConditionsStore } from '../snow/store.js'
+import { TimberlineParser } from './parser.js'
 
 class TimberlineStore extends ConditionsStore {
   constructor(props) {
     super({
       ...props,
-      parserFactory: (...props) => new TimberlineParser(...props)
+      parserFactory: (...props) => new TimberlineParser(...props),
     })
   }
 }
 
-module.exports = {
-  TimberlineStore
+const exported = {
+  TimberlineStore,
 }
+
+export default exported
+export { TimberlineStore }

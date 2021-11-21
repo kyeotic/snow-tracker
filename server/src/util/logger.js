@@ -1,13 +1,11 @@
-'use strict'
-
-const config = require('../config')
-const { Logger } = require('lambda-logger-node')
+import config from '../config.js'
+import { Logger } from 'lambda-logger-node'
 
 const logger = Logger({
   useGlobalErrorHandler: true,
-  useBearerRedactor: true
+  useBearerRedactor: true,
 })
 
 logger.setMinimumLogLevel(config.stage === 'prod' ? 'INFO' : 'DEBUG')
 
-module.exports = logger
+export default logger

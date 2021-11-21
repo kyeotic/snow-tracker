@@ -1,21 +1,18 @@
-'use strict'
+import config from './config.js'
+import logger from './util/logger.js'
+import lazy from 'define-lazy-prop'
 
-const config = require('./config')
-const logger = require('./util/logger')
-const lazy = require('define-lazy-prop')
-
-module.exports = {
-  wrapContext
-}
+import { WeatherStore } from './weather/store.js'
+import { TimberlineStore } from './timberline/store.js'
+import { SkiBowlStore } from './skiBowl/store.js'
 
 // eslint-disable-next-line no-unused-vars
-function wrapContext(lambdaContext = {}, event) {
+export function wrapContext(lambdaContext = {}, event) {
   let context = { ...lambdaContext }
   context.logger = logger
   context.config = config
 
   lazy(context, 'weather', () => {
-    const { WeatherStore } = require('./weather/store')
     return new WeatherStore({
       logger,
       config: config.weather
@@ -23,7 +20,6 @@ function wrapContext(lambdaContext = {}, event) {
   })
 
   lazy(context, 'timberline', () => {
-    const { TimberlineStore } = require('./timberline/store')
     return new TimberlineStore({
       logger,
       config: config.timberline,
@@ -32,7 +28,6 @@ function wrapContext(lambdaContext = {}, event) {
   })
 
   lazy(context, 'skiBowl', () => {
-    const { SkiBowlStore } = require('./skiBowl/store')
     return new SkiBowlStore({
       logger,
       config: config.skiBowl,

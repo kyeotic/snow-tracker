@@ -5,7 +5,7 @@ export default function Lifts({ lifts = [] }) {
     <div className="lifts">
       <h2>Lifts</h2>
       <ul className="lift-statuses">
-        {lifts.map(lift => (
+        {lifts.map((lift) => (
           <Lift lift={lift} key={lift.name} />
         ))}
       </ul>

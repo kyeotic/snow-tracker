@@ -1,31 +1,34 @@
-'use strict'
-
-const request = require('request-micro')
-const urlJoin = require('url-join')
-const { assert } = require('../util/assert')
-const { wrapper } = require('lambda-logger-node')
+import request from 'request-micro'
+import urlJoin from 'url-join'
+import { assert } from '../util/assert.js'
+import { wrapper } from 'lambda-logger-node'
 
 const _logger = Symbol('_logger')
 const _config = Symbol('_config')
 
-class WeatherStore {
+export class WeatherStore {
   constructor({ config, logger }) {
     this[_logger] = wrapper(logger)
     this[_config] = config
   }
 
-  async getForecast(point) {
-    assert(point, 'required: "point"')
+  async getForecast(grid) {
+    assert(grid, 'required: "grid"')
     const base = await fetch(this, {
-      url: this.api('points', point, '/forecast')
+      url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast')
     })
     return base.properties.periods
   }
 
-  async getCurrentConditions(point) {
-    assert(point, 'required: "point"')
+  async getCurrentConditions(grid) {
+    assert(grid, 'required: "grid"')
     const base = await fetch(this, {
-      url: this.api('points', point, '/forecast/hourly')
+      url: this.api(
+        'gridpoints',
+        grid.id,
+        `${grid.x},${grid.y}`,
+        '/forecast/hourly'
+      )
     })
     // console.log('base', base)
     let current = base.properties.periods[0]
@@ -63,10 +66,6 @@ class WeatherStore {
   api(...parts) {
     return urlJoin(this[_config].baseUrl, ...parts)
   }
-}
-
-module.exports = {
-  WeatherStore
 }
 
 async function fetch(store, params) {

@@ -6,34 +6,40 @@
   "scripts": {
     "lint": "eslint \"{src,test}/**/*.js\"",
     "build": "lambda-zipper build -f src -o ../build/server.zip",
-    "local": "node tools/localServer.js",
+    "local": "TEST=true node tools/localServer.js",
     "tool:parse": "node tools/skiBowlParseTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/skiBowlParseTest.js\"",
     "tool:weather": "node tools/weatherTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/weatherTest.js\""
   },
+  "type": "module",
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-lambda": "^2.9.14",
+    "@graphql-tools/schema": "^8.3.1",
     "cheerio": "^1.0.0-rc.3",
+    "cjs2esm": "^2.0.2",
     "dateformat": "^3.0.3",
-    "deepmerge": "^4.2.2",
     "define-lazy-prop": "^2.0.0",
-    "graphql": "^14.5.8",
+    "graphql": "^16.0.1",
     "graphql-iso-date": "^3.6.1",
-    "graphql-type-json": "^0.3.1",
+    "graphql-type-json": "^0.3.2",
     "lambda-logger-node": "^3.2.0",
+    "lambda-router": "^2.12.0",
     "request-micro": "^1.5.1",
     "url-join": "^4.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/eslint-parser": "^7.16.3",
+    "@babel/plugin-syntax-top-level-await": "^7.14.5",
     "@kyeotic/eslint-config": "^1.0.2",
     "body-parser": "^1.19.0",
     "chokidar-cli": "^2.1.0",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
-    "eslint": "^5.16.0",
+    "eslint": "^8.3.0",
+    "eslint-plugin-import": "latest",
     "express": "^4.17.1",
-    "lambda-zipper": "^0.4.1"
+    "lambda-zipper": "latest"
   },
   "packageManager": "yarn@3.1.0"
 }

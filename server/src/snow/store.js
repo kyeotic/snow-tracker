@@ -1,7 +1,5 @@
-'use strict'
-
-const request = require('request-micro')
-const { wrapper } = require('lambda-logger-node')
+import request from 'request-micro'
+import { wrapper } from 'lambda-logger-node'
 
 const _config = Symbol('_config')
 const _logger = Symbol('_logger')
@@ -41,7 +39,7 @@ class ConditionsStore {
 
   async getForecast() {
     try {
-      return await this[_weather].getForecast(this[_config].weather.point)
+      return await this[_weather].getForecast(this[_config].weather.grid)
     } catch (e) {
       this[_logger].error('error getting forecast', e.message, e.stack)
       return null
@@ -56,7 +54,7 @@ class ConditionsStore {
   async getCurrentConditions() {
     try {
       return await this[_weather].getCurrentConditions(
-        this[_config].weather.point
+        this[_config].weather.grid
       )
     } catch (e) {
       this[_logger].error('error getting conditions', e.message, e.stack)
@@ -75,13 +73,16 @@ class ConditionsStore {
   }
 }
 
-module.exports = {
+const exported = {
   ConditionsStore,
   _config,
   _logger,
   _parser,
   _weather
 }
+
+export default exported
+export { ConditionsStore, _config, _logger, _parser, _weather }
 
 async function loadSource(store) {
   let response = await request({

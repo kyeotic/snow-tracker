@@ -10,7 +10,7 @@ export default function Forecasts({ forecasts }) {
   }
   return (
     <ul className="forecasts">
-      {forecasts.map(f => (
+      {forecasts.map((f) => (
         <Forecast key={f.name} forecast={f} />
       ))}
     </ul>

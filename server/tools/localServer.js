@@ -1,8 +1,11 @@
 /* eslint-disable no-console */
-const express = require('express')
-const cors = require('cors')
+
+import express from 'express'
+import cors from 'cors'
+import bodyParser from 'body-parser'
+import { handler } from '../src/api.js'
+
 const app = express()
-const bodyParser = require('body-parser')
 const PORT = process.env.PORT || 3100
 
 app.use(cors())
@@ -11,14 +14,12 @@ app.use(bodyParser.json())
 process.env.stage = 'local'
 process.env.TEST = true
 
-const handler = require('../src/api').handler
-
 app.all('/*', (req, res) => {
   let binaryReq = req.headers.accept === 'application/octet-stream'
   let body = binaryReq ? req.body : JSON.stringify(req.body)
   console.log('local event', req.url)
   let event = {
-    path: req.url.replace('v1/', ''),
+    path: req.url,
     headers: {
       ...req.headers,
       Authorization: req.headers.authorization

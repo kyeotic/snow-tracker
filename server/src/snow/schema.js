@@ -1,7 +1,6 @@
-'use strict'
 // const { GraphQLError } = require('graphql')
 
-exports.resolvers = {
+export const resolvers = {
   Query: {
     async timberline(parent, _, context) {
       const { timberline, logger } = context.app
@@ -30,10 +29,17 @@ async function getSnowStatus(store) {
     store.getLastUpdatedTime(),
     store.getForecast()
   ])
+  // console.log('snow status', {
+  //   condition,
+  //   snowfalls,
+  //   liftStatuses,
+  //   lastUpdated,
+  //   forecast
+  // })
   return { condition, snowfalls, liftStatuses, lastUpdated, forecast }
 }
 
-exports.typeDefs = `
+export const typeDefs = `
   extend type Query {
     timberline: SnowStatus
     skiBowl: SnowStatus

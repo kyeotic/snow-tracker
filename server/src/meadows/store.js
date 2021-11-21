@@ -1,7 +1,5 @@
-'use strict'
-
-const { ConditionsStore } = require('../snow/store')
-const { SkiBowlParser } = require('./parser')
+import { ConditionsStore } from '../snow/store.js'
+import { SkiBowlParser } from './parser.js'
 
 class SkiBowlStore extends ConditionsStore {
   constructor(props) {
@@ -9,9 +7,9 @@ class SkiBowlStore extends ConditionsStore {
       ...props,
       headers: {
         'User-Agent': 'PostmanRuntime/7.21.0',
-        Host: 'skibowl.com'
+        Host: 'skibowl.com',
       },
-      parserFactory: (...props) => new SkiBowlParser(...props)
+      parserFactory: (...props) => new SkiBowlParser(...props),
     })
   }
   async getCondition() {
@@ -19,6 +17,9 @@ class SkiBowlStore extends ConditionsStore {
   }
 }
 
-module.exports = {
-  SkiBowlStore
+const exported = {
+  SkiBowlStore,
 }
+
+export default exported
+export { SkiBowlStore }

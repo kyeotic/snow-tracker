@@ -8,9 +8,7 @@ export function useRequest({ query, operationName = null } = {}) {
   const [response, setResponse] = useState(null)
 
   useEffect(() => {
-    request({ query, operationName })
-      .then(setResponse)
-      .catch(setResponse)
+    request({ query, operationName }).then(setResponse).catch(setResponse)
   }, [query, operationName])
 
   if (response === null) return [null, true]
@@ -22,12 +20,12 @@ export async function request({ query, operationName = null } = {}) {
   let response = await fetch(host, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       operationName,
-      query
-    })
+      query,
+    }),
   })
   if (!response.ok) {
     let error = `Request Failure ${response.statusCode}`
