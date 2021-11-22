@@ -1,5 +1,6 @@
 import cheerio from 'cheerio'
 import { wrapper } from 'lambda-logger-node'
+import { tryParseFloat } from '../util/parse.js'
 
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
@@ -33,7 +34,7 @@ export class SkiBowlParser {
       .siblings()
       .text()
     // Base Deptyh is a range, just get the low end
-    baseDepth = parseFloat(
+    baseDepth = tryParseFloat(
       baseDepth.substring(0, baseDepth.indexOf('"')).trim()
     )
 
@@ -54,7 +55,7 @@ export class SkiBowlParser {
           .text()
           .trim()
         since = since.match(/\d{2}/)[0]
-        let depth = parseFloat(
+        const depth = tryParseFloat(
           row
             .find('td')
             .last()
@@ -62,15 +63,11 @@ export class SkiBowlParser {
             .trim()
             .replace('"', '')
         )
-        if (Number.isNaN(depth)) depth = 0
         return {
           since: `Last ${since} hrs`,
           depth
         }
       })
-    // this[_logger].debug('conditions', levels)
-    // { depth, since }
-    if (Number.isNaN(baseDepth)) baseDepth = 0
     return [
       ...newSnow,
       {

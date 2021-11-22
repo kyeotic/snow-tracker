@@ -1,5 +1,6 @@
 import cheerio from 'cheerio'
 import { wrapper } from 'lambda-logger-node'
+import { tryParseFloat } from '../util/parse.js'
 
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
@@ -20,14 +21,18 @@ export class MeadowsParser {
   }
 
   getSnowfall() {
-    const baseNode = this[_dom]('.snowdepth-base')
-    let baseDepth = parseFloat(
-      baseNode
-        .find('.reading depth')
+    const baseDepth = tryParseFloat(
+      this[_dom]('.snowdepth-base')
+        .find('.reading.depth')
         .first()
         .attr('data-depth')
     )
-    baseDepth = Number.isNaN(baseDepth) ? 0 : baseDepth
+    const midDepth = tryParseFloat(
+      this[_dom]('.snowdepth-mid')
+        .find('.reading.depth')
+        .first()
+        .attr('data-depth')
+    )
 
     let levels = this[_dom]('.conditions-snowfall')
       .find('dl')
@@ -37,7 +42,7 @@ export class MeadowsParser {
             .find('.metric')
             .text()
             .trim(),
-          depth: parseFloat(
+          depth: tryParseFloat(
             this[_dom](el)
               .find('.reading.depth')
               .first()
@@ -47,7 +52,11 @@ export class MeadowsParser {
       })
       .get()
     this[_logger].debug('conditions', levels)
-    return [{ since: 'Base Depth', depth: baseDepth }, ...levels]
+    return [
+      { since: 'Base Depth', depth: baseDepth },
+      { since: 'Mid Depth', depth: midDepth },
+      ...levels
+    ]
   }
 
   getLastUpdatedTime() {
@@ -105,12 +114,5 @@ function liftStatusRow($) {
         .text()
         .trim()
     }
-  }
-}
-
-function depthFilter($) {
-  return (i, panel) => {
-    let p = $(panel)
-    return p.html().includes('Base depth')
   }
 }
