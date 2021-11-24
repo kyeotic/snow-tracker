@@ -7,7 +7,7 @@
     "lint": "eslint \"{src,test}/**/*.js\"",
     "build": "lambda-zipper build -f src -o ../build/server.zip",
     "local": "TEST=true node tools/localServer.js",
-    "tool:parse": "FILE=meadowsParseTest && TEST=true node tools/$FILE.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && TEST=true node tools/$FILE.js\"",
+    "tool:parse": "FILE=timberlineParseTest && TEST=true node tools/$FILE.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && TEST=true node tools/$FILE.js\"",
     "tool:weather": "TEST=true node tools/weatherTest.js & chokidar \"src/**/*.js\" \"tools/**/*.js\" --polling -c \"clear && echo '---' && node tools/weatherTest.js\""
   },
   "type": "module",
@@ -23,6 +23,7 @@
     "graphql-type-json": "^0.3.2",
     "lambda-logger-node": "^3.2.0",
     "lambda-router": "^2.12.0",
+    "luxon": "^2.1.1",
     "request-micro": "^1.5.1",
     "url-join": "^4.0.1"
   },

@@ -1,8 +1,12 @@
 import cheerio from 'cheerio'
 import { wrapper } from 'lambda-logger-node'
+import { DateTime } from 'luxon'
+import config from '../config.js'
 
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
+
+const dateFormat = "MMMM d '- Updated at' h':'mm a"
 
 export class TimberlineParser {
   constructor({ html, logger }) {
@@ -19,22 +23,18 @@ export class TimberlineParser {
     return rows
   }
 
+  getLiftUpdatedTime() {
+    return this.getLastUpdatedTime()
+  }
+
   getSnowfall() {
     let levels = this[_dom]('.conditions-panel')
       .filter(depthFilter(this[_dom]))
       .find('dl dt')
       .map((i, el) => {
         return {
-          since: this[_dom](el)
-            .next()
-            .text()
-            .trim(),
-          depth: parseFloat(
-            this[_dom](el)
-              .text()
-              .trim()
-              .replace('"', '')
-          )
+          since: this[_dom](el).next().text().trim(),
+          depth: parseFloat(this[_dom](el).text().trim().replace('"', '')),
         }
       })
       .get()
@@ -43,13 +43,11 @@ export class TimberlineParser {
   }
 
   getLastUpdatedTime() {
-    let date = this[_dom]('.conditions-panel date')
-    let time = date
-      .siblings('small')
-      .text()
-      .trim()
-    date = date.text().trim()
-    return `${time} ${date}`
+    let date = this[_dom]('.conditions-panel').find('p').first().text().trim()
+    // return date
+    return DateTime.fromFormat(date, dateFormat, {
+      zone: config.timeZone,
+    }).toISO()
   }
 
   getCondition() {
@@ -58,43 +56,35 @@ export class TimberlineParser {
       .text()
       .trim()
       .split('\n')
-      .map(s => s.trim())
+      .map((s) => s.trim())
     temperature = parseFloat(temperature)
     this[_logger].info('temp', temperature, condition)
     let iconNode = tempNode.siblings('i')
     let icons = iconNode
       .attr('class')
       .split(/\s/)
-      .filter(s => !!s)
-      .map(s => s.trim())
+      .filter((s) => !!s)
+      .map((s) => s.trim())
     this[_logger].info('icons', icons)
+
+    const updatedOn = this.getLastUpdatedTime()
     return {
+      updatedOn,
       temperature,
       condition,
-      iconClass: icons.join(' ')
+      iconClass: icons.join(' '),
     }
   }
 }
 
 function liftStatusRow($) {
-  return row => {
+  return (row) => {
     let r = $(row).find('td')
     // console.log(r.html())
     return {
-      name: r
-        .eq(0)
-        .text()
-        .trim(),
-      status: r
-        .eq(1)
-        .find('span')
-        .eq(0)
-        .text()
-        .trim(),
-      hours: r
-        .eq(2)
-        .text()
-        .trim()
+      name: r.eq(0).text().trim(),
+      status: r.eq(1).find('span').eq(0).text().trim(),
+      hours: r.eq(2).text().trim(),
     }
   }
 }

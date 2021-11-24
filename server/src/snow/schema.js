@@ -16,32 +16,19 @@ export const resolvers = {
       const { meadows, logger } = context.app
       logger.info('gql: Ski Bowl')
       return getSnowStatus(meadows)
-    }
-  }
+    },
+  },
 }
 
 async function getSnowStatus(store) {
-  let [
-    condition,
-    snowfalls,
-    liftStatuses,
-    lastUpdated,
-    forecast
-  ] = await Promise.all([
+  let [condition, snowfalls, lifts, forecast, updatedOn] = await Promise.all([
     store.getCondition(),
     store.getSnowfall(),
-    store.getLiftStatuses(),
+    store.getLifts(),
+    store.getForecast(),
     store.getLastUpdatedTime(),
-    store.getForecast()
   ])
-  // console.log('snow status', {
-  //   condition,
-  //   snowfalls,
-  //   liftStatuses,
-  //   lastUpdated,
-  //   forecast
-  // })
-  return { condition, snowfalls, liftStatuses, lastUpdated, forecast }
+  return { condition, snowfalls, lifts, forecast, updatedOn }
 }
 
 export const typeDefs = `
@@ -52,9 +39,9 @@ export const typeDefs = `
   }
 
   type SnowStatus {
-    lastUpdated: String
+    updatedOn: DateTime
     snowfalls: [Snowfall!]!
-    liftStatuses: [LiftStatus!]!
+    lifts: Lifts!
     condition: Condition
     forecast: [ForecastPeriod!]
   }
@@ -76,9 +63,15 @@ export const typeDefs = `
   }
 
   type Condition {
+    updatedOn: DateTime
     temperature: Float!
     condition: String
     iconClass: String
+  }
+
+  type Lifts {
+    updatedOn: DateTime
+    liftStatuses: [LiftStatus!]!
   }
 
   type LiftStatus {

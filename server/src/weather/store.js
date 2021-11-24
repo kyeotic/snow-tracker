@@ -2,6 +2,7 @@ import request from 'request-micro'
 import urlJoin from 'url-join'
 import { assert } from '../util/assert.js'
 import { wrapper } from 'lambda-logger-node'
+import { DateTime } from 'luxon'
 
 const _logger = Symbol('_logger')
 const _config = Symbol('_config')
@@ -15,7 +16,7 @@ export class WeatherStore {
   async getForecast(grid) {
     assert(grid, 'required: "grid"')
     const base = await fetch(this, {
-      url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast')
+      url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast'),
     })
     return base.properties.periods
   }
@@ -28,9 +29,10 @@ export class WeatherStore {
         grid.id,
         `${grid.x},${grid.y}`,
         '/forecast/hourly'
-      )
+      ),
     })
     // console.log('base', base)
+    let updatedOn = DateTime.fromISO(base.properties.updateTime).toISO()
     let current = base.properties.periods[0]
     let icon = 'clear'
     let match = current.icon.match(/land\/(.+?)\/(.+?)[?,]/)
@@ -38,20 +40,21 @@ export class WeatherStore {
       icon = match.slice(1, 3).join('-')
     }
     return {
+      updatedOn,
       condition: current.shortForecast,
       temperature: Math.floor(
         current.temperatureUnit === 'F'
           ? current.temperature
           : celsiusToFahrenheit(current.temperature)
       ),
-      iconClass: `weather-icon wi wi-${icon}`
+      iconClass: `weather-icon wi wi-${icon}`,
     }
   }
 
   async getStationConditions(stationId) {
     assert(stationId, 'required: "stationId"')
     const base = await fetch(this, {
-      url: this.api('stations', stationId, 'observations/latest')
+      url: this.api('stations', stationId, 'observations/latest'),
     })
     const condition = base.properties.textDescription
     return {
@@ -59,7 +62,7 @@ export class WeatherStore {
       temperature: Math.floor(
         celsiusToFahrenheit(base.properties.temperature.value)
       ),
-      iconClass: `weather-icon wi wi-${condition.toLowerCase()}`
+      iconClass: `weather-icon wi wi-${condition.toLowerCase()}`,
     }
   }
 
@@ -74,8 +77,8 @@ async function fetch(store, params) {
     headers: {
       Accept: 'application/json',
       'User-Agent': store[_config].userAgent,
-      ...params
-    }
+      ...params,
+    },
   })
   if (request.isErrorStatus(response)) {
     store[_logger].error(

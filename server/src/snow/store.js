@@ -23,9 +23,14 @@ export class ConditionsStore {
     return this[_parser].getCondition()
   }
 
-  async getLiftStatuses() {
+  async getLifts() {
     await this.getSource()
-    return this[_parser].getLiftStatuses()
+    const updatedOn = this[_parser].getLiftUpdatedTime()
+    const liftStatuses = this[_parser].getLiftStatuses()
+    return {
+      updatedOn,
+      liftStatuses,
+    }
   }
 
   async getSnowfall() {
@@ -77,7 +82,7 @@ export class ConditionsStore {
 async function loadSource(store) {
   let response = await request({
     headers: store[_headers],
-    url: store[_config].conditionsUrl
+    url: store[_config].conditionsUrl,
   })
   if (request.isErrorStatus(response)) {
     store[_logger].error(

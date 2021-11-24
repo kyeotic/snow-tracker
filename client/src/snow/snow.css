@@ -1,10 +1,10 @@
 :root {
-  --text-color-main:        white;
-  --text-color-subtle:      #ffffff8c;
-  --text-color-body:        #ffffffc9;
-  --conditions-background:  #da934e;
-  --conditions-highlight:   #0000003d;
-  --noaa-background:        #0C5685;
+  --text-color-main: white;
+  --text-color-subtle: #ffffff8c;
+  --text-color-body: #ffffffc9;
+  --conditions-background: #da934e;
+  --conditions-highlight: #0000003d;
+  --noaa-background: #0c5685;
 }
 
 .snow-summary-container {
@@ -14,28 +14,28 @@
 .snow-summary-container h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
-  line-height: .6em;
+  line-height: 0.6em;
   font-weight: bold;
   text-align: center;
-  padding-top: .4em;
+  padding-top: 0.4em;
 }
 .snow-summary-container h1 small {
-  font-size: .8rem;
+  font-size: 0.8rem;
   font-weight: normal;
   white-space: nowrap;
   display: block;
 }
 .snow-summary-container h2 {
   font-size: 1.6rem;
-  margin-bottom: .4rem;
+  margin-bottom: 0.4rem;
 }
-.snow-summary-conditions, .snow-summary-noaa {
+.snow-summary-conditions,
+.snow-summary-noaa {
   color: white;
   display: grid;
   grid-template-columns: minmax(200px, 720px);
   justify-content: center;
   padding: 1rem;
-
 }
 
 /* Conditions */
@@ -48,7 +48,7 @@
 }
 
 .snow-summary-conditions h1.active {
-  background-color: var(--conditions-highlight);;
+  background-color: var(--conditions-highlight);
 }
 
 .conditions-headers {
@@ -56,6 +56,12 @@
   grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
 
   justify-content: center;
+}
+
+.conditions-headers .subtitle {
+  display: block;
+  color: var(--text-color-subtle);
+  margin-bottom: 0.5em;
 }
 
 .conditions-container {
@@ -69,17 +75,24 @@
   justify-items: start;
   align-items: start;
   grid-template-areas:
-    "conditions lifts"
-    "snowfall lifts";
+    'conditions lifts'
+    'snowfall lifts';
+}
+
+.conditions-container .conditions .updated {
+  display: block;
+  font-size: 0.5em;
+  color: var(--text-color-subtle);
+  margin-bottom: 0.5em;
 }
 
 @media screen and (max-width: 450px) {
   .conditions-container {
-  grid-template-columns: 100%;
-  grid-template-areas: 
-      "conditions"
-      "snowfall"
-      "lifts"
+    grid-template-columns: 100%;
+    grid-template-areas:
+      'conditions'
+      'snowfall'
+      'lifts';
   }
 }
 
@@ -93,9 +106,9 @@
   justify-content: start;
   align-content: start;
   grid-template-areas:
-    "title title"
-    "temp      icon"
-    "condition icon"
+    'title title'
+    'temp      icon'
+    'condition icon';
 }
 
 .conditions h2 {
@@ -108,7 +121,7 @@
 }
 
 .condition-temp:after {
-  content: "\00b0";
+  content: '\00b0';
   font-size: 3rem;
   top: -1.5rem;
   position: relative;
@@ -151,8 +164,16 @@
   grid-area: lifts;
   min-width: 10rem;
 }
+
+.lifts .updated {
+  display: block;
+  font-size: 0.5em;
+  color: var(--text-color-subtle);
+  margin-bottom: 0.5em;
+}
+
 .lift-statuses li {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .lift-substatus {
@@ -165,13 +186,13 @@
 }
 
 .lift-name {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   display: block;
   color: #6b4723;
 }
 
 .lift-name.open {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   display: block;
   color: #00ff00;
 }
@@ -182,7 +203,7 @@
 }
 
 .lift-status {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 /* NOAA */
@@ -195,13 +216,12 @@
 .forecasts li {
   display: grid;
   grid-template-columns: 5rem 1fr;
-  grid-column-gap: .5rem;
+  grid-column-gap: 0.5rem;
   padding-bottom: 1rem;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   border-bottom: 1px solid var(--text-color-subtle);
   grid-template-rows: auto auto;
-  grid-template-areas:
-      "summary forecast"
+  grid-template-areas: 'summary forecast';
 }
 
 .forecast-summary {
@@ -213,31 +233,31 @@
   display: block;
 }
 .forecast-temp {
-  font-size: .8rem;
+  font-size: 0.8rem;
   display: block;
   /* grid-area: day-temp; */
   color: var(--text-color-subtle);
 }
 
 .forecast-temp {
-  content: " Low";
+  content: ' Low';
   color: var(--text-color-subtle);
   /* color: blue; */
 }
 .forecast-temp.day {
-  content: " High";
+  content: ' High';
   /* color: red; */
 }
 .forecast-temp:after {
-  content: " (Low)";
+  content: ' (Low)';
 }
 .forecast-temp.day:after {
-  content: " (High)";
+  content: ' (High)';
 }
 
 .forecast-wind {
   display: block;
-  font-size: .8rem;
+  font-size: 0.8rem;
   /* grid-area: day-wind; */
   color: var(--text-color-subtle);
 }
@@ -250,7 +270,7 @@
 .forecast-detail {
   grid-area: forecast;
   line-height: 1.4em;
-  padding-left: .5rem;
+  padding-left: 0.5rem;
   color: var(--text-color-body);
   align-self: end;
 }

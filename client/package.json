@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "dateformat": "^3.0.3",
-    "ramda": "^0.26.1",
+    "luxon": "^2.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-loading-io": "^2.2.0",

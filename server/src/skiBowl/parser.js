@@ -16,10 +16,14 @@ export class SkiBowlParser {
       .find('tr')
       .get()
       .map(liftStatusRow(this[_dom]))
-      .filter(r => r.name.toLowerCase().includes('chair'))
-      .map(r => ({ ...r, name: r.name.replace(/\s?Chair/i, '') }))
+      .filter((r) => r.name.toLowerCase().includes('chair'))
+      .map((r) => ({ ...r, name: r.name.replace(/\s?Chair/i, '') }))
     this[_logger].debug('lift statuses', rows)
     return rows
+  }
+
+  getLiftUpdatedTime() {
+    return this.getLastUpdatedTime()
   }
 
   getSnowfall() {
@@ -47,33 +51,24 @@ export class SkiBowlParser {
       })
       .parent()
       .get()
-      .map(el => {
+      .map((el) => {
         let row = this[_dom](el)
-        let since = row
-          .find('td')
-          .first()
-          .text()
-          .trim()
+        let since = row.find('td').first().text().trim()
         since = since.match(/\d{2}/)[0]
         const depth = tryParseFloat(
-          row
-            .find('td')
-            .last()
-            .text()
-            .trim()
-            .replace('"', '')
+          row.find('td').last().text().trim().replace('"', '')
         )
         return {
           since: `Last ${since} hrs`,
-          depth
+          depth,
         }
       })
     return [
       ...newSnow,
       {
         since: 'Base Depth',
-        depth: baseDepth
-      }
+        depth: baseDepth,
+      },
     ]
   }
 
@@ -86,31 +81,21 @@ export class SkiBowlParser {
       })
       .siblings()
     // console.log('date', date.text())
-    return date.text() || 'Unavailable'
+    return date.text() || null
   }
 }
 
 function liftStatusRow($) {
-  return row => {
+  return (row) => {
     row = $(row)
     let r = $(row).find('td')
     // console.log('row', .html())
-    let hours = r
-      .eq(2)
-      .text()
-      .trim()
-    let status = r
-      .eq(1)
-      .text()
-      .trim()
+    let hours = r.eq(2).text().trim()
+    let status = r.eq(1).text().trim()
     return {
-      name: r
-        .eq(0)
-        .text()
-        .replace(':', '')
-        .trim(),
+      name: r.eq(0).text().replace(':', '').trim(),
       hours,
-      status //: hours.toLowerCase().includes('m-') ? 'Open' : 'Closed'
+      status, //: hours.toLowerCase().includes('m-') ? 'Open' : 'Closed'
     }
   }
 }

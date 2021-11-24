@@ -3177,6 +3177,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "luxon@npm:2.1.1"
+  checksum: 6d562796c4df195988f2afdca733e5a36457d6449c196cbf16710c706fde8d6b96c7d47fa54cd37c0cb29e4d2e7d8628a9677f36e23490139a8c90232f489e02
+  languageName: node
+  linkType: hard
+
 "make-fetch-happen@npm:^9.1.0":
   version: 9.1.0
   resolution: "make-fetch-happen@npm:9.1.0"
@@ -4393,6 +4400,7 @@ __metadata:
     lambda-logger-node: ^3.2.0
     lambda-router: ^2.12.0
     lambda-zipper: ^1.0.0
+    luxon: ^2.1.1
     request-micro: ^1.5.1
     url-join: ^4.0.1
   languageName: unknown

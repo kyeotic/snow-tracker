@@ -1,7 +1,8 @@
 export default {
+  timeZone: 'America/Los_Angeles',
   weather: {
     userAgent: process.env.DOMAIN || 'KyeSnow',
-    baseUrl: 'https://api.weather.gov'
+    baseUrl: 'https://api.weather.gov',
   },
   timberline: {
     conditionsUrl: 'http://www.timberlinelodge.com/conditions',
@@ -11,9 +12,9 @@ export default {
       grid: {
         id: 'PQR',
         x: 141,
-        y: 88
-      }
-    }
+        y: 88,
+      },
+    },
   },
   skiBowl: {
     conditionsUrl:
@@ -25,9 +26,9 @@ export default {
       grid: {
         id: 'PQR',
         x: 139,
-        y: 87
-      }
-    }
+        y: 87,
+      },
+    },
   },
   meadows: {
     conditionsUrl: 'https://www.skihood.com/the-mountain/conditions',
@@ -38,8 +39,8 @@ export default {
       grid: {
         id: 'PQR',
         x: 142,
-        y: 88
-      }
-    }
-  }
+        y: 88,
+      },
+    },
+  },
 }

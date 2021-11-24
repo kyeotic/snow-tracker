@@ -1,11 +1,17 @@
 import React from 'react'
 
-export default function Lifts({ lifts = [] }) {
+import { formatDateFull } from '../util/format.js'
+
+export default function Lifts({
+  lifts: { updatedOn, liftStatuses = [] } = {},
+}) {
   return (
     <div className="lifts">
-      <h2>Lifts</h2>
+      <h2>
+        Lifts <span className="updated">{formatDateFull(updatedOn)}</span>
+      </h2>
       <ul className="lift-statuses">
-        {lifts.map((lift) => (
+        {liftStatuses.map((lift) => (
           <Lift lift={lift} key={lift.name} />
         ))}
       </ul>

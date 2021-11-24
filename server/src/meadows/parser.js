@@ -1,9 +1,13 @@
 import cheerio from 'cheerio'
 import { wrapper } from 'lambda-logger-node'
 import { tryParseFloat } from '../util/parse.js'
+import { DateTime } from 'luxon'
+import config from '../config.js'
 
 const _logger = Symbol('_logger')
 const _dom = Symbol('_dom')
+
+const dateFormat = "EEEE MMMM d 'at' h':'mm a"
 
 export class MeadowsParser {
   constructor({ html, logger }) {
@@ -18,6 +22,20 @@ export class MeadowsParser {
       .map(liftStatusRow(this[_dom]))
     this[_logger].debug('lift statuses', rows)
     return rows
+  }
+
+  getLiftUpdatedTime() {
+    let date = this[_dom]('.conditions-info.lift-operations')
+      .find('p')
+      .first()
+      .text()
+      .replace(/^for /, '')
+
+    if (!date) return null
+
+    return DateTime.fromFormat(date, dateFormat, {
+      zone: config.timeZone,
+    }).toISO()
   }
 
   getSnowfall() {
@@ -38,16 +56,10 @@ export class MeadowsParser {
       .find('dl')
       .map((i, el) => {
         return {
-          since: this[_dom](el)
-            .find('.metric')
-            .text()
-            .trim(),
+          since: this[_dom](el).find('.metric').text().trim(),
           depth: tryParseFloat(
-            this[_dom](el)
-              .find('.reading.depth')
-              .first()
-              .attr('data-depth')
-          )
+            this[_dom](el).find('.reading.depth').first().attr('data-depth')
+          ),
         }
       })
       .get()
@@ -55,18 +67,21 @@ export class MeadowsParser {
     return [
       { since: 'Base Depth', depth: baseDepth },
       { since: 'Mid Depth', depth: midDepth },
-      ...levels
+      ...levels,
     ]
   }
 
   getLastUpdatedTime() {
-    let date = this[_dom]('.conditions-info.lift-operations')
-      .find('p')
+    let date = this[_dom]('.conditions-snapshot .metric')
+      .find('time')
       .first()
       .text()
-      .replace(/^for /, '')
-    // console.log('date', date.text())
-    return date || 'Unavailable'
+
+    if (!date) return null
+
+    return DateTime.fromFormat(date, dateFormat, {
+      zone: config.timeZone,
+    }).toISO()
   }
 
   getCondition() {
@@ -74,10 +89,7 @@ export class MeadowsParser {
       '.conditions-glance-widget.conditions-current'
     )
     const temperature = parseFloat(
-      conditions
-        .find('.reading.temperature')
-        .first()
-        .attr('data-temperature')
+      conditions.find('.reading.temperature').first().attr('data-temperature')
     )
     const condition = conditions
       .find('.reading.conditions')
@@ -88,31 +100,24 @@ export class MeadowsParser {
       .find('.reading.conditions')
       .first()
       .attr('data-conditions')
+    const updatedOn = this.getLastUpdatedTime()
     return {
+      updatedOn,
       temperature,
       condition,
-      iconClass: `weather-icon wi wi-day-${conditionIcon}`
+      iconClass: `weather-icon wi wi-day-${conditionIcon}`,
     }
   }
 }
 
 function liftStatusRow($) {
-  return row => {
+  return (row) => {
     let r = $(row).find('td')
     // console.log(r.html())
     return {
-      name: r
-        .eq(1)
-        .text()
-        .trim(),
-      status: r
-        .eq(0)
-        .text()
-        .trim(),
-      hours: r
-        .eq(2)
-        .text()
-        .trim()
+      name: r.eq(1).text().trim(),
+      status: r.eq(0).text().trim(),
+      hours: r.eq(2).text().trim(),
     }
   }
 }
