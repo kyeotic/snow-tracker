@@ -1,5 +1,4 @@
-import { useCallback } from 'react'
-import PullToRefresh from 'react-simple-pull-to-refresh'
+import PullToRefresh from 'react-pullable'
 
 import { useSummary } from './store.js'
 import RedBox from 'redbox-react'
@@ -14,10 +13,9 @@ export default function SnowPage() {
     error: summaryError,
     refresh,
   } = useSummary()
-  const handleRefresh = useCallback(() => refresh(), [refresh])
   if (summaryError) return <RedBox error={summaryError} />
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
+    <PullToRefresh onRefresh={refresh}>
       <SnowSummary summary={summary} isLoading={isLoading} />
     </PullToRefresh>
   )
