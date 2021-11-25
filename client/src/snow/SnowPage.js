@@ -17,7 +17,7 @@ export default function SnowPage() {
   return (
     <PullToRefresh
       onRefresh={refresh}
-      shouldPullToRefresh={!isLoading}
+      disabled={isLoading}
       className="pulldown"
     >
       <SnowSummary summary={summary} isLoading={isLoading} />
