@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function Snowfalls({ snowfalls = [] }) {
   return (
     <div className="snowfall">

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { formatDateFull } from '../util/format.js'
 
 export default function Lifts({

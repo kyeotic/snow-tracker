@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react';
 
 import { Link, PageSpinner } from '../components/index.js'
 import config from '../config.js'

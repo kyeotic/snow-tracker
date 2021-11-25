@@ -1,19 +1,53 @@
-import { useState, useEffect } from 'react'
+import { useReducer, useEffect, useCallback } from 'react'
 import urlJoin from 'url-join'
 import config from '../config.js'
 
 const host = urlJoin(config.apiHost, config.gqlEndpoint)
 
+const initialRequest = { isLoading: true, data: null, error: null }
+function reqeustReducer(state, action) {
+  switch (action.type) {
+    case 'pending':
+      return {
+        ...state,
+        isLoading: true,
+      }
+    case 'success':
+      return {
+        isLoading: false,
+        data: action.payload,
+        error: null,
+      }
+    case 'error':
+      return {
+        isLoading: false,
+        data: null,
+        error: action.payload,
+      }
+    default:
+      throw new Error(`Unknown action type: ${action.type}`)
+  }
+}
+
 export function useRequest({ query, operationName = null } = {}) {
-  const [response, setResponse] = useState(null)
+  const [state, dispatch] = useReducer(reqeustReducer, initialRequest)
+
+  const refresh = useCallback(() => {
+    dispatch({ type: 'pending' })
+    request({ query, operationName })
+      .then((r) => {
+        dispatch({ type: 'success', payload: r.data })
+      })
+      .catch((e) => {
+        dispatch({ type: 'error', payload: e })
+      })
+  }, [])
 
   useEffect(() => {
-    request({ query, operationName }).then(setResponse).catch(setResponse)
+    refresh()
   }, [query, operationName])
 
-  if (response === null) return [null, true]
-  if (response && response.message) return [null, false, response]
-  return [response.data, false]
+  return { ...state, refresh }
 }
 
 export async function request({ query, operationName = null } = {}) {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { DualRing } from 'react-loading-io'
 
 import './pageSpinner.css'
