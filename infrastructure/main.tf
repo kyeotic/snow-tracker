@@ -13,7 +13,7 @@ terraform {
       aws = ">= 3.0.0"
     }
   }
-  required_version = ">= 0.13"
+  required_version = ">= 1.0.10"
 }
 
 locals {
