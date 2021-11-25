@@ -7,6 +7,10 @@
   --noaa-background: #0c5685;
 }
 
+.pulldown {
+  background-color: var(--conditions-background);
+}
+
 .snow-summary-container {
   display: grid;
   min-height: 100vh;

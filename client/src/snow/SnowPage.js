@@ -15,7 +15,11 @@ export default function SnowPage() {
   } = useSummary()
   if (summaryError) return <RedBox error={summaryError} />
   return (
-    <PullToRefresh onRefresh={refresh}>
+    <PullToRefresh
+      onRefresh={refresh}
+      shouldPullToRefresh={!isLoading}
+      className="pulldown"
+    >
       <SnowSummary summary={summary} isLoading={isLoading} />
     </PullToRefresh>
   )
