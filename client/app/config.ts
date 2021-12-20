@@ -4,6 +4,7 @@
 export default {
   // isProd,
   // apiHost: isProd ? 'https://api-snow.kye.dev' : 'http://localhost:3100',
+  timeZone: 'America/Los_Angeles',
   gqlEndpoint: '/v1/graphql',
   timberline: {
     conditionsUrl: 'http://www.timberlinelodge.com/conditions',

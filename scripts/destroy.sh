@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 _dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${_dir}/common.sh"

@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "style": "prettier --config package.json  --write \"{client,server}/{src,test}/**/*.js\"",
-    "deploy": "npm run deploy:server && npm run deploy:client",
-    "deploy:server": "./scripts/server.sh",
-    "deploy:client": "./scripts/client.sh"
+    "style": "prettier --write \"{client,server}/{src,test}/**/*.js\"",
+    "deploy:server": "./scripts/server.sh"
   },
   "repository": {
     "type": "git",
@@ -21,11 +19,5 @@
   "homepage": "https://github.com/kyeotic/snow-tracker#readme",
   "devDependencies": {
     "prettier": "^2.4.1"
-  },
-  "prettier": {
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true,
-    "printWidth": 80
   }
 }

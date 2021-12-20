@@ -7,7 +7,6 @@ variable api_lambda_file {
 }
 
 variable APP_NAMESPACE {}
-variable SITE_DOMAIN {}
 variable API_DOMAIN {
   default = ""
 }
