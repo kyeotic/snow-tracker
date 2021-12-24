@@ -15,11 +15,28 @@ module "cert" {
     aws.route53_account = aws
   }
 
-  domain_name               = local.site_domain
-  subject_alternative_names = [local.api_domain]
+  domain_name               = local.api_domain
   hosted_zone_id            = data.aws_route53_zone.domain.zone_id
   validation_record_ttl     = "60"
 }
+
+#-------------------------------------------
+# Site
+#-------------------------------------------
+
+resource "aws_route53_record" "site" {
+  name    = var.site_domain
+  zone_id = data.aws_route53_zone.domain.zone_id
+  type    = "CNAME"
+  ttl     = 300
+
+  records = [var.site_target]
+}
+
+
+#-------------------------------------------
+# API
+#-------------------------------------------
 
 resource "aws_route53_record" "api" {
   name    = aws_api_gateway_domain_name.api_domain.domain_name

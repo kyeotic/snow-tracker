@@ -1,8 +1,8 @@
 // in seconds
-export const oneDay = 86400
-export const oneMinute = 60
-export const fiveMinutes = oneMinute * 5
-export const oneHour = 3600
+const oneMinute = 60
+const oneHour = oneMinute * 60
+export const defaultCacheTime = oneMinute * 2
+export const defaultSwrTime = oneHour
 
 export interface CacheControlOptions {
   maxAge?: number
@@ -10,7 +10,10 @@ export interface CacheControlOptions {
   /** stale-while-revalidate*/
   swr?: number
 }
-export function cacheControl({ maxAge = fiveMinutes, swr = oneHour }: CacheControlOptions = {}): {
+export function cacheControl({
+  maxAge = defaultCacheTime,
+  swr = oneHour,
+}: CacheControlOptions = {}): {
   'Cache-Control': string
 } {
   return { 'Cache-Control': `public, max-age=${maxAge}, stale-while-revalidate=${swr}` }

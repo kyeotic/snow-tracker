@@ -6,7 +6,7 @@ import Pully from '@nattlivet/react-pully'
 import styles from '../snow/snow.css'
 import SnowSummary from '../snow/SnowSummary'
 import { getSummary } from '../snow/store'
-import { headers, cacheControl, fiveMinutes, oneHour } from '../util/loader'
+import { headers, cacheControl, defaultCacheTime, defaultSwrTime } from '../util/loader'
 import { useRefresh } from '../util/useRefresh'
 import { AppContext } from '~/types/context'
 
@@ -17,7 +17,7 @@ export function links() {
 export async function loader({ context }: { context: AppContext }) {
   const summary = await getSummary(context)
   return json(summary, {
-    headers: cacheControl({ maxAge: fiveMinutes, swr: oneHour }),
+    // headers: cacheControl({ maxAge: defaultCacheTime, swr: defaultSwrTime }),
   })
 }
 
