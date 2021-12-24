@@ -23,6 +23,9 @@ export async function loader({ context }: { context: AppContext }) {
 
 export default function Index() {
   const data = useLoaderData()
+  if (data) {
+    return <pre>{JSON.stringify(data, null, 2)}</pre>
+  }
   const refresh = useRefresh()
   const transition = useTransition()
   const isLoading = transition.state === 'loading'
