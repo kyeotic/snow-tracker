@@ -468,5 +468,5 @@ export async function getSummary({ snow }: AppContext, { debug = false } = {}) {
   console.log('data', data, list)
 
   if (!data) throw new Error('KV Conditions missing')
-  return JSON.parse(data)
+  return JSON.parse(data).data
 }
