@@ -461,11 +461,10 @@ const testData = {
 export async function getSummary({ snow }: AppContext, { debug = false } = {}) {
   if (debug) return testData
 
-  console.log('getting from KV')
-  const data = await snow.get('conditions')
-  const list = await snow.list()
+  // debug, use to populate local KV is needed
+  // await snow.put('conditions', JSON.stringify(testData))
 
-  console.log('data', data, list)
+  const data = await snow.get('conditions')
 
   if (!data) throw new Error('KV Conditions missing')
   return JSON.parse(data).data
