@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+
+WORKSPACE=${1:-"default"}
+_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_terraform="${_dir}/../api/infrastructure"
+_api="${_dir}/../api"
+
+
+# Environments
+case "$WORKSPACE" in
+  default) 
+    VAR_FILE=${2:-"./env_configs/default.tfvars"}
+    ;;
+  *)
+    echo $"Usage: {default}"
+    exit 1
+esac
+
+# Terraform state, bucket name
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
+terraform_state_bucket="terraform-remote-$AWS_ACCOUNT_ID"
+
+# Build
+pushd "${_dir}/../api"
+if [ "$CI" = true ] ; then
+    yarn install
+fi
+yarn run build
+popd
+
+# Cleanup .terraform
+pushd "${_terraform}"
+rm -rf .terraform/
+
+# Deploy terraform
+terraform init \
+  -backend-config bucket="${terraform_state_bucket}" \
+  -backend-config="region=${TF_VAR_region:-us-west-2}" \
+  -backend-config="key=${TERRAFORM_KEY}" \
+  -backend-config="encrypt=true"
+
+# If the workspace does not exist, create it.
+if ! terraform workspace select ${WORKSPACE}; then
+    terraform workspace new ${WORKSPACE}
+fi
+terraform apply -var-file=$VAR_FILE -auto-approve
+popd
+
