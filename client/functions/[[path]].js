@@ -8,7 +8,9 @@ const handleRequest = createPagesFunctionHandler({
   getLoadContext: (context) => {
     // does not have snow binding
     console.log('context build', context.env.snow)
-    return {}
+    return {
+      snow: context.env.snow,
+    }
   },
 })
 
