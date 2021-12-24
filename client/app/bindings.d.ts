@@ -1,5 +1,5 @@
-export {}
+// export {}
 
-declare global {
-  const snow: KVNamespace
-}
+// declare global {
+//   const snow: KVNamespace
+// }

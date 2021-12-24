@@ -8,14 +8,14 @@ import SnowSummary from '../snow/SnowSummary'
 import { getSummary } from '../snow/store'
 import { headers, cacheControl, fiveMinutes, oneHour } from '../util/loader'
 import { useRefresh } from '../util/useRefresh'
+import { AppContext } from '~/types/context'
 
 export function links() {
   return [{ rel: 'stylesheet', href: styles }]
 }
 
-export async function loader({ context }) {
-  console.log('context', context)
-  const summary = await getSummary()
+export async function loader({ context }: { context: AppContext }) {
+  const summary = await getSummary(context)
   return json(summary, {
     headers: cacheControl({ maxAge: fiveMinutes, swr: oneHour }),
   })

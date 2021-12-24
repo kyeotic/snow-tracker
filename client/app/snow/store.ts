@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import config from '../config'
+import type { AppContext } from '../types/context'
 
 const testData = {
   timberline: {
@@ -458,9 +458,11 @@ const testData = {
   },
 }
 
-export async function getSummary({ debug = false } = {}) {
+export async function getSummary({ snow }: AppContext, { debug = false } = {}) {
   if (debug) return testData
   console.log('getting from KV')
   const data = await snow.get('conditions')
+  const list = await snow.list()
+  console.log('data', data, list)
   return JSON.parse(data!)
 }
