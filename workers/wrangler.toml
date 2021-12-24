@@ -16,5 +16,9 @@ format = "service-worker"
 
 [triggers]
 crons = [
-  "*/5 * * * *"
+  # At minute 2 past every hour from 12 through 20.
+  "*/2 12-20 * * *",
+
+  # At every 5th minute past every hour from 0 through 12 and every hour from 20 through 23.
+  "*/5 0-12,20-23 * * *"
 ]
