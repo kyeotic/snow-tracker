@@ -1,11 +1,4 @@
-// eslint-disable-next-line no-undef
-// const isProd = window.location.host.includes('kye.dev')
-
 export default {
-  // isProd,
-  // apiHost: isProd ? 'https://api-snow.kye.dev' : 'http://localhost:3100',
-  timeZone: 'America/Los_Angeles',
-  gqlEndpoint: '/v1/graphql',
   timberline: {
     conditionsUrl: 'http://www.timberlinelodge.com/conditions',
     noaaUrl:
@@ -19,4 +12,4 @@ export default {
     conditionsUrl: 'https://www.skihood.com/the-mountain/conditions',
     noaaUrl: 'https://forecast.weather.gov/MapClick.php?lat=45.3282&lon=-121.6623',
   },
-}
+} as const

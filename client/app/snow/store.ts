@@ -460,5 +460,7 @@ const testData = {
 
 export async function getSummary({ debug = false } = {}) {
   if (debug) return testData
-  return testData
+  console.log('getting from KV')
+  const data = await snow.get('conditions')
+  return JSON.parse(data!)
 }

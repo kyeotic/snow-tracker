@@ -31,7 +31,7 @@ export default function Index() {
   return (
     <Pully onRefresh={refresh} disabled={isLoading} className="pulldown">
       <div>
-        <button onClick={() => console.log('clicked')}>refresh3</button>
+        {/* <button onClick={refresh}>refresh3</button> */}
         <SnowSummary summary={data} isLoading={isLoading} />
       </div>
     </Pully>
