@@ -13,7 +13,8 @@ export function links() {
   return [{ rel: 'stylesheet', href: styles }]
 }
 
-export async function loader() {
+export async function loader({ context }) {
+  console.log('context', context)
   const summary = await getSummary()
   return json(summary, {
     headers: cacheControl({ maxAge: fiveMinutes, swr: oneHour }),
