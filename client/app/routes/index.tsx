@@ -7,8 +7,9 @@ import styles from '../snow/snow.css'
 import SnowSummary from '../snow/SnowSummary'
 import { getSummary } from '../snow/store'
 import { headers, cacheControl, defaultCacheTime, defaultSwrTime } from '../util/loader'
-import { useRefresh } from '../util/useRefresh'
+import { useRefresh } from '~/util/useRefresh'
 import { AppContext } from '~/types/context'
+import { onVisibilityChange } from '~/util/onVisibilityChange'
 
 export function links() {
   return [{ rel: 'stylesheet', href: styles }]
@@ -27,7 +28,7 @@ export default function Index() {
   const transition = useTransition()
   const isLoading = transition.state === 'loading'
   useEffect(() => {
-    console.log('load')
+    onVisibilityChange(refresh)
   }, [])
   return (
     <Pully onRefresh={refresh} disabled={isLoading} className="pulldown">
