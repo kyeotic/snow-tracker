@@ -1,13 +1,12 @@
-import { useEffect } from 'react'
-import { useLoaderData, json, useTransition } from 'remix'
-import type { LoaderFunction } from 'remix'
-import Pully from '@nattlivet/react-pully'
+import { useEffect, useCallback, useMemo } from 'react'
+import { useLoaderData, json, useTransition, useFetcher } from 'remix'
+import PullToRefresh from 'react-simple-pull-to-refresh'
 
 import styles from '../snow/snow.css'
 import SnowSummary from '../snow/SnowSummary'
 import { getSummary } from '../snow/store'
 import { headers, cacheControl, defaultCacheTime, defaultSwrTime } from '../util/loader'
-import { useRefresh } from '~/util/useRefresh'
+// import { useRefresh } from '~/util/useRefresh'
 import { AppContext } from '~/types/context'
 import { onVisibilityChange } from '~/util/onVisibilityChange'
 
@@ -23,19 +22,23 @@ export async function loader({ context }: { context: AppContext }) {
 }
 
 export default function Index() {
-  const data = useLoaderData()
-  const refresh = useRefresh()
+  const initialData = useLoaderData()
+  const fetcher = useFetcher()
+  const data = useMemo(() => fetcher?.data || initialData, [fetcher.data])
+  const refresh = useCallback(async () => {
+    const data = fetcher.submit({})
+  }, [fetcher.submit])
   const transition = useTransition()
-  const isLoading = transition.state === 'loading'
+  const isLoading = transition.state === 'loading' || fetcher.state === 'submitting'
   useEffect(() => {
     onVisibilityChange(refresh)
   }, [])
   return (
-    <Pully onRefresh={refresh} disabled={isLoading} className="pulldown">
+    <PullToRefresh onRefresh={refresh} isPullable={!isLoading} className="pulldown">
       <div>
-        {/* <button onClick={refresh}>refresh3</button> */}
+        {/* <button onClick={refresh}>refresh debug</button> */}
         <SnowSummary summary={data} isLoading={isLoading} />
       </div>
-    </Pully>
+    </PullToRefresh>
   )
 }
