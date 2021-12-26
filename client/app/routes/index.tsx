@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useMemo } from 'react'
 import { useLoaderData, json, useTransition, useFetcher } from 'remix'
+import type { LoaderFunction } from 'remix'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 
 import styles from '../snow/snow.css'

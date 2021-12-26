@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react'
 
 import { Link, PageSpinner } from '../components/index.js'
 import config from '../config.js'
@@ -28,11 +28,7 @@ export default function SnowSummary({ summary, isLoading }) {
           <>
             <div className="conditions-headers">
               <SnowHeader {...headerProps} title="Meadows" group="meadows" />
-              <SnowHeader
-                {...headerProps}
-                title="Timberline"
-                group="timberline"
-              />
+              <SnowHeader {...headerProps} title="Timberline" group="timberline" />
               <SnowHeader {...headerProps} title="Ski Bowl" group="skiBowl" />
             </div>
             <div className="conditions-container">
@@ -64,17 +60,10 @@ export default function SnowSummary({ summary, isLoading }) {
 
 function SnowHeader({ title, group, selection, setSelected, summary }) {
   return (
-    <h1
-      onClick={() => setSelected(group)}
-      className={`${selection === group ? 'active' : ''}`}
-    >
+    <h1 onClick={() => setSelected(group)} className={`${selection === group ? 'active' : ''}`}>
       {title}
       <small className="subtitle">
-        (
-        <Link href={config[group].conditionsUrl}>
-          {formatDateFull(summary[group].updatedOn)}
-        </Link>
-        )
+        (<Link href={config[group].conditionsUrl}>{formatDateFull(summary[group].updatedOn)}</Link>)
       </small>
     </h1>
   )
