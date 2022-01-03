@@ -22,7 +22,7 @@ AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
 terraform_state_bucket="terraform-remote-$AWS_ACCOUNT_ID"
 
 # Build
-pushd "${_dir}/../api"
+pushd "${_api}"
 if [ "$CI" = true ] ; then
     yarn install
 fi

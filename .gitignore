@@ -70,3 +70,10 @@ typings/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+**/.yarn/*
+!api/.yarn/patches
+!api/.yarn/plugins
+!api/.yarn/releases
+!api/.yarn/sdks
+!api/.yarn/versions
