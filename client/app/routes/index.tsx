@@ -26,14 +26,18 @@ export default function Index() {
   const initialData = useLoaderData()
   const fetcher = useFetcher()
   const data = useMemo(() => fetcher?.data || initialData, [fetcher.data])
+
   const refresh = useCallback(async () => {
-    const data = fetcher.submit({})
+    fetcher.submit({})
   }, [fetcher.submit])
+
   const transition = useTransition()
   const isLoading = transition.state === 'loading' || fetcher.state === 'submitting'
+
   useEffect(() => {
     onVisibilityChange(refresh)
   }, [])
+
   return (
     <PullToRefresh onRefresh={refresh} isPullable={!isLoading} className="pulldown">
       <div>

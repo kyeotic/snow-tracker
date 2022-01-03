@@ -10,6 +10,10 @@ addEventListener('scheduled', (event) => {
   event.waitUntil(handleSchedule())
 })
 
+interface GraphQLResponse {
+  data: unknown
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handleRequest(req: Request): Promise<Response> {
   await handleSchedule()
@@ -25,7 +29,9 @@ async function handleSchedule() {
     body: query,
   })
 
-  const data = JSON.stringify(await response.json())
+  const conditions: GraphQLResponse = await response.json()
+
+  const data = JSON.stringify(conditions.data)
   // const result = JSON.stringify(data, null, 2)
   // console.log(response.ok, data)
 

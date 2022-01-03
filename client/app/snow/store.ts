@@ -467,5 +467,5 @@ export async function getSummary({ snow }: AppContext, { debug = false } = {}) {
   const data = await snow.get('conditions')
 
   if (!data) throw new Error('KV Conditions missing')
-  return JSON.parse(data).data
+  return JSON.parse(data)
 }
