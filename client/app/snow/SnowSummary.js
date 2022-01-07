@@ -63,7 +63,8 @@ function SnowHeader({ title, group, selection, setSelected, summary }) {
     <h1 onClick={() => setSelected(group)} className={`${selection === group ? 'active' : ''}`}>
       {title}
       <small className="subtitle">
-        (<Link href={config[group].conditionsUrl}>{formatDateFull(summary[group].updatedOn)}</Link>)
+        (<Link href={config[group].conditionsUrl}>{formatDateFull(summary[group]?.updatedOn)}</Link>
+        )
       </small>
     </h1>
   )
