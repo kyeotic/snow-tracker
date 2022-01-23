@@ -45,6 +45,7 @@ export class ConditionsStore {
 
   async getForecast() {
     try {
+      console.log('forecast', this[_config].weather.grid)
       return await this[_weather].getForecast(this[_config].weather.grid)
     } catch (e) {
       this[_logger].error('error getting forecast', e.message, e.stack)
@@ -59,9 +60,7 @@ export class ConditionsStore {
 
   async getCurrentConditions() {
     try {
-      return await this[_weather].getCurrentConditions(
-        this[_config].weather.grid
-      )
+      return await this[_weather].getCurrentConditions(this[_config].weather.grid)
     } catch (e) {
       this[_logger].error('error getting conditions', e.message, e.stack)
       return null
@@ -85,11 +84,7 @@ async function loadSource(store) {
     url: store[_config].conditionsUrl,
   })
   if (request.isErrorStatus(response)) {
-    store[_logger].error(
-      'Conditions Error',
-      response.statusCode,
-      response.data.toString()
-    )
+    store[_logger].error('Conditions Error', response.statusCode, response.data.toString())
     throw new Error(`Error getting conditions: ${response.statusCode}`)
   }
   return store[_parserFactory]({ html: response.data.toString() })

@@ -14,7 +14,7 @@ export const resolvers = {
     },
     async meadows(parent, _, context) {
       const { meadows, logger } = context.app
-      logger.info('gql: Ski Bowl')
+      logger.info('gql: Meadows')
       return getSnowStatus(meadows)
     },
   },

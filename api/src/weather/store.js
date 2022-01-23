@@ -18,18 +18,14 @@ export class WeatherStore {
     const base = await fetch(this, {
       url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast'),
     })
+    console.log('weather cast', base.properties.periods[0])
     return base.properties.periods
   }
 
   async getCurrentConditions(grid) {
     assert(grid, 'required: "grid"')
     const base = await fetch(this, {
-      url: this.api(
-        'gridpoints',
-        grid.id,
-        `${grid.x},${grid.y}`,
-        '/forecast/hourly'
-      ),
+      url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast/hourly'),
     })
     // console.log('base', base)
     let updatedOn = DateTime.fromISO(base.properties.updateTime).toISO()
@@ -59,9 +55,7 @@ export class WeatherStore {
     const condition = base.properties.textDescription
     return {
       condition,
-      temperature: Math.floor(
-        celsiusToFahrenheit(base.properties.temperature.value)
-      ),
+      temperature: Math.floor(celsiusToFahrenheit(base.properties.temperature.value)),
       iconClass: `weather-icon wi wi-${condition.toLowerCase()}`,
     }
   }
@@ -77,18 +71,12 @@ async function fetch(store, params) {
     headers: {
       Accept: 'application/json',
       'User-Agent': store[_config].userAgent,
-      ...params,
+      ...params?.headers,
     },
   })
   if (request.isErrorStatus(response)) {
-    store[_logger].error(
-      'Weather Error',
-      response.statusCode,
-      response.data.toString()
-    )
-    throw new Error(
-      `Weather Error ${response.statusCode} ${response.data.toString()}`
-    )
+    store[_logger].error('Weather Error', response.statusCode, response.data.toString())
+    throw new Error(`Weather Error ${response.statusCode} ${response.data.toString()}`)
   }
   return JSON.parse(response.data.toString())
 }

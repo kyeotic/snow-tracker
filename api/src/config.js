@@ -17,8 +17,7 @@ export default {
     },
   },
   skiBowl: {
-    conditionsUrl:
-      'https://skibowl.com/news-events/conditions-and-lift-status.html',
+    conditionsUrl: 'https://skibowl.com/news-events/conditions-and-lift-status.html',
     weather: {
       point: '45.31,-121.77',
       station: 'ODT75',
@@ -38,7 +37,7 @@ export default {
       station: 'KRTX',
       grid: {
         id: 'PQR',
-        x: 142,
+        x: 143,
         y: 88,
       },
     },
