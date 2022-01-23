@@ -1,3 +1,5 @@
+import { formatShortDay } from '../util/format'
+
 export default function Forecasts({ forecasts }) {
   if (!forecasts) {
     return (
@@ -20,16 +22,13 @@ function Forecast({ forecast }) {
     <li>
       <div className="forecast-summary">
         <span className="forecast-name">{forecast.name}</span>
+        <span className="forecast-date">{formatShortDay(forecast.startTime)}</span>
         <span className={`forecast-temp ${forecast.isDaytime ? 'day' : ''}`}>
           {forecast.temperature}
           {forecast.temperatureUnit}
         </span>
         <span className="forecast-wind">{forecast.windSpeed}</span>
-        <img
-          className="forecast-icon"
-          src={forecast.icon}
-          alt={forecast.shortForecast}
-        />
+        <img className="forecast-icon" src={forecast.icon} alt={forecast.shortForecast} />
       </div>
       <span className="forecast-detail">{forecast.detailedForecast}</span>
     </li>

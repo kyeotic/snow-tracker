@@ -8,7 +8,7 @@ import Lifts from './Lifts.js'
 import Forecasts from './Forecasts.js'
 import { formatDateFull } from '../util/format.js'
 
-export default function SnowSummary({ summary, isLoading }) {
+export default function SnowSummary({ summary }) {
   let [selected, setSelected] = useState('meadows')
   const selectedSummary = summary?.[selected] || {}
   const headerProps = useMemo(
@@ -22,37 +22,25 @@ export default function SnowSummary({ summary, isLoading }) {
   return (
     <div className="snow-summary-container">
       <section className="snow-summary-conditions">
-        {isLoading ? (
-          <PageSpinner />
-        ) : (
-          <>
-            <div className="conditions-headers">
-              <SnowHeader {...headerProps} title="Meadows" group="meadows" />
-              <SnowHeader {...headerProps} title="Timberline" group="timberline" />
-              <SnowHeader {...headerProps} title="Ski Bowl" group="skiBowl" />
-            </div>
-            <div className="conditions-container">
-              <Condition {...selectedSummary.condition} />
-              <Snowfalls snowfalls={selectedSummary.snowfalls} />
-              <Lifts lifts={selectedSummary.lifts} />
-            </div>
-          </>
-        )}
+        <div className="conditions-headers">
+          <SnowHeader {...headerProps} title="Meadows" group="meadows" />
+          <SnowHeader {...headerProps} title="Timberline" group="timberline" />
+          <SnowHeader {...headerProps} title="Ski Bowl" group="skiBowl" />
+        </div>
+        <div className="conditions-container">
+          <Condition {...selectedSummary.condition} />
+          <Snowfalls snowfalls={selectedSummary.snowfalls} />
+          <Lifts lifts={selectedSummary.lifts} />
+        </div>
       </section>
       <section className="snow-summary-noaa">
-        {isLoading ? (
-          <PageSpinner />
-        ) : (
-          <>
-            <h1>
-              NOAA
-              <small>
-                (<Link href={config[selected].noaaUrl}>go to site</Link>)
-              </small>
-            </h1>
-            <Forecasts forecasts={selectedSummary.forecast} />
-          </>
-        )}
+        <h1>
+          NOAA
+          <small>
+            (<Link href={config[selected].noaaUrl}>go to site</Link>)
+          </small>
+        </h1>
+        <Forecasts forecasts={selectedSummary.forecast} />
       </section>
     </div>
   )

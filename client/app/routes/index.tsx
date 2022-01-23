@@ -42,7 +42,7 @@ export default function Index() {
     <PullToRefresh onRefresh={refresh} isPullable={!isLoading} className="pulldown">
       <div>
         {/* <button onClick={refresh}>refresh debug</button> */}
-        <SnowSummary summary={data} isLoading={isLoading} />
+        <SnowSummary summary={data} />
       </div>
     </PullToRefresh>
   )

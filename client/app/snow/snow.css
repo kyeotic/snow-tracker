@@ -236,6 +236,13 @@
   /* grid-area: day-name; */
   display: block;
 }
+.forecast-date {
+  font-size: 0.8rem;
+  display: block;
+  /* grid-area: day-temp; */
+  color: var(--text-color-subtle);
+}
+
 .forecast-temp {
   font-size: 0.8rem;
   display: block;
