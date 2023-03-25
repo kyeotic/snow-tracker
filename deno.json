@@ -1,8 +1,27 @@
 {
+  "tasks": {
+    "start": "deno run -A --watch=src/ src/dev.ts",
+    "check": "deno check ./src/main.ts",
+    "lint": "deno lint",
+    "format": "deno fmt"
+  },
+  "importMap": "./import_map.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  },
   "fmt": {
+    "files": {
+      "include": ["src/"]
+    },
     "options": {
       "semiColons": false,
       "singleQuote": true
+    }
+  },
+  "lint": {
+    "files": {
+      "include": ["src/"]
     }
   }
 }
