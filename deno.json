@@ -1,18 +1,22 @@
 {
   "tasks": {
-    "start": "deno run -A --watch=src/ src/dev.ts",
-    "check": "deno check ./src/main.ts",
+    "start": "deno run --allow-net --allow-read --allow-env --allow-run --allow-write main.ts",
+    "dev": "deno run --import-map import_map_dev.json --allow-net --allow-read --allow-env --allow-run --allow-write dev.ts",
+    "test": "deno test --import-map import_map_test.json",
+    "check": "deno check ./main.ts",
     "lint": "deno lint",
-    "format": "deno fmt"
+    "format": "deno fmt",
+    "prepare": "deno run --allow-read --allow-write --allow-env cli.ts prepare"
   },
-  "importMap": "./import_map.json",
+  "importMap": "import_map.json",
   "compilerOptions": {
+    "lib": ["deno.ns", "dom"],
     "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    "jsxImportSource": "react"
   },
   "fmt": {
     "files": {
-      "include": ["src/"]
+      "include": ["app/", "worker"]
     },
     "options": {
       "semiColons": false,
@@ -21,7 +25,7 @@
   },
   "lint": {
     "files": {
-      "include": ["src/"]
+      "include": ["app/", "worker"]
     }
   }
 }

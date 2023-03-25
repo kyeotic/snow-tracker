@@ -1,5 +1,5 @@
-#!/usr/bin/env -S deno run -A --watch=static/,routes/
+import { dev } from "./runtime.ts";
 
-import dev from "$fresh/dev.ts";
-
-await dev(import.meta.url, "./main.ts");
+dev({
+  browserImportMapPath: Deno.cwd() + "/import_map_dev.json",
+});
