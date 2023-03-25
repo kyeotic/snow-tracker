@@ -1,5 +1,8 @@
 {
   "eslint.workingDirectories": ["./client", "./server"],
   "eslint.packageManager": "yarn",
-  "cSpell.words": ["gridpoints"]
+  "cSpell.words": ["gridpoints"],
+  "deno.enable": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "denoland.vscode-deno"
 }
