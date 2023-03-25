@@ -1,11 +1,11 @@
-import { DualRing } from 'react-loading-io'
+import { ThreeDots } from 'react-loading-icons'
 
 import './pageSpinner.css'
 
 export default function PageSpinner() {
   return (
     <div className="page-spinner-container">
-      <DualRing size={128} />
+      <ThreeDots />
     </div>
   )
 }

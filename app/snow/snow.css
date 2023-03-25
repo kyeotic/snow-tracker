@@ -150,6 +150,17 @@
 
 .snowfalls {
   line-height: 1.3em;
+  display: grid;
+  grid-template-columns: auto 2fr;
+  column-gap: 0.3em;
+  row-gap: 0.1em;
+  /* grid-template-rows: auto auto; */
+  justify-content: start;
+  align-content: start;
+}
+
+.snowfalls li {
+  display: contents;
 }
 
 .snowfall-since {
@@ -157,9 +168,8 @@
 }
 
 .snowfall-depth {
-  min-width: 1.6rem;
+  justify-self: end;
   display: inline-block;
-  text-align: left;
 }
 
 /* Lifts */

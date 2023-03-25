@@ -1,5 +1,4 @@
 import { useEffect, useCallback, useMemo } from 'react'
-// import { useLoaderData, json, useTransition, useFetcher } from 'remix'
 import { json } from '@remix-run/node'
 import { useLoaderData, useNavigation, useFetcher } from '@remix-run/react'
 import PullToRefresh from 'react-simple-pull-to-refresh'
@@ -7,9 +6,6 @@ import PullToRefresh from 'react-simple-pull-to-refresh'
 import styles from '../snow/snow.css'
 import SnowSummary from '../snow/SnowSummary'
 import { getSummary } from '../snow/store'
-import { headers, cacheControl, defaultCacheTime, defaultSwrTime } from '../util/loader'
-// import { useRefresh } from '~/util/useRefresh'
-// import { AppContext } from '~/types/context'
 import { onVisibilityChange } from '~/util/onVisibilityChange'
 
 export function links() {

@@ -5,7 +5,7 @@ export default function Snowfalls({ snowfalls = [] }) {
       <ul className="snowfalls">
         {snowfalls.map((s) => (
           <li key={s.since}>
-            <span className="snowfall-depth">{s.depth}</span>{' '}
+            <span className="snowfall-depth">{s.depth}"</span>{' '}
             <span className="snowfall-since">{s.since}</span>
           </li>
         ))}

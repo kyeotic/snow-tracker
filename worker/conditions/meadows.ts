@@ -53,6 +53,9 @@ export class MeadowsParser implements Parser {
     const midDepth = tryParseFloat(
       this.dom('.snowdepth-mid').find('.reading.depth').first().attr('data-depth')
     )
+    const yttDepth = tryParseFloat(
+      this.dom('.snowdepth-ytd').find('.reading.depth').first().attr('data-depth')
+    )
 
     let levels = this.dom('.conditions-snowfall')
       .find('dl')
@@ -67,6 +70,7 @@ export class MeadowsParser implements Parser {
     return [
       { since: 'Base Depth', depth: baseDepth },
       { since: 'Mid Depth', depth: midDepth },
+      { since: 'Snow YTD', depth: yttDepth },
       ...levels,
     ]
   }
