@@ -27,7 +27,7 @@ switch (command) {
 
     const [routes, checksum] = await Promise.all([
       loadRoutes(appDirectory),
-      buildChecksum(appDirectory),
+      buildChecksum({ appDirectory }),
     ]);
 
     await writeGeneratedFile({ appDirectory, generatedFile, routes, checksum });

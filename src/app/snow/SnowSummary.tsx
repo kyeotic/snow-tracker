@@ -1,14 +1,14 @@
 import { useState, useMemo } from 'react'
 
-import { Link, PageSpinner } from '../components/index.js'
-import config from '../config.js'
-import Snowfalls from './Snowfall.js'
-import Condition from './Condition.js'
-import Lifts from './Lifts.js'
-import Forecasts from './Forecasts.js'
-import { formatDateFull } from '../util/format.js'
+import { Link, PageSpinner } from '../components/index.ts'
+import config from '../config.ts'
+import Snowfalls from './Snowfall.tsx'
+import Condition from './Condition.tsx'
+import Lifts from './Lifts.tsx'
+import Forecasts from './Forecasts.tsx'
+import { formatDateFull } from '../util/format.ts'
 
-export default function SnowSummary({ summary }) {
+export default function SnowSummary({ summary }: any) {
   let [selected, setSelected] = useState('meadows')
   const selectedSummary = summary?.[selected] || {}
   const headerProps = useMemo(

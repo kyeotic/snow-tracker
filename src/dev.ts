@@ -1,5 +1,6 @@
-import { dev } from "./runtime.ts";
+import { dev } from './runtime.ts'
+import { cwd } from './path.ts'
 
 dev({
-  browserImportMapPath: Deno.cwd() + "/import_map_dev.json",
-});
+  browserImportMapPath: cwd() + '/../import_map_dev.json',
+})

@@ -1,4 +1,6 @@
-export default function Snowfalls({ snowfalls = [] }) {
+import { Snowfall } from '../../worker/weather/types.ts'
+
+export default function Snowfalls({ snowfalls = [] }: { snowfalls: Snowfall[] }) {
   return (
     <div className="snowfall">
       <h2>Snowfall</h2>

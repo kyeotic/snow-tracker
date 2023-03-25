@@ -1,6 +1,7 @@
-import { formatShortDay } from '../util/format'
+import { ForecastPeriod } from '../../worker/weather/types.ts'
+import { formatShortDay } from '../util/format.ts'
 
-export default function Forecasts({ forecasts }) {
+export default function Forecasts({ forecasts }: { forecasts: ForecastPeriod[] }) {
   if (!forecasts) {
     return (
       <ul className="forecasts">
@@ -17,7 +18,7 @@ export default function Forecasts({ forecasts }) {
   )
 }
 
-function Forecast({ forecast }) {
+function Forecast({ forecast }: { forecast: ForecastPeriod }) {
   return (
     <li>
       <div className="forecast-summary">

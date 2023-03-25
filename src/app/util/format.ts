@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 
 const timeZone = 'America/Los_Angeles'
 
-export function formatDateFull(date) {
+export function formatDateFull(date?: string | null) {
   if (!date) return 'Unavailable'
   return DateTime.fromISO(date).toLocaleString({
     weekday: 'long',
@@ -15,7 +15,7 @@ export function formatDateFull(date) {
   })
 }
 
-export function formatShortDay(date) {
+export function formatShortDay(date?: string | null) {
   if (!date) return 'Unavailable'
   return DateTime.fromISO(date).toLocaleString({ month: '2-digit', day: '2-digit', timeZone })
 }

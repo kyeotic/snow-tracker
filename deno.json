@@ -1,12 +1,12 @@
 {
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-env --allow-run --allow-write main.ts",
-    "dev": "deno run --import-map import_map_dev.json --allow-net --allow-read --allow-env --allow-run --allow-write dev.ts",
+    "start": "deno run --allow-net --allow-read --allow-env --allow-run --allow-write src/main.ts",
+    "dev": "deno run --import-map import_map_dev.json --allow-net --allow-read --allow-env --allow-run --allow-write src/dev.ts",
     "test": "deno test --import-map import_map_test.json",
-    "check": "deno check ./main.ts",
+    "check": "deno check ./src/main.ts",
     "lint": "deno lint",
     "format": "deno fmt",
-    "prepare": "deno run --allow-read --allow-write --allow-env cli.ts prepare"
+    "prepare": "deno run --allow-read --allow-write --allow-env src/cli.ts prepare"
   },
   "importMap": "import_map.json",
   "compilerOptions": {

@@ -1,12 +1,13 @@
 import { useEffect, useCallback, useMemo } from 'react'
-import { json } from '@remix-run/node'
+import { json, type LoaderArgs } from '@remix-run/deno'
 import { useLoaderData, useNavigation, useFetcher } from '@remix-run/react'
-import PullToRefresh from 'react-simple-pull-to-refresh'
 
-import styles from '../snow/snow.css'
-import SnowSummary from '../snow/SnowSummary'
-import { getSummary } from '../snow/store'
-import { onVisibilityChange } from '~/util/onVisibilityChange'
+import SnowSummary from '../snow/SnowSummary.tsx'
+import { getSummary } from '../snow/store.ts'
+import { onVisibilityChange } from '../util/onVisibilityChange.ts'
+import { asset, css } from '../../assets.ts'
+
+const styles = asset('/snow.css', css)
 
 export function links() {
   return [{ rel: 'stylesheet', href: styles }]
@@ -20,7 +21,7 @@ export async function loader({ context }: { context: any }) {
 }
 
 export default function Index() {
-  const initialData = useLoaderData()
+  const initialData = useLoaderData<typeof loader>()
   const fetcher = useFetcher()
   const data = useMemo(() => fetcher?.data || initialData, [fetcher.data])
 
@@ -37,11 +38,7 @@ export default function Index() {
 
   return (
     <div>
-      {/* <button onClick={refresh}>refresh debug</button> */}
-      {/* <span>test</span> */}
       <SnowSummary summary={data} />
     </div>
-    // <PullToRefresh onRefresh={refresh} isPullable={!isLoading} className="pulldown">
-    // </PullToRefresh>
   )
 }

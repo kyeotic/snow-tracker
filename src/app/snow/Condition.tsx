@@ -1,11 +1,12 @@
-import { formatDateFull } from '../util/format.js'
+import { formatDateFull } from '../util/format.ts'
+import { type Condition as SnowCondition } from '../../worker/weather/types.ts'
 
 export default function Condition({
   condition,
   temperature,
   iconClass,
   updatedOn = 'Unavailable',
-}) {
+}: SnowCondition) {
   if (!temperature && !condition) {
     return <span className="conditions">Error getting conditions</span>
   }

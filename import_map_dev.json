@@ -13,6 +13,7 @@
 
     "react-test-renderer": "https://esm.sh/react-test-renderer@18.2.0?dev",
 
-    "react-rewards": "https://esm.sh/react-rewards@2.0.4?dev"
+    "react-rewards": "https://esm.sh/react-rewards@2.0.4?dev",
+    "luxon": "https://esm.sh/luxon@^3.3.0"
   }
 }
