@@ -1,10 +1,9 @@
-import { ConditionsStore, Parser, ParserProps } from './baseStore'
-import { Condition, LiftStatus, Snowfall } from '../weather/types'
 import cheerio, { CheerioAPI } from 'cheerio'
-import { tryParseFloat } from '../util/parse'
 import { DateTime } from 'luxon'
-import config from '../config'
-import { ILogger, wrapper } from '../util/logger'
+import { ConditionsStore, Parser, ParserProps } from './baseStore.ts'
+import { Condition, LiftStatus, Snowfall } from '../weather/types.ts'
+import { tryParseFloat } from '../util/parse.ts'
+import { ILogger, wrapper } from '../util/logger.ts'
 
 export class MeadowsStore extends ConditionsStore {
   constructor(props: Omit<ConstructorParameters<typeof ConditionsStore>[0], 'parserFactory'>) {
@@ -18,12 +17,14 @@ export class MeadowsStore extends ConditionsStore {
 const dateFormat = "EEEE MMMM d 'at' h':'mm a"
 
 export class MeadowsParser implements Parser {
+  private timeZone: string
   private logger: ILogger
   private dom: CheerioAPI
 
-  constructor({ html, logger }: ParserProps) {
+  constructor({ html, logger, timeZone }: ParserProps) {
     this.logger = wrapper(logger)
     this.dom = cheerio.load(html)
+    this.timeZone = timeZone
   }
 
   async getLiftStatuses(): Promise<LiftStatus[]> {
@@ -32,7 +33,7 @@ export class MeadowsParser implements Parser {
     return rows
   }
 
-  async getLiftUpdatedTime(): Promise<Date | null> {
+  async getLiftUpdatedTime(): Promise<string | null> {
     let date = this.dom('.conditions-info.lift-operations')
       .find('p')
       .first()
@@ -42,8 +43,8 @@ export class MeadowsParser implements Parser {
     if (!date) return null
 
     return DateTime.fromFormat(date, dateFormat, {
-      zone: config.timeZone,
-    }).toJSDate()
+      zone: this.timeZone,
+    }).toISO()
   }
 
   async getSnowfall(): Promise<Snowfall[]> {
@@ -59,7 +60,7 @@ export class MeadowsParser implements Parser {
 
     let levels = this.dom('.conditions-snowfall')
       .find('dl')
-      .map((i, el) => {
+      .map((i: any, el: any) => {
         return {
           since: this.dom(el).find('.metric').text().trim(),
           depth: tryParseFloat(this.dom(el).find('.reading.depth').first().attr('data-depth')),
@@ -75,14 +76,14 @@ export class MeadowsParser implements Parser {
     ]
   }
 
-  async getLastUpdatedTime(): Promise<Date | null> {
+  async getLastUpdatedTime(): Promise<string | null> {
     let date = this.dom('.conditions-snapshot .metric').find('time').first().text()
 
     if (!date) return null
 
     return DateTime.fromFormat(date, dateFormat, {
-      zone: config.timeZone,
-    }).toJSDate()
+      zone: this.timeZone,
+    }).toISO()
   }
 
   async getCondition(): Promise<Condition> {

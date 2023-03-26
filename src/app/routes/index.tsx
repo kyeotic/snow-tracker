@@ -6,14 +6,15 @@ import SnowSummary from '../snow/SnowSummary.tsx'
 import { getSummary } from '../snow/store.ts'
 import { onVisibilityChange } from '../util/onVisibilityChange.ts'
 import { asset, css } from '../../assets.ts'
+import { AppContext } from '../../context.ts'
 
 const styles = asset('/snow.css', css)
 
 export function links() {
-  return [{ rel: 'stylesheet', href: styles }]
+  return [{ rel: 'stylesheet', href: styles.href }]
 }
 
-export async function loader({ context }: { context: any }) {
+export async function loader({ context }: { context: AppContext }) {
   const summary = await getSummary(context)
   return json(summary, {
     // headers: cacheControl({ maxAge: defaultCacheTime, swr: defaultSwrTime }),

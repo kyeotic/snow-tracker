@@ -1,8 +1,6 @@
-import { ConditionsStore } from './conditions/baseStore'
-import { init } from './context'
-import { SnowStatus } from './weather/types'
-
-const context = init()
+import { type AppContext } from './context.ts'
+import { ConditionsStore } from './conditions/baseStore.ts'
+import { SnowStatus } from './weather/types.ts'
 
 export interface SnowReport {
   timberline: SnowStatus
@@ -10,7 +8,7 @@ export interface SnowReport {
   meadows: SnowStatus
 }
 
-export async function getSnowData(): Promise<SnowReport> {
+export async function getSnowData(context: AppContext): Promise<SnowReport> {
   const [timberline, skiBowl, meadows] = await Promise.all(
     [context.timberline, context.skiBowl, context.meadows].map(getSnowStatus)
   )

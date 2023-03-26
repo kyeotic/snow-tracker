@@ -1,10 +1,9 @@
-import { ConditionsStore, Parser, ParserProps } from './baseStore'
-import { Condition, LiftStatus, Snowfall } from '../weather/types'
-import { DateTime } from 'luxon'
 import cheerio, { CheerioAPI } from 'cheerio'
-import { tryParseFloat } from '../util/parse'
-import { ILogger, wrapper } from '../util/logger'
-import config from '../config'
+import { DateTime } from 'luxon'
+import { ConditionsStore, Parser, ParserProps } from './baseStore.ts'
+import { Condition, LiftStatus, Snowfall } from '../weather/types.ts'
+import { tryParseFloat } from '../util/parse.ts'
+import { ILogger, wrapper } from '../util/logger.ts'
 
 const dateFormat = "MMMM d',' yyyy h':'mma"
 
@@ -26,12 +25,14 @@ export class SkiBowlStore extends ConditionsStore {
 }
 
 export class SkiBowlParser implements Parser {
+  private timeZone: string
   private logger: ILogger
   private dom: CheerioAPI
 
-  constructor({ html, logger }: ParserProps) {
+  constructor({ html, logger, timeZone }: ParserProps) {
     this.logger = wrapper(logger)
     this.dom = cheerio.load(html)
+    this.timeZone = timeZone
   }
 
   async getLiftStatuses(): Promise<LiftStatus[]> {
@@ -39,13 +40,13 @@ export class SkiBowlParser implements Parser {
       .find('tr')
       .get()
       .map(liftStatusRow(this.dom))
-      .filter((r) => r.name.toLowerCase().includes('chair'))
-      .map((r) => ({ ...r, name: r.name.replace(/\s?Chair/i, '') }))
+      .filter((r: any) => r.name.toLowerCase().includes('chair'))
+      .map((r: any) => ({ ...r, name: r.name.replace(/\s?Chair/i, '') }))
     this.logger.debug('lift statuses', rows)
     return rows
   }
 
-  async getLiftUpdatedTime(): Promise<Date | null> {
+  async getLiftUpdatedTime(): Promise<string | null> {
     return this.getLastUpdatedTime()
   }
 
@@ -53,7 +54,7 @@ export class SkiBowlParser implements Parser {
     let conditions = this.dom('#liststatuses')
     let baseDepthStr = conditions
       .find('td')
-      .filter((i, panel) => {
+      .filter((i: any, panel: any) => {
         let p = this.dom(panel)
         return p.html()!!.includes('Snow Depth')
       })
@@ -65,14 +66,14 @@ export class SkiBowlParser implements Parser {
 
     let newSnow = conditions
       .find('td')
-      .filter((i, panel) => {
+      .filter((i: any, panel: any) => {
         // console.log('panel', Object.keys(panel))
         let p = this.dom(panel)
         return p.html()!!.includes('New Snow')
       })
       .parent()
       .get()
-      .map((el) => {
+      .map((el: any) => {
         let row = this.dom(el)
         let since = row.find('td').first().text().trim()
         since = since.match(/\d{2}/)!![0]
@@ -91,18 +92,18 @@ export class SkiBowlParser implements Parser {
     ]
   }
 
-  async getLastUpdatedTime(): Promise<Date | null> {
+  async getLastUpdatedTime(): Promise<string | null> {
     const updates = this.dom('#liststatuses').find('tr')
 
     let date = updates
-      .filter((i, panel) => {
+      .filter((i: any, panel: any) => {
         let p = this.dom(panel)
         return p.html()!!.includes('Date:')
       })
       .find('td')
       .eq(1)
     let time = updates
-      .filter((i, panel) => {
+      .filter((i: any, panel: any) => {
         let p = this.dom(panel)
         return p.html()!!.includes('Time:')
       })
@@ -123,8 +124,8 @@ export class SkiBowlParser implements Parser {
     // return date.text() || null
 
     return DateTime.fromFormat(`${date.text()} ${time.text().toUpperCase()}`, dateFormat, {
-      zone: config.timeZone,
-    }).toJSDate()
+      zone: this.timeZone,
+    }).toISO()
   }
 
   async getCondition(): Promise<Condition | null> {

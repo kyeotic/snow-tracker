@@ -1,9 +1,8 @@
-import { ConditionsStore, Parser, ParserProps } from './baseStore'
-import { Condition, LiftStatus, Snowfall } from '../weather/types'
 import cheerio, { CheerioAPI } from 'cheerio'
 import { DateTime } from 'luxon'
-import config from '../config'
-import { ILogger, wrapper } from '../util/logger'
+import { ConditionsStore, Parser, ParserProps } from './baseStore.ts'
+import { Condition, LiftStatus, Snowfall } from '../weather/types.ts'
+import { ILogger, wrapper } from '../util/logger.ts'
 
 export class TimberlineStore extends ConditionsStore {
   constructor(props: Omit<ConstructorParameters<typeof ConditionsStore>[0], 'parserFactory'>) {
@@ -21,12 +20,14 @@ export class TimberlineStore extends ConditionsStore {
 const dateFormat = "MMMM d '- Updated at' h':'mm a"
 
 export class TimberlineParser implements Parser {
+  private timeZone: string
   private logger: ILogger
   private dom: CheerioAPI
 
-  constructor({ html, logger }: ParserProps) {
+  constructor({ html, logger, timeZone }: ParserProps) {
     this.logger = wrapper(logger)
     this.dom = cheerio.load(html)
+    this.timeZone = timeZone
   }
 
   async getLiftStatuses(): Promise<LiftStatus[]> {
@@ -38,7 +39,7 @@ export class TimberlineParser implements Parser {
     return rows
   }
 
-  async getLiftUpdatedTime(): Promise<Date | null> {
+  async getLiftUpdatedTime(): Promise<string | null> {
     return this.getLastUpdatedTime()
   }
 
@@ -46,7 +47,7 @@ export class TimberlineParser implements Parser {
     let levels = this.dom('.conditions-panel')
       .filter(depthFilter(this.dom))
       .find('dl dt')
-      .map((i, el) => {
+      .map((i: any, el: any) => {
         return {
           since: this.dom(el).next().text().trim(),
           depth: parseFloat(this.dom(el).text().trim().replace('"', '')),
@@ -57,12 +58,12 @@ export class TimberlineParser implements Parser {
     return levels
   }
 
-  async getLastUpdatedTime(): Promise<Date | null> {
+  async getLastUpdatedTime(): Promise<string | null> {
     let date = this.dom('.conditions-panel').find('p').first().text().trim()
     // return date
     return DateTime.fromFormat(date, dateFormat, {
-      zone: config.timeZone,
-    }).toJSDate()
+      zone: this.timeZone,
+    }).toISO()
   }
 
   async getCondition(): Promise<Condition> {
@@ -71,15 +72,15 @@ export class TimberlineParser implements Parser {
       .text()
       .trim()
       .split('\n')
-      .map((s) => s.trim())
+      .map((s: any) => s.trim())
     let temperature = parseFloat(temperatureStr)
     // this.logger.info('temp', temperature, condition)
     let iconNode = tempNode.siblings('i')
     let icons = iconNode
       .attr('class')!!
       .split(/\s/)
-      .filter((s) => !!s)
-      .map((s) => s.trim())
+      .filter((s: any) => !!s)
+      .map((s: any) => s.trim())
     this.logger.debug('icons', icons)
 
     const updatedOn = await this.getLastUpdatedTime()

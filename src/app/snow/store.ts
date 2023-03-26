@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+import { AppContext } from '../../context.ts'
+import { type SnowReport, getSnowData } from '../../worker/api.ts'
 
 const testData = {
   timberline: {
@@ -455,21 +457,9 @@ const testData = {
     },
     forecast: null,
   },
-}
+} as unknown as SnowReport
 
-export async function getSummary({ port }: any, { debug = false } = {}) {
+export async function getSummary(context: AppContext, { debug = false } = {}): Promise<SnowReport> {
   if (debug) return testData
-  const response = await fetch(`http://localhost:${port}/api`)
-  const body = await response.json()
-  // console.log('loader summary', port, body)
-  return body
-  // if (debug) return snowReport
-
-  // debug, use to populate local KV is needed
-  // await snow.put('conditions', JSON.stringify(testData))
-
-  // const data = await snow.get('conditions')
-
-  // if (!data) throw new Error('KV Conditions missing')
-  // return JSON.parse(data)
+  return getSnowData(context)
 }

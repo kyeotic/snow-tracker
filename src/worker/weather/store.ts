@@ -1,10 +1,9 @@
-import request, { isErrorStatus, RequestOptions } from 'request-micro'
-import urlJoin from 'url-join'
-import { assert } from '../util/assert'
-import { wrapper, type ILogger } from '../util/logger'
+import { urlJoin } from 'url-join'
 import { DateTime } from 'luxon'
-import { WeatherConfig, GridPoint } from '../config.js'
-import { Condition } from './types'
+import { assert } from '../util/assert.ts'
+import { wrapper, type ILogger } from '../util/logger.ts'
+import { Condition, GridPoint } from './types.ts'
+import { WeatherConfig } from '../../config.ts'
 
 export class WeatherStore {
   private config: WeatherConfig
@@ -17,20 +16,20 @@ export class WeatherStore {
 
   async getForecast(grid: GridPoint) {
     assert(grid, 'required: "grid"')
-    const base = await this.fetch({
-      url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast'),
-    })
+    const base = await this.fetch(
+      this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast')
+    )
     this.logger.debug('weather cast', base.properties.periods[0])
     return base.properties.periods
   }
 
   async getCurrentConditions(grid: GridPoint): Promise<Condition> {
     assert(grid, 'required: "grid"')
-    const base = await this.fetch({
-      url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast/hourly'),
-    })
+    const base = await this.fetch(
+      this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast/hourly')
+    )
     // console.log('base', base)
-    let updatedOn = DateTime.fromISO(base.properties.updateTime).toJSDate()
+    let updatedOn = DateTime.fromISO(base.properties.updateTime).toISO()
     let current = base.properties.periods[0]
     let icon = 'clear'
     let match = current.icon.match(/land\/(.+?)\/(.+?)[?,]/)
@@ -51,9 +50,7 @@ export class WeatherStore {
 
   async getStationConditions(stationId: string) {
     assert(stationId, 'required: "stationId"')
-    const base = await this.fetch({
-      url: this.api('stations', stationId, 'observations/latest'),
-    })
+    const base = await this.fetch(this.api('stations', stationId, 'observations/latest'))
     const condition = base.properties.textDescription
     return {
       condition,
@@ -66,8 +63,8 @@ export class WeatherStore {
     return urlJoin(this.config.baseUrl, ...parts)
   }
 
-  async fetch(params: RequestOptions) {
-    const response = await request({
+  async fetch(url: string, params?: RequestInit) {
+    const response = await fetch(url, {
       ...params,
       headers: {
         Accept: 'application/json',
@@ -75,11 +72,12 @@ export class WeatherStore {
         ...params?.headers,
       },
     })
-    if (isErrorStatus(response)) {
-      this.logger.error('Weather Error', response.statusCode, response.data.toString())
-      throw new Error(`Weather Error ${response.statusCode} ${response.data.toString()}`)
+    if (!response.ok) {
+      const body = await response.text()
+      this.logger.error('Weather Error', response.status, body)
+      throw new Error(`Weather Error ${response.status} ${body}`)
     }
-    return JSON.parse(response.data.toString())
+    return response.json()
   }
 }
 

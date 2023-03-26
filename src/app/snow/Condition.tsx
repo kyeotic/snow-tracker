@@ -1,4 +1,4 @@
-import { formatDateFull } from '../util/format.ts'
+import { formatDateFull } from '../util/dates.ts'
 import { type Condition as SnowCondition } from '../../worker/weather/types.ts'
 
 export default function Condition({

@@ -1,23 +1,22 @@
-import request, { isErrorStatus } from 'request-micro'
-import { wrapper, ILogger } from '../util/logger'
-import { type ConditionConfig } from '../config'
-import { WeatherStore } from '../weather/store'
-import { Condition, Lifts, LiftStatus, Snowfall } from '../weather/types'
+import { wrapper, ILogger } from '../util/logger.ts'
+import { WeatherStore } from '../weather/store.ts'
+import { Condition, ConditionConfig, Lifts, LiftStatus, Snowfall } from '../weather/types.ts'
 
 export interface ParserFactory {
-  ({ html, logger }: { html: string; logger?: ILogger }): Parser
+  (props: ParserProps): Parser
 }
 
 export interface Parser {
   getLiftStatuses: () => Promise<LiftStatus[]>
-  getLiftUpdatedTime: () => Promise<Date | null>
-  getLastUpdatedTime: () => Promise<Date | null>
+  getLiftUpdatedTime: () => Promise<string | null>
+  getLastUpdatedTime: () => Promise<string | null>
   getSnowfall: () => Promise<Snowfall[]>
   getCondition: () => Promise<Condition | null>
 }
 
 export interface ParserProps {
   html: string
+  timeZone: string
   logger?: ILogger
 }
 
@@ -113,19 +112,14 @@ export class ConditionsStore {
   }
 
   async loadSource(): Promise<Parser> {
-    let response = await request({
+    let response = await fetch(this.config.conditionsUrl, {
       headers: this.headers,
-      url: this.config.conditionsUrl,
     })
-    if (isErrorStatus(response)) {
-      this.logger.error(
-        'Conditions Error',
-        response.statusCode,
-        response.data.toString(),
-        this.config
-      )
-      throw new Error(`Error getting conditions: ${response.statusCode}`)
+    const body = await response.text()
+    if (!response.ok) {
+      this.logger.error('Conditions Error', response.status, body, this.config)
+      throw new Error(`Error getting conditions: ${response.status}`)
     }
-    return this.parserFactory({ html: response.data.toString(), logger: this.logger })
+    return this.parserFactory({ html: body, logger: this.logger, timeZone: this.config.timeZone })
   }
 }

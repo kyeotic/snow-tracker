@@ -44,3 +44,25 @@ export interface ForecastPeriod {
   shortForecast: string
   detailedForecast: string
 }
+
+export interface ConditionConfig {
+  timeZone: string
+  conditionsUrl: string
+  noaaUrl: string
+  weather: {
+    station: string
+    point: string
+    office: string
+    grid: {
+      id: string
+      x: number
+      y: number
+    }
+  }
+}
+
+export interface GridPoint {
+  id: string
+  x: number
+  y: number
+}

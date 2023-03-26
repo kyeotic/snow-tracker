@@ -1,3 +1,6 @@
+// This is seperate from the config.ts so that it can be shipped to the client
+// config.ts has Deno.env calls that cannot be shipped to the client
+
 export default {
   timberline: {
     conditionsUrl: 'http://www.timberlinelodge.com/conditions',

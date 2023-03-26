@@ -1,5 +1,5 @@
 import { Lifts as SnowLifts, LiftStatus } from '../../worker/weather/types.ts'
-import { formatDateFull } from '../util/format.ts'
+import { formatDateFull } from '../util/dates.ts'
 
 export default function Lifts({
   lifts: { updatedOn, liftStatuses = [] } = {} as SnowLifts,

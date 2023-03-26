@@ -1,31 +1,18 @@
-export interface ConditionConfig {
-  conditionsUrl: string
-  weather: {
-    station: string
-    point: string
-    office: string
-    grid: {
-      id: string
-      x: number
-      y: number
-    }
-  }
-}
+import { type ConditionConfig, type GridPoint } from './worker/weather/types.ts'
 
-export interface GridPoint {
-  id: string
-  x: number
-  y: number
-}
+const timeZone = 'America/Los_Angeles' as string
 
 const config = {
-  timeZone: 'America/Los_Angeles' as string,
+  timeZone,
   weather: {
-    userAgent: (process.env.DOMAIN || 'KyeSnow') as string,
+    userAgent: (Deno.env.get('DOMAIN') || 'KyeSnow') as string,
     baseUrl: 'https://api.weather.gov' as string,
   },
   timberline: {
+    timeZone,
     conditionsUrl: 'http://www.timberlinelodge.com/conditions',
+    noaaUrl:
+      'https://forecast.weather.gov/MapClick.php?lat=45.33284041773058&lon=-121.70877456665039&site=all',
     weather: {
       point: '45.3328,-121.7088',
       office: 'PQR',
@@ -37,7 +24,9 @@ const config = {
     },
   } as ConditionConfig,
   skiBowl: {
-    conditionsUrl: 'https://skibowl.com/news-events/conditions-and-lift-status.html',
+    timeZone,
+    conditionsUrl: 'http://www.skibowl.com/winter/mt-hood-weather-conditions',
+    noaaUrl: 'https://forecast.weather.gov/MapClick.php?lat=45.302189&lon=-121.750504&site=all',
     weather: {
       point: '45.31,-121.77',
       station: 'ODT75',
@@ -50,7 +39,9 @@ const config = {
     },
   } as ConditionConfig,
   meadows: {
+    timeZone,
     conditionsUrl: 'https://www.skihood.com/the-mountain/conditions',
+    noaaUrl: 'https://forecast.weather.gov/MapClick.php?lat=45.3282&lon=-121.6623',
     weather: {
       point: '45.34357,-121.67227',
       office: 'PQR',
@@ -65,4 +56,4 @@ const config = {
 } as const
 
 export default config
-export type WeatherConfig = (typeof config)['weather']
+export type WeatherConfig = typeof config['weather']

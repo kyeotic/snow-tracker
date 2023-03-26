@@ -1,5 +1,5 @@
 import { ForecastPeriod } from '../../worker/weather/types.ts'
-import { formatShortDay } from '../util/format.ts'
+import { formatShortDay } from '../util/dates.ts'
 
 export default function Forecasts({ forecasts }: { forecasts: ForecastPeriod[] }) {
   if (!forecasts) {

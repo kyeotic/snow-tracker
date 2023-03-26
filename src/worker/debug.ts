@@ -1,4 +1,4 @@
-import { getSnowData, SnowReport } from './api'
+import { getSnowData, SnowReport } from './api.ts'
 
 export { type SnowReport }
 
