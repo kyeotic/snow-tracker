@@ -1,9 +1,8 @@
 {
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-env --allow-run --allow-write src/main.ts",
-    "dev": "deno run --allow-net --allow-read --allow-env --allow-run --allow-write src/dev.ts",
-    "test": "deno test",
+    "start": "deno run -A --watch=src/ src/dev.ts",
     "check": "deno check ./src/main.ts",
+    "test": "deno test",
     "lint": "deno lint",
     "format": "deno fmt",
     "prepare": "deno run --allow-read --allow-write --allow-env src/cli.ts prepare",
@@ -13,7 +12,7 @@
   "compilerOptions": {
     "lib": ["deno.ns", "dom"],
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "preact"
   },
   "fmt": {
     "files": {
