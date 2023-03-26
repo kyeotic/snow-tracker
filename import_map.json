@@ -14,12 +14,6 @@
     "react-test-renderer": "https://esm.sh/react-test-renderer@18.2.0",
     "react-rewards": "https://esm.sh/react-rewards@2.0.4",
     "luxon": "https://esm.sh/luxon@^3.3.0",
-    "url-join": "https://deno.land/x/url_join@1.0.0/mod.ts",
-    "$fresh/": "https://deno.land/x/fresh@1.1.4/",
-    "preact": "https://esm.sh/preact@10.11.0",
-    "preact/": "https://esm.sh/preact@10.11.0/",
-    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@5.2.4",
-    "@preact/signals": "https://esm.sh/*@preact/signals@1.0.3",
-    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.0.1"
+    "url-join": "https://deno.land/x/url_join@1.0.0/mod.ts"
   }
 }
