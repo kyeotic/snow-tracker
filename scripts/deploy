@@ -6,7 +6,4 @@ _project="${_scripts}/.."
 
 export $(grep -v '^#' $_project/.env | xargs)
 
-# echo $DOCKER_REGISTRY_HOST
-
-podman image tag $APP_NAME $DOCKER_REGISTRY_HOST/$APP_NAME
-podman push $DOCKER_REGISTRY_HOST/$APP_NAME:latest
+deployctl deploy --project="$DENO_DEPLOY_PROJECT" ./src/main.ts
