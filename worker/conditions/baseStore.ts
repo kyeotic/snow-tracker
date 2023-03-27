@@ -98,9 +98,14 @@ export class ConditionsStore {
     }
   }
 
-  async getSource(): Promise<void | Parser> {
+  async reset(): Promise<void> {
+    await this.getSource({ reset: true })
+  }
+
+  async getSource({ reset = false }: { reset?: boolean } = {}): Promise<void | Parser> {
     // If set, return it
     // If its a promise from a pending run it will be awaited
+    if (reset) this.parser = undefined
     if (this.parser) return this.parser
 
     // Set to a promise so that it can be awaited in parallel

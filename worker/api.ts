@@ -19,6 +19,7 @@ export async function getSnowData(): Promise<SnowReport> {
 }
 
 async function getSnowStatus(store: ConditionsStore) {
+  await store.reset()
   let [condition, snowfalls, lifts, forecast, updatedOn] = await Promise.all([
     store.getCondition(),
     store.getSnowfall(),

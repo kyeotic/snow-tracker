@@ -6,7 +6,7 @@ export async function run() {
   try {
     console.log('running')
     const report = await getSnowData()
-    console.log('report', report.meadows.snowfalls)
+    console.log('report', report.meadows.lifts)
   } catch (e: any) {}
 }
 

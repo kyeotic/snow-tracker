@@ -10,6 +10,7 @@ const BUILD_DIR = process.env.BUILD_DIR || path.join(process.cwd(), 'build')
 
 let snowReport: SnowReport
 run((s) => {
+  console.log('updating report', s?.meadows?.updatedOn, s?.meadows?.lifts?.updatedOn)
   snowReport = s
 })
 
@@ -33,8 +34,8 @@ app.use(express.static('public', { maxAge: '1h' }))
 
 app.use(morgan('tiny'))
 
-app.get('/api', (req, res) => {
-  console.log('GET /api')
+app.get('/snow-report', (req, res) => {
+  console.log('GET /snow-report', snowReport?.meadows?.lifts?.updatedOn)
   res.send(snowReport)
   // res.send({})
 })

@@ -76,7 +76,7 @@ export class MeadowsParser implements Parser {
   }
 
   async getLastUpdatedTime(): Promise<Date | null> {
-    let date = this.dom('.conditions-snapshot .metric').find('time').first().text()
+    let date = this.dom('.conditions-current .metric').find('time').first().text()
 
     if (!date) return null
 

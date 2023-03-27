@@ -1,6 +1,5 @@
-import { scheduleJob } from 'node-schedule'
+import { Cron } from 'croner'
 import { getSnowData, SnowReport } from './api'
-
 export { type SnowReport }
 
 export const crons = [
@@ -21,7 +20,7 @@ export async function run(fn: (status: SnowReport) => void) {
 
   crons.forEach((cron) => {
     console.log(`scheduling ${cron}`)
-    scheduleJob(cron, async () => {
+    Cron(cron, async () => {
       console.log('Executing Worker Run')
       fn(await getSnowData())
     })

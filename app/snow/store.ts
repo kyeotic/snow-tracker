@@ -459,7 +459,7 @@ const testData = {
 
 export async function getSummary({ port }: any, { debug = false } = {}) {
   if (debug) return testData
-  const response = await fetch(`http://localhost:${port}/api`)
+  const response = await fetch(`http://localhost:${port}/snow-report`)
   const body = await response.json()
   // console.log('loader summary', port, body)
   return body
