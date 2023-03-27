@@ -1,7 +1,6 @@
 import { useEffect, useCallback, useMemo } from 'react'
 import { json } from '@remix-run/node'
 import { useLoaderData, useNavigation, useFetcher } from '@remix-run/react'
-import PullToRefresh from 'react-simple-pull-to-refresh'
 
 import styles from '../snow/snow.css'
 import SnowSummary from '../snow/SnowSummary'
@@ -37,11 +36,7 @@ export default function Index() {
 
   return (
     <div>
-      {/* <button onClick={refresh}>refresh debug</button> */}
-      {/* <span>test</span> */}
       <SnowSummary summary={data} />
     </div>
-    // <PullToRefresh onRefresh={refresh} isPullable={!isLoading} className="pulldown">
-    // </PullToRefresh>
   )
 }

@@ -38,7 +38,7 @@ export class TimberlineParser implements Parser {
     return rows
   }
 
-  async getLiftUpdatedTime(): Promise<Date | null> {
+  async getLiftUpdatedTime(): Promise<string | null> {
     return this.getLastUpdatedTime()
   }
 
@@ -57,12 +57,12 @@ export class TimberlineParser implements Parser {
     return levels
   }
 
-  async getLastUpdatedTime(): Promise<Date | null> {
+  async getLastUpdatedTime(): Promise<string | null> {
     let date = this.dom('.conditions-panel').find('p').first().text().trim()
     // return date
     return DateTime.fromFormat(date, dateFormat, {
       zone: config.timeZone,
-    }).toJSDate()
+    }).toISO()
   }
 
   async getCondition(): Promise<Condition> {

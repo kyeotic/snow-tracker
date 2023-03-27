@@ -5,7 +5,7 @@ export interface LiftStatus {
 }
 
 export interface Condition {
-  updatedOn: Date | null
+  updatedOn: string | null
   temperature: number
   condition: string
   iconClass: string
@@ -17,12 +17,12 @@ export interface Snowfall {
 }
 
 export interface Lifts {
-  updatedOn: Date | null
+  updatedOn: string | null
   liftStatuses: LiftStatus[]
 }
 
 export interface SnowStatus {
-  updatedOn: Date | null
+  updatedOn: string | null
   snowfalls: Snowfall[]
   lifts: Lifts
   condition: Condition | null
@@ -32,8 +32,8 @@ export interface SnowStatus {
 export interface ForecastPeriod {
   number: number
   name: string
-  startTime: Date
-  endTime: Date
+  startTime: string
+  endTime: string
   isDaytime: Boolean
   temperature: number
   temperatureUnit: string

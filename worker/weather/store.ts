@@ -30,7 +30,7 @@ export class WeatherStore {
       url: this.api('gridpoints', grid.id, `${grid.x},${grid.y}`, '/forecast/hourly'),
     })
     // console.log('base', base)
-    let updatedOn = DateTime.fromISO(base.properties.updateTime).toJSDate()
+    let updatedOn = DateTime.fromISO(base.properties.updateTime).toISO()
     let current = base.properties.periods[0]
     let icon = 'clear'
     let match = current.icon.match(/land\/(.+?)\/(.+?)[?,]/)

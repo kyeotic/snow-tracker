@@ -32,7 +32,7 @@ export class MeadowsParser implements Parser {
     return rows
   }
 
-  async getLiftUpdatedTime(): Promise<Date | null> {
+  async getLiftUpdatedTime(): Promise<string | null> {
     let date = this.dom('.conditions-info.lift-operations')
       .find('p')
       .first()
@@ -43,7 +43,7 @@ export class MeadowsParser implements Parser {
 
     return DateTime.fromFormat(date, dateFormat, {
       zone: config.timeZone,
-    }).toJSDate()
+    }).toISO()
   }
 
   async getSnowfall(): Promise<Snowfall[]> {
@@ -75,14 +75,14 @@ export class MeadowsParser implements Parser {
     ]
   }
 
-  async getLastUpdatedTime(): Promise<Date | null> {
+  async getLastUpdatedTime(): Promise<string | null> {
     let date = this.dom('.conditions-current .metric').find('time').first().text()
 
     if (!date) return null
 
     return DateTime.fromFormat(date, dateFormat, {
       zone: config.timeZone,
-    }).toJSDate()
+    }).toISO()
   }
 
   async getCondition(): Promise<Condition> {

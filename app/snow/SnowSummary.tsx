@@ -1,15 +1,15 @@
 import { useState, useMemo } from 'react'
 
-import { Link, PageSpinner } from '../components/index.js'
-import config from '../config.js'
-import Snowfalls from './Snowfall.js'
-import Condition from './Condition.js'
-import Lifts from './Lifts.js'
-import Forecasts from './Forecasts.js'
-import { formatDateFull } from '../util/format.js'
+import { Link, PageSpinner } from '../components/index'
+import config from '../config'
+import Snowfalls from './Snowfall'
+import Condition from './Condition'
+import Lifts from './Lifts'
+import Forecasts from './Forecasts'
+import { formatDateFull } from '../util/dates'
 
-export default function SnowSummary({ summary }) {
-  let [selected, setSelected] = useState('meadows')
+export default function SnowSummary({ summary }: any) {
+  let [selected, setSelected] = useState<keyof typeof config>('meadows')
   const selectedSummary = summary?.[selected] || {}
   const headerProps = useMemo(
     () => ({
@@ -46,7 +46,7 @@ export default function SnowSummary({ summary }) {
   )
 }
 
-function SnowHeader({ title, group, selection, setSelected, summary }) {
+function SnowHeader({ title, group, selection, setSelected, summary }: any) {
   return (
     <h1 onClick={() => setSelected(group)} className={`${selection === group ? 'active' : ''}`}>
       {title}

@@ -1,7 +1,10 @@
-import { formatDateFull } from '../util/format.js'
+import { Lifts as SnowLifts, LiftStatus } from '../../worker/weather/types'
+import { formatDateFull } from '../util/dates'
 
 export default function Lifts({
-  lifts: { updatedOn, liftStatuses = [] } = {},
+  lifts: { updatedOn, liftStatuses = [] } = {} as SnowLifts,
+}: {
+  lifts?: SnowLifts
 }) {
   return (
     <div className="lifts">
@@ -17,7 +20,7 @@ export default function Lifts({
   )
 }
 
-function Lift({ lift: { name, status, hours } = {} }) {
+function Lift({ lift: { name, status, hours } = {} as LiftStatus }: { lift: LiftStatus }) {
   const hasSubstatus = name.includes('(')
   const isOpen = status && status.toLowerCase().includes('open')
   let subStatus
@@ -28,9 +31,7 @@ function Lift({ lift: { name, status, hours } = {} }) {
   return (
     <li>
       <span className={`lift-name${isOpen ? ' open' : ''}`}>{name}</span>
-      {subStatus && isOpen && (
-        <span className="lift-substatus">{subStatus}</span>
-      )}
+      {subStatus && isOpen && <span className="lift-substatus">{subStatus}</span>}
       <span className="lift-status">{status}</span>
       {isOpen && <span className="lift-hours">{hours}</span>}
     </li>

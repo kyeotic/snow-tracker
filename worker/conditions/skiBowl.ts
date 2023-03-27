@@ -45,7 +45,7 @@ export class SkiBowlParser implements Parser {
     return rows
   }
 
-  async getLiftUpdatedTime(): Promise<Date | null> {
+  async getLiftUpdatedTime(): Promise<string | null> {
     return this.getLastUpdatedTime()
   }
 
@@ -91,7 +91,7 @@ export class SkiBowlParser implements Parser {
     ]
   }
 
-  async getLastUpdatedTime(): Promise<Date | null> {
+  async getLastUpdatedTime(): Promise<string | null> {
     const updates = this.dom('#liststatuses').find('tr')
 
     let date = updates
@@ -124,7 +124,7 @@ export class SkiBowlParser implements Parser {
 
     return DateTime.fromFormat(`${date.text()} ${time.text().toUpperCase()}`, dateFormat, {
       zone: config.timeZone,
-    }).toJSDate()
+    }).toISO()
   }
 
   async getCondition(): Promise<Condition | null> {

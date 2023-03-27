@@ -10,8 +10,8 @@ export interface ParserFactory {
 
 export interface Parser {
   getLiftStatuses: () => Promise<LiftStatus[]>
-  getLiftUpdatedTime: () => Promise<Date | null>
-  getLastUpdatedTime: () => Promise<Date | null>
+  getLiftUpdatedTime: () => Promise<string | null>
+  getLastUpdatedTime: () => Promise<string | null>
   getSnowfall: () => Promise<Snowfall[]>
   getCondition: () => Promise<Condition | null>
 }
