@@ -3,6 +3,7 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@re
 import { asset, css } from '../assets.ts'
 
 const appStyles = asset('/app.css', css)
+const snowStyles = asset('/snow.css', css)
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
@@ -10,11 +11,12 @@ export const meta: MetaFunction = () => ({
   viewport: 'width=device-width,initial-scale=1',
 })
 
-export function links() {
+export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: '/css/reset.css' },
     { rel: 'stylesheet', href: '/css/weather-icons/css/weather-icons.min.css' },
     { rel: 'stylesheet', href: appStyles.href },
+    { rel: 'stylesheet', href: snowStyles.href },
     { rel: 'apple-touch-icon', href: '/images/snow_cal_v2.png' },
     { rel: 'manifest', href: '/manifest.json' },
   ]

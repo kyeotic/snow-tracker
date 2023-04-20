@@ -287,7 +287,9 @@ function createRuntime({
         url: `/${checksum}/manifest.js`,
         version: checksum,
       },
-      future: {},
+      future: {
+        v2_errorBoundary: true,
+      },
     }
 
     await Promise.all(initializationTasks)
@@ -326,6 +328,9 @@ function createRuntime({
             },
           }
         }, {}),
+      },
+      future: {
+        v2_errorBoundary: true,
       },
     }
   }
@@ -822,7 +827,7 @@ export const assets = {
   entry: { imports: [], module: ${JSON.stringify(`/entry.client.js`)} },
   routes: ${assetRoutes},
 };
-export const future = {};
+export const future = { v2_errorBoundary: true };
 `
   )
 }

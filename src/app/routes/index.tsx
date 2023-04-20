@@ -1,24 +1,23 @@
 import { useEffect, useCallback, useMemo } from 'react'
-import { json, type LoaderArgs } from '@remix-run/deno'
-import { useLoaderData, useNavigation, useFetcher } from '@remix-run/react'
+import { json } from '@remix-run/deno'
+import { useLoaderData, useFetcher } from '@remix-run/react'
 
-import SnowSummary from '../snow/SnowSummary.tsx'
-import { getSummary } from '../snow/store.ts'
-import { onVisibilityChange } from '../util/onVisibilityChange.ts'
+import ErrorBoundary from '~/components/ErrorBoundary.tsx'
+import SnowSummary from '~/snow/SnowSummary.tsx'
+import { getSummary } from '~/snow/store.ts'
+import { onVisibilityChange } from '~/util/onVisibilityChange.ts'
 import { asset, css } from '../../assets.ts'
 import { AppContext } from '../../context.ts'
 
-const styles = asset('/snow.css', css)
+// const styles = asset('/snow.css', css)
 
-export function links() {
-  return [{ rel: 'stylesheet', href: styles.href }]
-}
+// export function links() {
+//   return [{ rel: 'stylesheet', href: styles.href }]
+// }
 
 export async function loader({ context }: { context: AppContext }) {
   const summary = await getSummary(context)
-  return json(summary, {
-    // headers: cacheControl({ maxAge: defaultCacheTime, swr: defaultSwrTime }),
-  })
+  return json(summary)
 }
 
 export default function Index() {
@@ -30,9 +29,6 @@ export default function Index() {
     fetcher.submit({})
   }, [fetcher.submit])
 
-  const transition = useNavigation()
-  const isLoading = transition.state === 'loading' || fetcher.state === 'submitting'
-
   useEffect(() => {
     onVisibilityChange(refresh)
   }, [])
@@ -43,3 +39,5 @@ export default function Index() {
     </div>
   )
 }
+
+export { ErrorBoundary }
