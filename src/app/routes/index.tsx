@@ -9,11 +9,11 @@ import { onVisibilityChange } from '~/util/onVisibilityChange.ts'
 import { asset, css } from '../../assets.ts'
 import { AppContext } from '../../context.ts'
 
-// const styles = asset('/snow.css', css)
+const styles = asset('/snow.css', css)
 
-// export function links() {
-//   return [{ rel: 'stylesheet', href: styles.href }]
-// }
+export function links() {
+  return [{ rel: 'stylesheet', href: styles.href }]
+}
 
 export async function loader({ context }: { context: AppContext }) {
   const summary = await getSummary(context)
