@@ -1,4 +1,5 @@
 import type config from '../config.ts'
+import { SnowStore } from './store.ts'
 import { MeadowsStore } from './conditions/meadows.ts'
 import { SkiBowlStore } from './conditions/skiBowl.ts'
 import { TimberlineStore } from './conditions/timberline.ts'
@@ -14,6 +15,7 @@ export interface AppContext {
   timberline: TimberlineStore
   skiBowl: SkiBowlStore
   meadows: MeadowsStore
+  snow: SnowStore
 }
 
 export function init(config: AppConfig) {
@@ -40,6 +42,8 @@ export function init(config: AppConfig) {
     config: config.meadows,
     weather: context.weather,
   })
+
+  context.snow = new SnowStore()
 
   return context as AppContext
 }

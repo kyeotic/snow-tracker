@@ -22,7 +22,10 @@ export interface Lifts {
 }
 
 export interface SnowStatus {
+  /** Time that the source reports as last updated */
   updatedOn: string | null
+  /** The last time the source was checked for an updated */
+  checkedOn: string | null
   snowfalls: Snowfall[]
   lifts: Lifts
   condition: Condition | null

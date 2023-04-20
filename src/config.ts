@@ -5,7 +5,7 @@ const timeZone = 'America/Los_Angeles' as string
 const config = {
   timeZone,
   weather: {
-    userAgent: (Deno.env.get('DOMAIN') || 'KyeSnow') as string,
+    userAgent: (Deno.env.get('DOMAIN') ?? 'snow.kye.dev') as string,
     baseUrl: 'https://api.weather.gov' as string,
   },
   timberline: {

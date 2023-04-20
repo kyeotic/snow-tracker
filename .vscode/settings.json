@@ -2,5 +2,6 @@
   "eslint.workingDirectories": ["./client", "./server"],
   "eslint.packageManager": "yarn",
   "cSpell.words": ["gridpoints"],
-  "deno.enable": true
+  "deno.enable": true,
+  "deno.unstable": true
 }

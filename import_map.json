@@ -13,7 +13,7 @@
     "react-test-renderer": "https://esm.sh/react-test-renderer@18.2.0",
     "react-rewards": "https://esm.sh/react-rewards@2.0.4",
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
-    "luxon": "https://esm.sh/luxon@^3.3.0",
+    "luxon": "https://esm.sh/luxon@3.3.0",
     "url-join": "https://deno.land/x/url_join@1.0.0/mod.ts"
   }
 }
