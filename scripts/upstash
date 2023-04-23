@@ -1,0 +1,17 @@
+#!/bin/bash
+set -ex
+
+_scripts="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_project="${_scripts}/.."
+
+export $(grep -v '^#' $_project/.env | xargs)
+
+curl -XPOST \
+	"https://qstash.upstash.io/v1/publish/https://snow.kye.dev" \
+	-H "Authorization: Bearer $UPSTASH" \
+	-H "Upstash-Cron: */2 12-20 * * *"
+
+curl -XPOST \
+	"https://qstash.upstash.io/v1/publish/https://snow.kye.dev" \
+	-H "Authorization: Bearer $UPSTASH" \
+	-H "Upstash-Cron: */5 0-12,20-23 * * *"
