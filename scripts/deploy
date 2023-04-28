@@ -6,11 +6,4 @@ _project="${_scripts}/.."
 
 export $(grep -v '^#' $_project/.env | xargs)
 
-# echo $DOCKER_REGISTRY_HOST
-
-${_scripts}/build
-podman build -f ./Dockerfile . -t $APP_NAME:latest
-podman image tag $APP_NAME $DOCKER_REGISTRY_HOST/$APP_NAME
-podman push $DOCKER_REGISTRY_HOST/$APP_NAME:latest
-
-kubectl -n snow-tracker rollout restart deploy snow-tracker-service
+deployctl deploy --project="$DENO_DEPLOY_PROJECT" ./src/main.ts
