@@ -31,3 +31,7 @@ variable "deno_deploy_acme" {
     value = "1b813612e3512378e41cdb4e._acme.deno.dev."
   }
 }
+
+locals {
+  api_lambda_name = "snow-tracker"
+}

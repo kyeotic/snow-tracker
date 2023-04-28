@@ -4,18 +4,18 @@ locals {
 
 data "archive_file" "lambda" {
   type        = "zip"
-  source_file = "lambda.py"
+  source_file = "watcher.py"
   output_path = local.lambda_zip_file
 }
 
 #Lambda function
 resource "aws_lambda_function" "watcher" {
-  function_name    = local.api_lambda_name
+  function_name    = "${local.api_lambda_name}_watcher"
   handler          = "lambda.handler"
   timeout          = 10
   memory_size      = 128
   role             = aws_iam_role.lambda.arn
-  runtime          = "python3.10"
+  runtime          = "python3.9"
   filename         = local.lambda_zip_file
   source_code_hash = data.archive_file.lambda.output_base64sha256
 
@@ -27,7 +27,7 @@ resource "aws_lambda_function" "watcher" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name               = local.lambda_role_name
+  name               = local.api_lambda_name
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -39,6 +39,7 @@ data "aws_iam_policy_document" "lambda_assume" {
       type = "Service"
       identifiers = [
         "lambda.amazonaws.com",
+        "events.amazonaws.com"
       ]
     }
   }
@@ -46,7 +47,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 
 resource "aws_iam_role_policy_attachment" "lambda-basic" {
   role       = aws_iam_role.lambda.name
-  policy_arn = data.aws_iam_policy.ReadOnlyAccess.arn
+  policy_arn = data.aws_iam_policy.basic.arn
 }
 
 data "aws_iam_policy" "basic" {
@@ -66,4 +67,12 @@ resource "aws_cloudwatch_event_target" "trigger_lambda_on_schedule" {
   rule      = aws_cloudwatch_event_rule.every_2_minutes.name
   target_id = "lambda"
   arn       = aws_lambda_function.watcher.arn
+}
+
+resource "aws_lambda_permission" "cloudwatch_watcher" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.watcher.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.every_2_minutes.arn
 }
