@@ -1,7 +1,6 @@
 import { type ConditionConfig, type GridPoint } from './worker/weather/types.ts'
 
 const timeZone = 'America/Los_Angeles' as string
-
 const config = {
   timeZone,
   weather: {
@@ -56,4 +55,4 @@ const config = {
 } as const
 
 export default config
-export type WeatherConfig = typeof config['weather']
+export type WeatherConfig = (typeof config)['weather']
