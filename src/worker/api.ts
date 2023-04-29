@@ -61,6 +61,6 @@ async function getSnowStatus(store: ConditionsStore) {
 function isStale(...statuses: (SnowStatus | null)[]): boolean {
   return statuses.some((s) => {
     if (!s?.checkedOn) return true
-    return DateTime.fromISO(s.checkedOn).diffNow().minutes > 1
+    return Math.abs(DateTime.fromISO(s.checkedOn).diffNow('minutes').minutes) > 1
   })
 }
