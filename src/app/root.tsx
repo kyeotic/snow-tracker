@@ -26,6 +26,7 @@ export default function Root() {
       <head>
         <Meta />
         <meta name="theme-color" content="#000000" />
+        <meta name="description" content="Check the status of PDX Snow Sport Conditions" />
         <Links />
       </head>
       <body>
