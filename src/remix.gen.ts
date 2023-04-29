@@ -4,7 +4,8 @@
 
 import * as serverEntry from "./app/entry.server.tsx";
 import * as route0 from "./app/root.tsx";
-import * as route1 from "./app/routes/index.tsx";
+import * as route1 from "./app/routes/update.tsx";
+import * as route2 from "./app/routes/index.tsx";
 
 export const entry = { module: serverEntry };
 export const routes = {
@@ -13,11 +14,18 @@ export const routes = {
 		module: route0,
 		file: "./app/root.tsx",
 	},
+	"routes/update": {
+		id: "routes/update",
+		path: "update",
+		parentId: "root",
+		module: route1,
+		file: "./app/routes/update.tsx",
+	},
 	"routes/index": {
 		id: "routes/index",
 		index: true,
 		parentId: "root",
-		module: route1,
+		module: route2,
 		file: "./app/routes/index.tsx",
 	},
 };
@@ -33,17 +41,28 @@ export const assets = {
 			hasCatchBoundary: "CatchBoundary" in route0,
 			hasErrorBoundary: "ErrorBoundary" in route0,
 		},
+			"routes/update": {
+			id: "routes/update",
+			path: "update",
+			parentId: "root",
+			imports: [],
+			module: "/routes/update.js",
+			hasAction: "action" in route1,
+			hasLoader: "loader" in route1,
+			hasCatchBoundary: "CatchBoundary" in route1,
+			hasErrorBoundary: "ErrorBoundary" in route1,
+		},
 			"routes/index": {
 			id: "routes/index",
 			index: true,
 			parentId: "root",
 			imports: [],
 			module: "/routes/index.js",
-			hasAction: "action" in route1,
-			hasLoader: "loader" in route1,
-			hasCatchBoundary: "CatchBoundary" in route1,
-			hasErrorBoundary: "ErrorBoundary" in route1,
+			hasAction: "action" in route2,
+			hasLoader: "loader" in route2,
+			hasCatchBoundary: "CatchBoundary" in route2,
+			hasErrorBoundary: "ErrorBoundary" in route2,
 		},		
 },
 };
-export const future = {};
+export const future = { v2_errorBoundary: true };

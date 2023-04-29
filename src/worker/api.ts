@@ -17,7 +17,7 @@ export async function getSnowData(context: AppContext): Promise<SnowReport> {
   ])
 
   if (isStale(timberline, skiBowl, meadows)) {
-    console.log('refetching')
+    // console.log('refetching')
     const update = await updateSnowReport(context)
     timberline = update.timberline
     skiBowl = update.skiBowl
@@ -61,6 +61,6 @@ async function getSnowStatus(store: ConditionsStore) {
 function isStale(...statuses: (SnowStatus | null)[]): boolean {
   return statuses.some((s) => {
     if (!s?.checkedOn) return true
-    return Math.abs(DateTime.fromISO(s.checkedOn).diffNow('minutes').minutes) > 1
+    return Math.abs(DateTime.fromISO(s.checkedOn).diffNow('minutes').minutes) > 5
   })
 }

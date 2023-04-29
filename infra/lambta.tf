@@ -21,7 +21,7 @@ resource "aws_lambda_function" "watcher" {
 
   environment {
     variables = {
-      WATCH_URL = var.domain_name
+      WATCH_URL = "${var.domain_name}/update"
     }
   }
 }
