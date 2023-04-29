@@ -1,7 +1,9 @@
 import os
-import requests
+import urllib3
 
-def lambda_handler(event, context):
-    x = requests.get(os.environ['WATCH_URL'])
-    print(x.status_code)
+http = urllib3.PoolManager()
+
+def handler(event, context):
+    r = http.request('GET', os.environ['WATCH_URL'])
+    print(r.status)
     return "Success"
