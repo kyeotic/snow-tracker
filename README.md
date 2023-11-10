@@ -1,51 +1,19 @@
-# Welcome to Remix!
+# Leptos Hacker News Example with Axum
 
-- [Remix Docs](https://remix.run/docs)
+This example uses the basic Hacker News example as its basis, but shows how to run the server side as WASM running in a JS environment. In this example, Deno is used as the runtime. 
 
-## Development
-
-Start the Remix development asset server and the Express server by running:
-
-```sh
-npm run dev
+## Server Side Rendering with Deno
+To run the Deno version, run
+```bash
+deno task build
+deno task start 
 ```
 
-This starts your app in development mode, which will purge the server require cache when Remix rebuilds assets so you don't need a process manager restarting the express server.
+## Things I needed to add
 
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
 ```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying express applications you should be right at home just make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
-
-### Using a Template
-
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
-
-```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
+cargo install trunk
+cargo install cargo-leptos
+cargo install --locked wasm-bindgen-cli
+curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 ```
