@@ -4,7 +4,7 @@ const timeZone = 'America/Los_Angeles' as string
 const config = {
   timeZone,
   weather: {
-    userAgent: (Deno.env.get('DOMAIN') ?? 'snow.kye.dev') as string,
+    userAgent: (Deno?.env.get('DOMAIN') ?? 'snow.kye.dev') as string,
     baseUrl: 'https://api.weather.gov' as string,
   },
   timberline: {
@@ -39,7 +39,7 @@ const config = {
   } as ConditionConfig,
   meadows: {
     timeZone,
-    conditionsUrl: 'https://www.skihood.com/the-mountain/conditions',
+    conditionsUrl: 'https://www.skihood.com/mountain-report',
     noaaUrl: 'https://forecast.weather.gov/MapClick.php?lat=45.3282&lon=-121.6623',
     weather: {
       point: '45.34357,-121.67227',

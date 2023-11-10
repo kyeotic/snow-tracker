@@ -22,14 +22,17 @@ export interface Lifts {
 }
 
 export interface SnowStatus {
-  /** Time that the source reports as last updated */
-  updatedOn: string | null
   /** The last time the source was checked for an updated */
   checkedOn: string | null
-  snowfalls: Snowfall[]
-  lifts: Lifts
-  condition: Condition | null
-  forecast: ForecastPeriod[]
+  /** The current status. Will be null if status could not be retrieved */
+  status: {
+    /** Time that the source reports as last updated */
+    updatedOn: string | null
+    snowfalls: Snowfall[]
+    lifts: Lifts
+    condition: Condition | null
+    forecast: ForecastPeriod[]
+  } | null
 }
 
 export interface ForecastPeriod {
@@ -37,10 +40,10 @@ export interface ForecastPeriod {
   name: string
   startTime: string
   endTime: string
-  isDaytime: Boolean
+  isDaytime: boolean
   temperature: number
   temperatureUnit: string
-  temperatureTrend: String
+  temperatureTrend: string
   windSpeed: string
   windDirection: string
   icon: string

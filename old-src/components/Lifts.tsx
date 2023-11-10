@@ -1,5 +1,5 @@
-import { Lifts as SnowLifts, LiftStatus } from '../../worker/weather/types.ts'
-import { formatDateFull } from '../util/dates.ts'
+import { formatDateFull } from '../utils/dates.ts'
+import { Lifts as SnowLifts, LiftStatus } from '../worker/weather/types.ts'
 
 export default function Lifts({
   lifts: { updatedOn, liftStatuses = [] } = {} as SnowLifts,
@@ -7,14 +7,12 @@ export default function Lifts({
   lifts?: SnowLifts
 }) {
   return (
-    <div className="lifts">
+    <div className='lifts'>
       <h2>
-        Lifts <span className="updated">{formatDateFull(updatedOn)}</span>
+        Lifts <span className='updated'>{formatDateFull(updatedOn)}</span>
       </h2>
-      <ul className="lift-statuses">
-        {liftStatuses.map((lift) => (
-          <Lift lift={lift} key={lift.name} />
-        ))}
+      <ul className='lift-statuses'>
+        {liftStatuses.map((lift) => <Lift lift={lift} key={lift.name} />)}
       </ul>
     </div>
   )
@@ -31,9 +29,9 @@ function Lift({ lift: { name, status, hours } = {} as LiftStatus }: { lift: Lift
   return (
     <li>
       <span className={`lift-name${isOpen ? ' open' : ''}`}>{name}</span>
-      {subStatus && isOpen && <span className="lift-substatus">{subStatus}</span>}
-      <span className="lift-status">{status}</span>
-      {isOpen && <span className="lift-hours">{hours}</span>}
+      {subStatus && isOpen && <span className='lift-substatus'>{subStatus}</span>}
+      <span className='lift-status'>{status}</span>
+      {isOpen && <span className='lift-hours'>{hours}</span>}
     </li>
   )
 }
