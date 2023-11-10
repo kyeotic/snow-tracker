@@ -1,19 +1,17 @@
-import { ForecastPeriod } from '../../worker/weather/types.ts'
-import { formatShortDay } from '../util/dates.ts'
+import { ForecastPeriod } from '../worker/weather/types.ts'
+import { formatShortDay } from '../utils/dates.ts'
 
 export default function Forecasts({ forecasts }: { forecasts: ForecastPeriod[] }) {
   if (!forecasts) {
     return (
-      <ul className="forecasts">
+      <ul className='forecasts'>
         <span>Error retrieving forecasts</span>
       </ul>
     )
   }
   return (
-    <ul className="forecasts">
-      {forecasts.map((f) => (
-        <Forecast key={f.name} forecast={f} />
-      ))}
+    <ul className='forecasts'>
+      {forecasts.map((f) => <Forecast key={f.name} forecast={f} />)}
     </ul>
   )
 }
@@ -21,17 +19,17 @@ export default function Forecasts({ forecasts }: { forecasts: ForecastPeriod[] }
 function Forecast({ forecast }: { forecast: ForecastPeriod }) {
   return (
     <li>
-      <div className="forecast-summary">
-        <span className="forecast-name">{forecast.name}</span>
-        <span className="forecast-date">{formatShortDay(forecast.startTime)}</span>
+      <div className='forecast-summary'>
+        <span className='forecast-name'>{forecast.name}</span>
+        <span className='forecast-date'>{formatShortDay(forecast.startTime)}</span>
         <span className={`forecast-temp ${forecast.isDaytime ? 'day' : ''}`}>
           {forecast.temperature}
           {forecast.temperatureUnit}
         </span>
-        <span className="forecast-wind">{forecast.windSpeed}</span>
-        <img className="forecast-icon" src={forecast.icon} alt={forecast.shortForecast} />
+        <span className='forecast-wind'>{forecast.windSpeed}</span>
+        <img className='forecast-icon' src={forecast.icon} alt={forecast.shortForecast} />
       </div>
-      <span className="forecast-detail">{forecast.detailedForecast}</span>
+      <span className='forecast-detail'>{forecast.detailedForecast}</span>
     </li>
   )
 }

@@ -1,6 +1,16 @@
-import { wrapper, ILogger } from '../util/logger.ts'
+// deno-lint-ignore-file no-extra-non-null-assertion
+import { DateTime } from 'luxon'
+
+import { ILogger, wrapper } from '../util/logger.ts'
 import { WeatherStore } from '../weather/store.ts'
-import { Condition, ConditionConfig, Lifts, LiftStatus, Snowfall } from '../weather/types.ts'
+import {
+  Condition,
+  ConditionConfig,
+  Lifts,
+  LiftStatus,
+  Snowfall,
+  SnowStatus,
+} from '../weather/types.ts'
 
 export interface ParserFactory {
   (props: ParserProps): Parser
@@ -46,6 +56,29 @@ export class ConditionsStore {
     this.parserFactory = parserFactory
     this.weather = weather
     this.headers = headers
+  }
+
+  async getStatus(): Promise<SnowStatus> {
+    const result = await this.getSource().then(() =>
+      Promise.all([
+        this.getCondition(),
+        this.getSnowfall(),
+        this.getLifts(),
+        this.getForecast(),
+        this.getLastUpdatedTime(),
+      ])
+    ).catch((e) => {
+      console.error('Error getting status', this.config, e)
+      return null
+    })
+
+    const checkedOn = DateTime.now().toISO()
+
+    if (!result) return { checkedOn, status: null }
+
+    const [condition, snowfalls, lifts, forecast, updatedOn] = result
+
+    return { checkedOn, status: { condition, snowfalls, lifts, forecast, updatedOn } }
   }
 
   async getCondition(): Promise<Condition | null> {
@@ -112,12 +145,12 @@ export class ConditionsStore {
   }
 
   async loadSource(): Promise<Parser> {
-    let response = await fetch(this.config.conditionsUrl, {
+    const response = await fetch(this.config.conditionsUrl, {
       headers: this.headers,
     })
     const body = await response.text()
     if (!response.ok) {
-      this.logger.error('Conditions Error', response.status, body, this.config)
+      this.logger.error('Conditions Error', response.status, body.substring(0, 100), this.config)
       throw new Error(`Error getting conditions: ${response.status}`)
     }
     return this.parserFactory({ html: body, logger: this.logger, timeZone: this.config.timeZone })

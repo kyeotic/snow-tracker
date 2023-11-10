@@ -1,5 +1,4 @@
 import { type AppContext } from './context.ts'
-import { ConditionsStore } from './conditions/baseStore.ts'
 import { SnowStatus } from './weather/types.ts'
 import { DateTime } from 'luxon'
 
@@ -40,22 +39,10 @@ export async function updateSnowReport(context: AppContext): Promise<SnowReport>
 
 export async function fetchSnowData(context: AppContext): Promise<SnowReport> {
   const [timberline, skiBowl, meadows] = await Promise.all(
-    [context.timberline, context.skiBowl, context.meadows].map(getSnowStatus)
+    [context.timberline, context.skiBowl, context.meadows].map((store) => store.getStatus()),
   )
 
   return { timberline, skiBowl, meadows }
-}
-
-async function getSnowStatus(store: ConditionsStore) {
-  let [condition, snowfalls, lifts, forecast, updatedOn, checkedOn] = await Promise.all([
-    store.getCondition(),
-    store.getSnowfall(),
-    store.getLifts(),
-    store.getForecast(),
-    store.getLastUpdatedTime(),
-    DateTime.now().toISO(),
-  ])
-  return { condition, snowfalls, lifts, forecast, updatedOn, checkedOn }
 }
 
 function isStale(...statuses: (SnowStatus | null)[]): boolean {
