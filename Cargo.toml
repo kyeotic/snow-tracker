@@ -1,14 +1,17 @@
 [package]
-name = "snow-tracker"
+name = "snow_tracker"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "lib"]
 
 [profile.release]
 codegen-units = 1
 lto = true
+
+[lints.rust]
+async_fn_in_trait = "allow"
 
 [dependencies]
 console_log = "1.0.0"
@@ -39,6 +42,17 @@ wasm-bindgen-futures = { version = "0.4.37", features = [
 ], optional = true }
 axum-js-fetch = { version = "0.2.1", optional = true }
 lazy_static = "1.4.0"
+tokio = { version = "1.34.0", features = ["full"] }
+tokio-macros = "2.2.0"
+serde_json = "1.0.108"
+time = { version = "0.3.30", features = ["serde", "parsing", "formatting"] }
+url = { version = "2.4.1", features = ["serde"] }
+anyhow = "1.0.75"
+regex = "1.10.2"
+tl = "0.7.7"
+futures = "0.3.29"
+serde_yaml = "0.9.27"
+async-trait = "0.1.74"
 
 [features]
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
