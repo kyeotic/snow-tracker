@@ -2,12 +2,28 @@ services:
   snow-tracker:
     image: docker.local.kye.dev/snow-tracker:latest
     container_name: snow-tracker
-    ports:
-      - "3208:3000"
     volumes:
       - snow-data:/data
     labels:
       stook: "redeploy"
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: snow-tracker-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN:?err}
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
 
 volumes:
   snow-data:

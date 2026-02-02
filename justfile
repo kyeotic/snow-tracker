@@ -54,6 +54,14 @@ deploy:
     docker build --platform linux/amd64 -t docker.local.kye.dev/snow-tracker:latest .
     docker push docker.local.kye.dev/snow-tracker:latest
 
+# Deploy infrastructure (terraform)
+infra-deploy:
+    ./scripts/deploy-infra
+
+# Get Cloudflare tunnel token
+get-tunnel-token:
+    terraform -chdir=infra output -raw tunnel_token
+
 # Check health / fetch snow data
 health:
     curl -s http://localhost:3000/api/snow | head -c 200

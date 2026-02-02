@@ -1,9 +1,0 @@
-#!/bin/bash
-set -ex
-
-_scripts="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_project="${_scripts}/.."
-
-export $(grep -v '^#' $_project/.env | xargs)
-
-deployctl deploy --project="$DENO_DEPLOY_PROJECT" ./src/main.ts
