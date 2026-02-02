@@ -1,39 +1,96 @@
-# Stage 1: Build server
-FROM rust:1.88 AS server-builder
+# syntax=docker/dockerfile:1.7
+
+############################
+# 1. Server dependency build
+############################
+FROM rust:1.88-slim AS server-deps
 WORKDIR /app
 
-# Cache dependencies
 COPY Cargo.toml Cargo.lock ./
 COPY shared/Cargo.toml shared/Cargo.toml
 COPY server/Cargo.toml server/Cargo.toml
 COPY client/Cargo.toml client/Cargo.toml
+
 RUN mkdir -p shared/src server/src client/src \
-    && echo "" > shared/src/lib.rs \
-    && echo "fn main() {}" > server/src/main.rs \
-    && echo "fn main() {}" > client/src/main.rs \
-    && cargo build --release -p server \
-    && rm -rf shared/src server/src client/src
+ && echo "" > shared/src/lib.rs \
+ && echo "fn main() {}" > server/src/main.rs \
+ && echo "fn main() {}" > client/src/main.rs
 
-# Build real source
-COPY . .
-RUN touch shared/src/lib.rs server/src/main.rs && cargo build --release -p server
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/app/target \
+    cargo build --release -p server \
+    && cp /app/target/release/server /app/server
 
-# Stage 2: Build client WASM
-FROM rust:1.88 AS client-builder
-RUN cargo install trunk --locked
-RUN rustup target add wasm32-unknown-unknown
+
+############################
+# 2. Server build
+############################
+FROM rust:1.88-slim AS server-builder
 WORKDIR /app
-COPY . .
-RUN cd client && trunk build --release
 
-# Stage 3: Runtime
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y ca-certificates sqlite3 && rm -rf /var/lib/apt/lists/*
-COPY --from=server-builder /app/target/release/server /usr/local/bin/server
+COPY --from=server-deps /app /app
+COPY shared/src shared/src
+COPY server/src server/src
+
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/app/target \
+    cargo build --release -p server
+
+
+############################
+# 3. Client dependency build
+############################
+FROM rust:1.88-slim AS client-deps
+WORKDIR /app
+
+RUN rustup target add wasm32-unknown-unknown \
+ && cargo install trunk --locked
+
+COPY Cargo.toml Cargo.lock ./
+COPY client/ client/
+COPY shared/ shared/
+COPY server/Cargo.toml server/Cargo.toml
+
+RUN mkdir -p server/src \
+ && echo "fn main() {}" > server/src/main.rs
+
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/app/target \
+    cd client && trunk build --release
+
+
+############################
+# 4. Client build
+############################
+FROM client-deps AS client-builder
+WORKDIR /app
+
+COPY client/src client/src
+COPY shared/src shared/src
+
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/app/target \
+    cd client && trunk build --release
+
+
+############################
+# 5. Runtime (distroless)
+############################
+FROM gcr.io/distroless/cc-debian12 AS runtime
+
+WORKDIR /app
+
+COPY --from=server-builder /app/server /server
 COPY --from=client-builder /app/client/dist /app/static
 COPY config.yaml /app/config.yaml
-WORKDIR /app
+
 ENV DB_PATH=/data/snow.db
 ENV STATIC_DIR=/app/static
+
 EXPOSE 3000
-CMD ["server"]
+USER nonroot:nonroot
+ENTRYPOINT ["/server"]

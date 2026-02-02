@@ -1,0 +1,24 @@
+# Rust
+target/
+**/target/
+
+# Git
+.git/
+.gitignore
+
+# Frontend artifacts
+node_modules/
+client/dist/
+.trunk/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+
+# Docker metadata
+Dockerfile
+docker-compose.yml

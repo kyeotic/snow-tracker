@@ -53,6 +53,16 @@ pub async fn fetch_html_park(
         updated_on: None,
         lift_statuses: vec![],
     });
+
+    if snowfalls.is_empty() && lifts.lift_statuses.is_empty() && updated_on.is_none() {
+        let preview: String = html.chars().take(500).collect();
+        tracing::warn!(
+            url = parser.url(),
+            html_length = html.len(),
+            html_preview = %preview,
+            "park fetch returned HTML but parsed no data"
+        );
+    }
     let condition = if parser.has_site_conditions() {
         parser.parse_conditions(&doc).ok()
     } else {
