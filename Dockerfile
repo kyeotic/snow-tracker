@@ -68,10 +68,7 @@ WORKDIR /app
 COPY client/src client/src
 COPY shared/src shared/src
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/usr/local/cargo/git \
-    --mount=type=cache,target=/app/target \
-    cd client && trunk build --release
+RUN cd client && trunk build --release
 
 
 ############################
