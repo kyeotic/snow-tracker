@@ -1,6 +1,6 @@
 use anyhow::Result;
 use scraper::{Html, Selector};
-use shared::{LiftStatus, Lifts, Snowfall};
+use shared::{Condition, LiftStatus, Lifts, Snowfall};
 
 use super::try_parse_float;
 
@@ -19,132 +19,150 @@ impl SkiBowl {
     }
 }
 
-impl super::ParkParser for SkiBowl {
+/// Extract all rows from jet-tables as Vec<Vec<String>>.
+/// Each row is a vec of cell texts.
+fn extract_jet_rows(doc: &Html) -> Vec<Vec<String>> {
+    let row_sel = Selector::parse(".jet-table__body-row").unwrap();
+    let cell_sel = Selector::parse(".jet-table__cell-text").unwrap();
+
+    doc.select(&row_sel)
+        .map(|row| {
+            row.select(&cell_sel)
+                .map(|c| c.text().collect::<String>().trim().to_string())
+                .filter(|s| !s.is_empty())
+                .collect()
+        })
+        .filter(|cells: &Vec<String>| !cells.is_empty())
+        .collect()
+}
+
+impl super::HtmlParkParser for SkiBowl {
     fn url(&self) -> &str {
         &self.url
     }
 
-    fn parse_updated_on(&self, doc: &Html) -> Result<String> {
-        let row_sel = Selector::parse("#liststatuses tr").unwrap();
-        let td_sel = Selector::parse("td").unwrap();
+    fn has_site_conditions(&self) -> bool {
+        true
+    }
 
-        let mut date_str = String::new();
-        let mut time_str = String::new();
+    fn parse_conditions(&self, doc: &Html) -> Result<Condition> {
+        let rows = extract_jet_rows(doc);
+        let mut temperature = 0.0;
+        let mut condition_text = String::new();
 
-        for row in doc.select(&row_sel) {
-            let html = row.inner_html();
-            let cells: Vec<_> = row.select(&td_sel).collect();
-            if cells.len() < 2 {
+        for row in &rows {
+            if row.len() < 2 {
                 continue;
             }
-            if html.contains("Date:") {
-                date_str = cells[1].text().collect::<String>().trim().to_string();
-            }
-            if html.contains("Time:") {
-                time_str = cells[1].text().collect::<String>().trim().to_string();
+            match row[0].as_str() {
+                "Temperature" => {
+                    // "35 degrees in the base area, 33 at the top"
+                    temperature = try_parse_float(&row[1]);
+                }
+                "Weather" => {
+                    condition_text = row[1].clone();
+                }
+                _ => {}
             }
         }
 
-        if date_str.is_empty() || time_str.is_empty() {
-            anyhow::bail!("could not find date/time");
+        Ok(Condition {
+            updated_on: self.parse_updated_on(doc).ok(),
+            temperature,
+            condition: condition_text,
+            icon_class: String::new(),
+        })
+    }
+
+    fn parse_updated_on(&self, doc: &Html) -> Result<String> {
+        let rows = extract_jet_rows(doc);
+        let mut date = String::new();
+        let mut time = String::new();
+
+        for row in &rows {
+            if row.len() < 2 {
+                continue;
+            }
+            match row[0].as_str() {
+                "Date" => date = row[1].clone(),
+                "Time" => time = row[1].clone(),
+                _ => {}
+            }
         }
 
-        Ok(format!("{} {}", date_str, time_str))
+        if !date.is_empty() {
+            let suffix = if time.is_empty() {
+                date
+            } else {
+                format!("{date} {time}")
+            };
+            return Ok(format!("Updated {suffix}"));
+        }
+
+        anyhow::bail!("no date found")
     }
 
     fn parse_lifts(&self, doc: &Html) -> Result<Lifts> {
-        let row_sel = Selector::parse("#intro #liststatuses tr").unwrap();
-        let td_sel = Selector::parse("td").unwrap();
+        let rows = extract_jet_rows(doc);
 
-        let statuses: Vec<LiftStatus> = doc
-            .select(&row_sel)
-            .filter_map(|row| {
-                let cells: Vec<_> = row.select(&td_sel).collect();
-                if cells.len() < 3 {
-                    return None;
-                }
-                let name = cells[0].text().collect::<String>().replace(':', "").trim().to_string();
-                if !name.to_lowercase().contains("chair") {
-                    return None;
-                }
-                let name = regex::Regex::new(r"(?i)\s?chair")
-                    .unwrap()
-                    .replace(&name, "")
-                    .to_string();
-                let status = cells[1].text().collect::<String>().trim().to_string();
-                let hours = cells[2].text().collect::<String>().trim().to_string();
-                Some(LiftStatus {
-                    name,
-                    status,
-                    hours,
-                })
+        // Lift rows have 2-3 cells where the second is a status keyword
+        let status_keywords = ["Open", "Closed", "Standby", "Hold"];
+
+        let statuses: Vec<LiftStatus> = rows
+            .iter()
+            .filter(|row| {
+                row.len() >= 2
+                    && status_keywords
+                        .iter()
+                        .any(|kw| row[1].contains(kw))
+            })
+            .map(|row| LiftStatus {
+                name: row[0].clone(),
+                status: row[1].clone(),
+                hours: row.get(2).cloned().unwrap_or_default(),
             })
             .collect();
 
-        let updated_on = self.parse_updated_on(doc).ok();
-
         Ok(Lifts {
-            updated_on,
+            updated_on: self.parse_updated_on(doc).ok(),
             lift_statuses: statuses,
         })
     }
 
     fn parse_snowfall(&self, doc: &Html) -> Result<Vec<Snowfall>> {
-        let td_sel = Selector::parse("#liststatuses td").unwrap();
-        let tr_sel = Selector::parse("#liststatuses tr").unwrap();
+        let rows = extract_jet_rows(doc);
+        let mut snowfalls = vec![];
 
-        // Base depth
-        let mut base_depth = 0.0;
-        for td in doc.select(&td_sel) {
-            let html = td.inner_html();
-            if html.contains("Snow Depth") {
-                // Next sibling has the value
-                if let Some(parent) = td.parent() {
-                    let text: String = parent
-                        .children()
-                        .filter_map(|c| scraper::ElementRef::wrap(c))
-                        .skip(1)
-                        .map(|el| el.text().collect::<String>())
-                        .collect();
-                    let trimmed = text.trim().to_string();
-                    if let Some(idx) = trimmed.find('"') {
-                        base_depth = try_parse_float(&trimmed[..idx]);
-                    }
-                }
-                break;
+        for row in &rows {
+            let label = &row[0];
+            if label.contains("Snow Depth") {
+                let value = row.get(1).map(|s| s.as_str()).unwrap_or("0");
+                snowfalls.push(Snowfall {
+                    since: "Base Depth".to_string(),
+                    depth: try_parse_float(value),
+                });
+            } else if label.contains("New Snow") {
+                let value = row.get(1).map(|s| s.as_str()).unwrap_or("0");
+                let since = if label.contains("24") {
+                    "Last 24 Hours"
+                } else if label.contains("48") {
+                    "Last 48 Hours"
+                } else {
+                    "New Snow"
+                };
+                snowfalls.push(Snowfall {
+                    since: since.to_string(),
+                    depth: try_parse_float(value),
+                });
+            } else if label.contains("Year to Date") {
+                let value = row.get(1).map(|s| s.as_str()).unwrap_or("0");
+                snowfalls.push(Snowfall {
+                    since: "Season Total".to_string(),
+                    depth: try_parse_float(value),
+                });
             }
         }
 
-        // New snow rows
-        let mut new_snow: Vec<Snowfall> = vec![];
-        for row in doc.select(&tr_sel) {
-            let html = row.inner_html();
-            if !html.contains("New Snow") {
-                continue;
-            }
-            let cells: Vec<_> = row
-                .select(&Selector::parse("td").unwrap())
-                .collect();
-            if cells.len() < 2 {
-                continue;
-            }
-            let since_text = cells[0].text().collect::<String>().trim().to_string();
-            // Extract hour number
-            let re = regex::Regex::new(r"\d{2}").unwrap();
-            let since = re
-                .find(&since_text)
-                .map(|m| format!("Last {} hrs", m.as_str()))
-                .unwrap_or(since_text);
-            let depth_text = cells[cells.len() - 1].text().collect::<String>();
-            let depth = try_parse_float(&depth_text);
-            new_snow.push(Snowfall { since, depth });
-        }
-
-        new_snow.push(Snowfall {
-            since: "Base Depth".to_string(),
-            depth: base_depth,
-        });
-
-        Ok(new_snow)
+        Ok(snowfalls)
     }
 }

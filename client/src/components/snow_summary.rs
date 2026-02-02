@@ -18,6 +18,13 @@ pub struct Props {
     pub report: SnowReport,
 }
 
+fn get_updated(park: &ParkStatus) -> String {
+    park.status
+        .as_ref()
+        .and_then(|s| s.updated_on.clone())
+        .unwrap_or_else(|| "Unavailable".to_string())
+}
+
 #[function_component(SnowSummary)]
 pub fn snow_summary(props: &Props) -> Html {
     let selected = use_state(|| ParkTab::Meadows);
@@ -28,37 +35,39 @@ pub fn snow_summary(props: &Props) -> Html {
         ParkTab::SkiBowl => &props.report.ski_bowl,
     };
 
-    let make_header = |tab: ParkTab, title: &str| {
-        let sel = selected.clone();
-        let is_active = *selected == tab;
-        let class = if is_active { "active" } else { "" };
-        let updated = current
-            .status
-            .as_ref()
-            .and_then(|s| s.updated_on.clone())
-            .unwrap_or_else(|| "Unavailable".to_string());
-        let tab_clone = tab.clone();
-        let onclick = Callback::from(move |_: MouseEvent| sel.set(tab_clone.clone()));
-        html! {
-            <h1 {onclick} {class}>
-                {title}
-                <small class="subtitle">{"("}{&updated}{")"}</small>
-            </h1>
-        }
-    };
+    let meadows_updated = get_updated(&props.report.meadows);
+    let timberline_updated = get_updated(&props.report.timberline);
+    let ski_bowl_updated = get_updated(&props.report.ski_bowl);
+
+    let sel1 = selected.clone();
+    let sel2 = selected.clone();
+    let sel3 = selected.clone();
+
+    let meadows_class = if *selected == ParkTab::Meadows { "active" } else { "" };
+    let timberline_class = if *selected == ParkTab::Timberline { "active" } else { "" };
+    let ski_bowl_class = if *selected == ParkTab::SkiBowl { "active" } else { "" };
 
     html! {
         <div class="snow-summary-container">
             <section class="snow-summary-conditions">
                 <div class="conditions-headers">
-                    {make_header(ParkTab::Meadows, "Meadows")}
-                    {make_header(ParkTab::Timberline, "Timberline")}
-                    {make_header(ParkTab::SkiBowl, "Ski Bowl")}
+                    <h1 onclick={Callback::from(move |_: MouseEvent| sel1.set(ParkTab::Meadows))} class={meadows_class}>
+                        {"Meadows"}
+                        <small class="subtitle">{"("}{&meadows_updated}{")"}</small>
+                    </h1>
+                    <h1 onclick={Callback::from(move |_: MouseEvent| sel2.set(ParkTab::Timberline))} class={timberline_class}>
+                        {"Timberline"}
+                        <small class="subtitle">{"("}{&timberline_updated}{")"}</small>
+                    </h1>
+                    <h1 onclick={Callback::from(move |_: MouseEvent| sel3.set(ParkTab::SkiBowl))} class={ski_bowl_class}>
+                        {"Ski Bowl"}
+                        <small class="subtitle">{"("}{&ski_bowl_updated}{")"}</small>
+                    </h1>
                 </div>
                 <div class="conditions-container">
                     if let Some(status) = &current.status {
                         if let Some(cond) = &status.condition {
-                            <ConditionView condition={cond.clone()} />
+                            <ConditionView condition={cond.clone()} park_url={status.park_url.clone()} />
                         }
                         <SnowfallView snowfalls={status.snowfalls.clone()} />
                         <LiftsView lifts={status.lifts.clone()} />

@@ -1,12 +1,26 @@
 # Stage 1: Build server
-FROM rust:1.84 AS server-builder
+FROM rust:1.88 AS server-builder
 WORKDIR /app
+
+# Cache dependencies
+COPY Cargo.toml Cargo.lock ./
+COPY shared/Cargo.toml shared/Cargo.toml
+COPY server/Cargo.toml server/Cargo.toml
+COPY client/Cargo.toml client/Cargo.toml
+RUN mkdir -p shared/src server/src client/src \
+    && echo "" > shared/src/lib.rs \
+    && echo "fn main() {}" > server/src/main.rs \
+    && echo "fn main() {}" > client/src/main.rs \
+    && cargo build --release -p server \
+    && rm -rf shared/src server/src client/src
+
+# Build real source
 COPY . .
-RUN cargo build --release -p server
+RUN touch shared/src/lib.rs server/src/main.rs && cargo build --release -p server
 
 # Stage 2: Build client WASM
-FROM rust:1.84 AS client-builder
-RUN cargo install trunk
+FROM rust:1.88 AS client-builder
+RUN cargo install trunk --locked
 RUN rustup target add wasm32-unknown-unknown
 WORKDIR /app
 COPY . .

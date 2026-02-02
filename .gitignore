@@ -3,6 +3,7 @@ node_modules
 /.cache
 /build
 /dist
+/client/dist
 /public/build
 .env
 
@@ -10,3 +11,4 @@ node_modules
 # Added by cargo
 
 /target
+/snow.db

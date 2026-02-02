@@ -1,0 +1,13 @@
+services:
+  snow-tracker:
+    image: docker.local.kye.dev/snow-tracker:latest
+    container_name: snow-tracker
+    ports:
+      - "3208:3000"
+    volumes:
+      - snow-data:/data
+    labels:
+      stook: "redeploy"
+
+volumes:
+  snow-data:

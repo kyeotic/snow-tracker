@@ -5,6 +5,10 @@ default:
 run:
     cargo run -p server
 
+# Watch and rebuild server + client on changes
+dev:
+    trap 'kill 0' EXIT; cd client && trunk watch & cargo watch -w server/src -w shared/src -x 'run -p server'
+
 # Build in release mode
 build:
     cargo build --release -p server

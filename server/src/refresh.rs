@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use shared::{ParkConfig, ParkData, ParkStatus};
+use shared::{ParkData, ParkStatus};
 use tracing::{error, info};
 
-use crate::parks::{self, meadows::Meadows, ski_bowl::SkiBowl, timberline::Timberline, ParkParser};
+use crate::parks::{self, ski_bowl::SkiBowl, timberline::Timberline};
 use crate::routes::AppState;
 use crate::weather::Weather;
 
@@ -28,10 +28,32 @@ async fn refresh_all(state: &AppState) {
     let weather = Weather::new(&state.config.weather);
     let client = reqwest::Client::new();
 
+    let timberline_parser =
+        Timberline::new(&state.config.timberline.park_url, &state.config.timberline.time_zone);
+    let ski_bowl_parser =
+        SkiBowl::new(&state.config.ski_bowl.park_url, &state.config.ski_bowl.time_zone);
+
     let (timberline, ski_bowl, meadows) = tokio::join!(
-        fetch_park(&client, &weather, &state.config.timberline, "timberline"),
-        fetch_park(&client, &weather, &state.config.ski_bowl, "ski_bowl"),
-        fetch_park(&client, &weather, &state.config.meadows, "meadows"),
+        parks::fetch_html_park_data(
+            &client,
+            &weather,
+            &state.config.timberline.weather.grid,
+            &state.config.timberline.park_url,
+            &timberline_parser,
+        ),
+        parks::fetch_html_park_data(
+            &client,
+            &weather,
+            &state.config.ski_bowl.weather.grid,
+            &state.config.ski_bowl.park_url,
+            &ski_bowl_parser,
+        ),
+        parks::meadows::fetch_meadows_data(
+            &client,
+            &weather,
+            &state.config.meadows.weather.grid,
+            &state.config.meadows.park_url,
+        ),
     );
 
     let now = chrono_now();
@@ -43,56 +65,10 @@ async fn refresh_all(state: &AppState) {
     info!("refresh complete");
 }
 
-async fn fetch_park(
-    client: &reqwest::Client,
-    weather: &Weather,
-    config: &ParkConfig,
-    name: &str,
-) -> Option<ParkData> {
-    let parser: Box<dyn ParkParser> = match name {
-        "timberline" => Box::new(Timberline::new(&config.park_url, &config.time_zone)),
-        "ski_bowl" => Box::new(SkiBowl::new(&config.park_url, &config.time_zone)),
-        "meadows" => Box::new(Meadows::new(&config.park_url, &config.time_zone)),
-        _ => return None,
-    };
-
-    let park_result = parks::fetch_and_parse(client, parser.as_ref()).await;
-    let (forecast, api_condition) = tokio::join!(
-        weather.get_forecast(&config.weather.grid),
-        weather.get_conditions(&config.weather.grid),
-    );
-
-    match park_result {
-        Ok((park, site_condition)) => {
-            let condition = site_condition.or(api_condition.ok());
-            Some(ParkData {
-                updated_on: park.updated_on,
-                snowfalls: park.snowfalls,
-                lifts: park.lifts,
-                condition,
-                forecast: forecast.ok(),
-            })
-        }
-        Err(e) => {
-            error!("failed to fetch {name}: {e}");
-            Some(ParkData {
-                updated_on: None,
-                snowfalls: vec![],
-                lifts: shared::Lifts {
-                    updated_on: None,
-                    lift_statuses: vec![],
-                },
-                condition: api_condition.ok(),
-                forecast: forecast.ok(),
-            })
-        }
-    }
-}
-
-fn store_park(state: &AppState, key: &str, now: &str, data: Option<ParkData>) {
+fn store_park(state: &AppState, key: &str, now: &str, data: ParkData) {
     let status = ParkStatus {
         checked_on: Some(now.to_string()),
-        status: data,
+        status: Some(data),
     };
     match serde_json::to_string(&status) {
         Ok(json) => {
@@ -105,7 +81,6 @@ fn store_park(state: &AppState, key: &str, now: &str, data: Option<ParkData>) {
 }
 
 fn chrono_now() -> String {
-    // Simple ISO 8601 timestamp using time crate
     time::OffsetDateTime::now_utc()
         .format(&time::format_description::well_known::Rfc3339)
         .unwrap_or_else(|_| "unknown".to_string())

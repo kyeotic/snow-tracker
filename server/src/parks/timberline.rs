@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use scraper::{Html, Selector};
 use shared::{LiftStatus, Lifts, Snowfall};
 
@@ -19,84 +19,194 @@ impl Timberline {
     }
 }
 
-impl super::ParkParser for Timberline {
+impl super::HtmlParkParser for Timberline {
     fn url(&self) -> &str {
         &self.url
     }
 
     fn parse_updated_on(&self, doc: &Html) -> Result<String> {
-        let sel = Selector::parse(".conditions-panel p").unwrap();
-        let text = doc
-            .select(&sel)
-            .next()
-            .context("no .conditions-panel p")?
-            .text()
-            .collect::<String>();
-        Ok(text.trim().to_string())
+        // Look for "Updated <date>" text inside .conditions__group-header p
+        let sel = Selector::parse(".conditions__group-header p").unwrap();
+        for el in doc.select(&sel) {
+            let text = el.text().collect::<String>();
+            let trimmed = text.trim();
+            if trimmed.contains("Updated") {
+                return Ok(trimmed.to_string());
+            }
+        }
+        // Fallback: search broadly
+        let sel = Selector::parse("p, span, div").unwrap();
+        for el in doc.select(&sel) {
+            let text = el.text().collect::<String>();
+            let trimmed = text.trim();
+            if trimmed.starts_with("Updated ")
+                && (trimmed.contains("am") || trimmed.contains("pm"))
+                && trimmed.len() < 60
+            {
+                return Ok(trimmed.to_string());
+            }
+        }
+        anyhow::bail!("no updated time found")
     }
 
     fn parse_lifts(&self, doc: &Html) -> Result<Lifts> {
-        let table_sel = Selector::parse("#lift_status table tbody").unwrap();
+        // Table with headers: Lifts | Status | Type | Operating Hours
+        let table_sel = Selector::parse("table").unwrap();
+        let thead_sel = Selector::parse("thead").unwrap();
+        let tbody_sel = Selector::parse("tbody").unwrap();
         let row_sel = Selector::parse("tr").unwrap();
+        let th_sel = Selector::parse("th").unwrap();
         let cell_sel = Selector::parse("td").unwrap();
-        let span_sel = Selector::parse("span").unwrap();
 
-        let tbody = doc.select(&table_sel).next().context("no lift table")?;
+        for table in doc.select(&table_sel) {
+            let headers: Vec<String> = table
+                .select(&thead_sel)
+                .flat_map(|h| h.select(&th_sel))
+                .map(|th| th.text().collect::<String>().trim().to_string())
+                .collect();
 
-        let statuses: Vec<LiftStatus> = tbody
-            .select(&row_sel)
-            .filter_map(|row| {
-                let cells: Vec<_> = row.select(&cell_sel).collect();
-                if cells.len() < 3 {
-                    return None;
-                }
-                let name = cells[0].text().collect::<String>().trim().to_string();
-                let status = cells[1]
-                    .select(&span_sel)
-                    .next()
-                    .map(|s| s.text().collect::<String>().trim().to_string())
-                    .unwrap_or_default();
-                let hours = cells[2].text().collect::<String>().trim().to_string();
-                Some(LiftStatus {
-                    name,
-                    status,
-                    hours,
-                })
-            })
-            .collect();
-
-        let updated_on = self.parse_updated_on(doc).ok();
-
-        Ok(Lifts {
-            updated_on,
-            lift_statuses: statuses,
-        })
-    }
-
-    fn parse_snowfall(&self, doc: &Html) -> Result<Vec<Snowfall>> {
-        let panel_sel = Selector::parse(".conditions-panel").unwrap();
-        let dt_sel = Selector::parse("dl dt").unwrap();
-        let dd_sel = Selector::parse("dl dd").unwrap();
-
-        let mut snowfalls = vec![];
-
-        for panel in doc.select(&panel_sel) {
-            let html = panel.inner_html();
-            if !html.contains("Base depth") && !html.contains("base depth") {
+            // Need at least "Status" in headers
+            let status_col = headers.iter().position(|h| h.contains("Status"));
+            if status_col.is_none() {
                 continue;
             }
+            let status_col = status_col.unwrap();
+            let name_col = headers
+                .iter()
+                .position(|h| h.contains("Lift") || h.contains("Name"))
+                .unwrap_or(0);
+            let hours_col = headers
+                .iter()
+                .position(|h| h.contains("Hours") || h.contains("Operating"));
 
-            let dts: Vec<_> = panel.select(&dt_sel).collect();
-            let dds: Vec<_> = panel.select(&dd_sel).collect();
+            let tbody = match table.select(&tbody_sel).next() {
+                Some(t) => t,
+                None => continue,
+            };
 
-            for (dt, dd) in dts.into_iter().zip(dds.into_iter()) {
-                let depth_text = dt.text().collect::<String>();
-                let since = dd.text().collect::<String>().trim().to_string();
-                let depth = try_parse_float(&depth_text);
-                snowfalls.push(Snowfall { since, depth });
+            let statuses: Vec<LiftStatus> = tbody
+                .select(&row_sel)
+                .filter_map(|row| {
+                    let cells: Vec<_> = row.select(&cell_sel).collect();
+                    if cells.len() <= status_col {
+                        return None;
+                    }
+
+                    let name = cells[name_col]
+                        .text()
+                        .collect::<String>()
+                        .trim()
+                        .to_string();
+                    if name.is_empty() {
+                        return None;
+                    }
+                    let status = cells[status_col]
+                        .text()
+                        .collect::<String>()
+                        .trim()
+                        .to_string();
+                    let hours = hours_col
+                        .and_then(|i| cells.get(i))
+                        .map(|c| c.text().collect::<String>().trim().to_string())
+                        .unwrap_or_default();
+
+                    Some(LiftStatus {
+                        name,
+                        status,
+                        hours,
+                    })
+                })
+                .collect();
+
+            if !statuses.is_empty() {
+                return Ok(Lifts {
+                    updated_on: self.parse_updated_on(doc).ok(),
+                    lift_statuses: statuses,
+                });
             }
         }
 
-        Ok(snowfalls)
+        anyhow::bail!("no lift table found")
+    }
+
+    fn parse_snowfall(&self, doc: &Html) -> Result<Vec<Snowfall>> {
+        // Snow section: .conditions__group containing heading "Snow"
+        // Each item: .conditions__item with .conditions__item-data (number) and .conditions__item-label
+        let group_sel = Selector::parse(".conditions__group").unwrap();
+        let heading_sel = Selector::parse(".conditions__heading").unwrap();
+        let item_sel = Selector::parse(".conditions__item").unwrap();
+        let data_sel = Selector::parse(".conditions__item-data").unwrap();
+        let label_sel = Selector::parse(".conditions__item-label").unwrap();
+
+        for group in doc.select(&group_sel) {
+            let heading = group
+                .select(&heading_sel)
+                .next()
+                .map(|h| h.text().collect::<String>());
+            if heading.as_deref() != Some("Snow") {
+                continue;
+            }
+
+            let mut snowfalls = vec![];
+            for item in group.select(&item_sel) {
+                let data_text = item
+                    .select(&data_sel)
+                    .next()
+                    .map(|d| d.text().collect::<String>())
+                    .unwrap_or_default();
+                let label = item
+                    .select(&label_sel)
+                    .next()
+                    .map(|l| l.text().collect::<String>().trim().to_string())
+                    .unwrap_or_default();
+
+                if label.is_empty() {
+                    continue;
+                }
+
+                let depth = try_parse_float(&data_text);
+                snowfalls.push(Snowfall {
+                    since: label,
+                    depth,
+                });
+            }
+
+            if !snowfalls.is_empty() {
+                return Ok(snowfalls);
+            }
+        }
+
+        // Fallback: try dl/dt/dd pattern
+        let dl_sel = Selector::parse("dl").unwrap();
+        let dt_sel = Selector::parse("dt").unwrap();
+        let dd_sel = Selector::parse("dd").unwrap();
+
+        for dl in doc.select(&dl_sel) {
+            let dts: Vec<_> = dl.select(&dt_sel).collect();
+            let dds: Vec<_> = dl.select(&dd_sel).collect();
+            if dts.is_empty() {
+                continue;
+            }
+            let is_snow = dds.iter().any(|dd| {
+                let t = dd.text().collect::<String>().to_lowercase();
+                t.contains("depth") || t.contains("hours") || t.contains("season") || t.contains("since")
+            });
+            if !is_snow {
+                continue;
+            }
+            let snowfalls: Vec<Snowfall> = dts
+                .into_iter()
+                .zip(dds.into_iter())
+                .map(|(dt, dd)| Snowfall {
+                    depth: try_parse_float(&dt.text().collect::<String>()),
+                    since: dd.text().collect::<String>().trim().to_string(),
+                })
+                .collect();
+            if !snowfalls.is_empty() {
+                return Ok(snowfalls);
+            }
+        }
+
+        anyhow::bail!("no snowfall data found")
     }
 }

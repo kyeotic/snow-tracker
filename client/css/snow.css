@@ -119,6 +119,21 @@
   grid-area: title;
 }
 
+.park-link {
+  text-decoration: none;
+  opacity: 0.7;
+  margin-left: 0.3em;
+  vertical-align: middle;
+}
+.conditions .park-link i.fa-solid {
+  font-size: 0.8em;
+  grid-area: unset;
+  align-self: unset;
+}
+.park-link:hover {
+  opacity: 1;
+}
+
 .condition-temp {
   font-size: 5rem;
   grid-area: temp;

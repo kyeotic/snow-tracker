@@ -19,6 +19,7 @@ pub struct ParkStatus {
 #[serde(rename_all = "camelCase")]
 pub struct ParkData {
     pub updated_on: Option<String>,
+    pub park_url: Option<String>,
     pub snowfalls: Vec<Snowfall>,
     pub lifts: Lifts,
     pub condition: Option<Condition>,

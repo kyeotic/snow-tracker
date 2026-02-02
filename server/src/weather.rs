@@ -54,8 +54,9 @@ impl Weather {
             .map(|s| format!("weather-icon wi wi-{s}"))
             .unwrap_or_default();
 
+        let updated_on = crate::parks::format_timestamp(&resp.properties.update_time);
         Ok(Condition {
-            updated_on: Some(resp.properties.update_time),
+            updated_on: Some(updated_on),
             temperature: latest.temperature as f64,
             condition: latest.short_forecast.clone(),
             icon_class,
