@@ -36,5 +36,13 @@ fn app() -> Html {
 }
 
 fn main() {
-    yew::Renderer::<App>::new().render();
+    let document = web_sys::window()
+        .expect("missing window")
+        .document()
+        .expect("missing document");
+    let root = document
+        .query_selector("main")
+        .expect("failed to query selector")
+        .expect("missing main element");
+    yew::Renderer::<App>::with_root(root).render();
 }

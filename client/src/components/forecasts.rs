@@ -28,7 +28,7 @@ pub fn forecasts(props: &Props) -> Html {
                                 {f.temperature}{&f.temperature_unit}
                             </span>
                             <span class="forecast-wind">{&f.wind_speed}</span>
-                            <img class="forecast-icon" src={f.icon.clone()} alt={f.short_forecast.clone()} />
+                            <img class="forecast-icon" src={f.icon.clone()} alt={f.short_forecast.clone()} width="86" height="86" loading="lazy" />
                         </div>
                         <span class="forecast-detail">{&f.detailed_forecast}</span>
                     </li>
