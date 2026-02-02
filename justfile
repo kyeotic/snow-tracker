@@ -41,9 +41,9 @@ fmt:
 fmt-check:
     cargo fmt -- --check
 
-# Build Docker image
-docker-build:
-    docker build -t docker.local.kye.dev/snow-tracker:latest .
+# Build Docker image (pass "no-cache" to skip Docker cache)
+docker-build *args:
+    docker build {{ if args == "no-cache" { "--no-cache" } else { "" } }} -t docker.local.kye.dev/snow-tracker:latest .
 
 # Run Docker image locally
 docker-run:

@@ -2,6 +2,7 @@ services:
   snow-tracker:
     image: docker.local.kye.dev/snow-tracker:latest
     container_name: snow-tracker
+    restart: unless-stopped
     volumes:
       - snow-data:/data
     labels:

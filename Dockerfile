@@ -19,8 +19,7 @@ RUN mkdir -p shared/src server/src client/src \
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     --mount=type=cache,target=/app/target \
-    cargo build --release -p server \
-    && cp /app/target/release/server /app/server
+    cargo build --release -p server
 
 
 ############################
@@ -33,10 +32,8 @@ COPY --from=server-deps /app /app
 COPY shared/src shared/src
 COPY server/src server/src
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/usr/local/cargo/git \
-    --mount=type=cache,target=/app/target \
-    cargo build --release -p server
+RUN cargo build --release -p server \
+    && cp target/release/server /usr/local/bin/server-bin
 
 
 ############################
@@ -80,11 +77,12 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 ############################
 # 5. Runtime (distroless)
 ############################
-FROM gcr.io/distroless/cc-debian12 AS runtime
+FROM debian:12-slim AS runtime
 
+RUN mkdir -p /data
 WORKDIR /app
 
-COPY --from=server-builder /app/server /server
+COPY --from=server-builder /usr/local/bin/server-bin /server
 COPY --from=client-builder /app/client/dist /app/static
 COPY config.yaml /app/config.yaml
 
@@ -92,5 +90,4 @@ ENV DB_PATH=/data/snow.db
 ENV STATIC_DIR=/app/static
 
 EXPOSE 3000
-USER nonroot:nonroot
 ENTRYPOINT ["/server"]
