@@ -15,7 +15,7 @@ timberline:
       "y": 88
 skiBowl:
   timeZone: America/Los_Angeles
-  parkUrl: "http://www.skibowl.com/winter/mt-hood-weather-conditions"
+  parkUrl: "https://skibowl.com/winter-condition-and-lift-status/"
   noaaUrl: "https://forecast.weather.gov/MapClick.php?lat=45.302189&lon=-121.750504&site=all"
   weather:
     # point: "45.31,-121.77"
